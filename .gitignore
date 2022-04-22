@@ -1,0 +1,7 @@
+venv
+.idea
+*/__pycache__/
+db.sqlite3
+sto_app/migrations/__pycache__
+__pycache__
+uploads
