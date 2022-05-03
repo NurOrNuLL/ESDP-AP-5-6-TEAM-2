@@ -1,0 +1,93 @@
+name: Testing
+
+on:
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  run_action_warnings:
+    name: Test run action (triggers warnings)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./
+      with:
+        path: example
+        only_warn: 1
+        max_line_length: 90
+
+  run_action_valid:
+    name: Test run action (valid)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./
+      with:
+        path: example_valid
+
+  run_action_valid_custom_flake8:
+    name: Test run action (valid with custom Flake8)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: pip install flake8==3.8.0
+    - uses: ./
+      with:
+        path: example_valid
+
+  run_action_valid_flake8_version:
+    name: Test run action (valid with Flake 3.8.0)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ./
+      with:
+        path: example_valid
+        flake8_version: 3.8.0
+
+  run_action_valid_py39:
+    name: Test run action (valid with Python 3.9)
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - uses: ./
+      with:
+        path: example_valid_py39
+
+  run_action_with_plugin:
+    name: Test run action (plugins)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          plugins: flake8-bugbear
+          path: example_bugbear
+          only_warn: 1
+
+  run_action_with_classes:
+    name: Test run action (classes)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          plugins: flake8-bugbear
+          path: example_bugbear
+          warning_classes: E,F
+          error_classes: W,B
+          only_warn: 1
+
+  codespell:
+    name: Check for spelling errors
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: codespell-project/actions-codespell@master
+      with:
+        check_filenames: true
+        check_hidden: true
+        skip: ./.git
