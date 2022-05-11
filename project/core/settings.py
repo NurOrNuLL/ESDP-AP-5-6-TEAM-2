@@ -86,7 +86,8 @@ LOGGING = {
     'disable_existing_loggers': False,
     'formatters': {
         'format': {
-            'format': '{levelname} - {asctime} - {module} - {process:d} - {thread:d} - {message}',
+            'format': '{levelname} - {asctime} - {module} - {process:d}'
+                      ' - {thread:d} - {message}',
             'style': '{',
         }
     },
