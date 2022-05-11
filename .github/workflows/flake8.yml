@@ -1,8 +1,8 @@
-name: Testing
+name: Incspect
 
 on:
   pull_request:
-    branches: [ develop ]
+    branches: [develop]
 
 jobs:
   flake8_py3:
