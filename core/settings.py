@@ -81,6 +81,32 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'format': {
+            'format': '{levelname} - {asctime} - {module} - {process:d}'
+                      ' - {thread:d} - {message}',
+            'style': '{',
+        }
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'format',
+            'filename': 'logs.log'
+        }
+    },
+    'loggers': {
+        'main': {
+            'handlers': ['file'],
+            'level': 'INFO',
+            'propagate': True,
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
