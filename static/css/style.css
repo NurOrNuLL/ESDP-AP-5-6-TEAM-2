@@ -1,0 +1,25 @@
+body {
+    background-color: rgb(226, 226, 226);
+}
+
+.maindiv {
+    display: flex;
+}
+
+.sidebar-btn {
+    font-size: 20px;
+}
+
+.sidebar-ul {
+    font-size: 17px;
+}
+
+.btn-toggle:hover, .btn-toggle:focus {
+    color: rgba(0, 0, 0, .85);
+    background-color: rgb(226, 226, 226);
+}
+
+.sidebar-link:hover {
+    color: rgba(0, 0, 0, .85);
+    background-color: rgb(226, 226, 226) !important;
+}
