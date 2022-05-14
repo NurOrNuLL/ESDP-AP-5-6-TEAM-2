@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="card w-50" style="background-color: transparent !important; border: 0;">
+    <div class="card-body">
+        <h2 class="mb-4">Импортировать услуги из файла</h2>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="mb-3">
+                <input type="file" class="form-control border-secondary" accept=".xlsx, .xls, .csv" name="excel_file" required>
+                <div class="form-text text-dark">Файл должен быть в расширении .xslx, .xls, .csv</div>
+            </div>
+            <button class="btn btn-secondary" type="submit">Загрузить</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
