@@ -5,12 +5,14 @@ from import_export.admin import ImportExportModelAdmin
 
 
 class ServiceResource(resources.ModelResource):
+    """Для импорта и экспорта данных услуг"""
     class Meta:
         model = Service
 
 
 @admin.register(Service)
 class ServiceAdmin(ImportExportModelAdmin):
+    """Услуги"""
     resource_class = ServiceResource
     list_display = ('id', 'category', 'name',
                     'price', 'note', 'price_category',)

@@ -4,6 +4,7 @@ from django.core.validators import MinValueValidator
 
 
 class Service(models.Model):
+    """Услуги"""
     category = models.CharField(
         max_length=100,
         choices=CATEGORY_CHOICES,
@@ -25,3 +26,6 @@ class Service(models.Model):
         max_length=100, choices=PRICE_CATEGORY,
         verbose_name='Категория цены'
     )
+
+    def __str__(self):
+        return f'{self.name}'
