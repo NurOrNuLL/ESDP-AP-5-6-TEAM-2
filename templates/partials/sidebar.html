@@ -61,6 +61,11 @@
             <li><a href="#" class="link-dark sidebar-link rounded">Добавить мастера</a></li>
           </ul>
         </div>
+        <form class="d-flex">
+                <input class="form-control me-2" type="search" name="search" value="{{ form.search.value|default:'' }}"
+                       placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
       </li>
     </ul>
 </div>
