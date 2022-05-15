@@ -36,6 +36,7 @@ class ServiceImportView(TemplateView):
                 services = Service.objects.all().delete()
                 print(services)
                 resource.import_data(dataset, dry_run=False)
+
         return redirect('home')
 
 
