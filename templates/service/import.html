@@ -7,6 +7,7 @@
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="mb-3">
+                <div class="form-text text-danger mb-2">{{ error }}</div>
                 <input type="file" class="form-control border-secondary" accept=".xlsx, .xls, .csv" name="excel_file" required>
                 <div class="form-text text-dark">Файл должен быть в расширении .xslx, .xls, .csv</div>
             </div>
