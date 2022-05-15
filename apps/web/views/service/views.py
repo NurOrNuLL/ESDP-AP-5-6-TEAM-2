@@ -22,8 +22,13 @@ class ServiceImportView(TemplateView):
             result = resource.import_data(dataset, dry_run=True)
 
             if result.has_errors():
-                error_messeage = 'Некоректный документ. Проверьте в нем наличие полей: id, category, name, note, price_category, price'
-                return render(request=request, template_name=self.template_name, context={'error': error_messeage})
+                error_messeage = "Некоректный документ. Проверьте в нем наличие полей: " \
+                                 "id, category, name, note, price_category, price"
+                return render(
+                    request=request,
+                    template_name=self.template_name,
+                    context={'error': error_messeage}
+                )
             else:
                 services = Service.objects.all().delete()
                 print(services)
