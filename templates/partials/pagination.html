@@ -1,0 +1,25 @@
+<div class="pagination">
+    <span class="step-links" style='display: flex; justify-content: center; align-items: center; margin: auto;'>
+        <a href="?{% if query %}{{ query }}&{% endif %}page=1" class="btn btn-secondary">&laquo; В начало</a>
+        {% if page_obj.has_previous %}
+            <a href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.previous_page_number }}" class="btn btn-secondary m-2">Назад</a>
+        {% else %}
+            <span class="btn btn-secondary m-2 disabled">Назад</span>
+        {% endif %}
+
+        <form class="current-page" method="get">
+            <label for="page">
+                {% if search %}<input type="hidden" name="search" value="{{ search }}">{% endif %}
+                Страница <input type="text" class="form-control d-inline border-secondary bg-transparent" name="page" id="page" value="{{ page_obj.number }}" style='width: 40px;'>
+                из {{ page_obj.paginator.num_pages }}.
+            </label>
+        </form>
+
+        {% if page_obj.has_next %}
+            <a href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.next_page_number }}" class="btn btn-secondary m-2">Далее</a>
+        {% else %}
+            <span class="btn btn-secondary m-2 disabled">Далее</span>
+        {% endif %}
+        <a href="?{% if query %}{{ query }}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="btn btn-secondary">В конец &raquo;</a>
+    </span>
+</div>
