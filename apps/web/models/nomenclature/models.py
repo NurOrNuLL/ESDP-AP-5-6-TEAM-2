@@ -1,6 +1,4 @@
 from django.db import models
-from ..organization import Organization
-from ..service import Service
 
 
 class Nomenclature(models.Model):
@@ -10,11 +8,13 @@ class Nomenclature(models.Model):
         verbose_name='Наименование номенклатуры'
     )
     organization = models.ForeignKey(
-        Organization, verbose_name="Организация",
+        'web.Organization', verbose_name="Организация",
         on_delete=models.PROTECT, null=False, blank=False
     )
     service = models.ManyToManyField(
-        Service, verbose_name='услуги',
+        'web.Service', verbose_name='Услуги',
         related_name='organization_service'
-        Organization, verbose_name="Организация", on_delete=models.PROTECT, null=False, blank=False
     )
+
+    def __str__(self):
+        return f'{self.name}'
