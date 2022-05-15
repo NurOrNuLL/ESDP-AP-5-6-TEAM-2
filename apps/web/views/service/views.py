@@ -73,5 +73,3 @@ class ServiceListView(ListView):
                      | Q(price_category__icontains=self.search_value))
             queryset = queryset.filter(query)
         return queryset
-
-                return redirect('home')
