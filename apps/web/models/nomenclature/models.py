@@ -16,4 +16,5 @@ class Nomenclature(models.Model):
     service = models.ManyToManyField(
         Service, verbose_name='услуги',
         related_name='organization_service'
+        Organization, verbose_name="Организация", on_delete=models.PROTECT, null=False, blank=False
     )
