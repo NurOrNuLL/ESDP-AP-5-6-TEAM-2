@@ -2,11 +2,12 @@ from django.views.generic import TemplateView, ListView
 from urllib.parse import urlencode
 from django.db.models import Q
 from django.shortcuts import redirect, render
-from apps.web.form import SearchForm
+from apps.web.form import FilterForm
 from ...models.service.admin import ServiceResource
 from apps.web.forms.service.forms import ServiceImportForm
 from tablib import Dataset
 from apps.web.models.service import Service
+from ...models.service.category_choices import CATEGORY_CHOICES, PRICE_CATEGORY
 
 
 class ServiceImportView(TemplateView):
@@ -41,35 +42,51 @@ class ServiceImportView(TemplateView):
 
 
 class ServiceListView(ListView):
-    template_name = 'service/service_list.html'
+    template_name = 'service/list.html'
     model = Service
     context_object_name = 'services'
     ordering = ('name', 'category', 'price_category')
+    paginate_by = 15
 
-    def get_search_form(self):
-        return SearchForm(self.request.GET)
+    def get_filter_form(self):
+        return FilterForm(self.request.GET)
 
-    def get_search_value(self):
+    def get_filter_value(self):
         if self.form.is_valid():
-            return self.form.cleaned_data.get('search')
+            search = self.form.cleaned_data.get('search')
+            category = self.form.cleaned_data.get('category')
+            price_category = self.form.cleaned_data.get('price_category')
+            filter_values = {
+                "search": search,
+                "category": category,
+                "price_category": price_category,
+            }
+            return filter_values
 
     def get(self, request, *args, **kwargs):
-        self.form = self.get_search_form()
-        self.search_value = self.get_search_value()
+        self.form = self.get_filter_form()
+        self.filter_values = self.get_filter_value()
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form
-        if self.search_value:
-            context['query'] = urlencode({'search': self.search_value})
+        context['categories'] = CATEGORY_CHOICES
+        context['price_categories'] = PRICE_CATEGORY
+        if self.filter_values:
+            context['query'] = urlencode(
+                {'search': self.filter_values['search'],
+                 'category': self.filter_values['category'],
+                 'price_category': self.filter_values['price_category']})
         return context
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.search_value:
-            query = (Q(category__icontains=self.search_value)
-                     | Q(name__icontains=self.search_value)
-                     | Q(price_category__icontains=self.search_value))
-            queryset = queryset.filter(query)
-        return queryset
+        if self.filter_values:
+            query = (Q(name__icontains=self.filter_values.get('search'))
+                     & Q(category__icontains=self.filter_values.get('category'))
+                     & Q(
+                         price_category__icontains=self.filter_values.get(
+                             'price_category')))
+            queryset = self.model.objects.filter(query)
+            return queryset
+        return self.model.objects.all()
