@@ -25,7 +25,6 @@ class ServiceImportView(TemplateView):
 
             if not result.has_errors():
                 resource.import_data(dataset, dry_run=False)
-
         return redirect('home')
 
 
