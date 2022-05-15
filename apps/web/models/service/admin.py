@@ -12,4 +12,5 @@ class ServiceResource(resources.ModelResource):
 @admin.register(Service)
 class ServiceAdmin(ImportExportModelAdmin):
     resource_class = ServiceResource
-    list_display = ('id', 'category', 'name', 'price', 'note', 'price_category',)
+    list_display = ('id', 'category', 'name',
+                    'price', 'note', 'price_category',)
