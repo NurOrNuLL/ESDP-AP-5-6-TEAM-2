@@ -38,6 +38,7 @@ pyrsistent==0.18.1
 pytz==2022.1
 PyYAML==6.0
 questionary==1.10.0
+six==1.16.0
 sqlparse==0.4.2
 tablib==3.2.1
 termcolor==1.1.0
