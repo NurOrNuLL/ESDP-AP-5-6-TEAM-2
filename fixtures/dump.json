@@ -1,0 +1,897 @@
+[
+{
+  "model": "organization.organization",
+  "pk": 1,
+  "fields": {
+    "name": "Товарищество с ограниченной ответственностью  «GServiceGroup» Св-во о постановке на учет по НДС серия 60001       № 1225814 от 23.12.2021г.",
+    "address": "РК г. Алматы, ул. Досмухамедова 22, кв. 18",
+    "RNN": "600700875664",
+    "BIN": "211240026036",
+    "bank_requisition": "ИИК  KZ51914002203KZ00HE8       ДБ АО  «Сбербанк», Алматы   БИК  SABRKZKA  КБЕ 17"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 1,
+  "fields": {
+    "category": "Диагностика",
+    "name": "Компьютерная диагностика двигателя ",
+    "price": 4000,
+    "note": "406,405,409 ЕВРО 2,405,409,4216 - ЕВРО 3,4",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 2,
+  "fields": {
+    "category": "Диагностика",
+    "name": "Диагностика ходовой части",
+    "price": 2000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 3,
+  "fields": {
+    "category": "Диагностика",
+    "name": "Компьютерная диагностика двигателя ",
+    "price": 4000,
+    "note": "406,405,409 ЕВРО 2,405,409,4216 - ЕВРО 3,4",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 4,
+  "fields": {
+    "category": "Диагностика",
+    "name": "Диагностика ходовой части",
+    "price": 2000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 5,
+  "fields": {
+    "category": "Техническое обслуживание",
+    "name": "Замена масла в двигателе",
+    "price": 1500,
+    "note": "весь модельный ряд",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 6,
+  "fields": {
+    "category": "Техническое обслуживание",
+    "name": "Замена фильтра воздушного карбюр.двиг.",
+    "price": 500,
+    "note": "402,4218,4215,406.",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 7,
+  "fields": {
+    "category": "Техническое обслуживание",
+    "name": "Замена масла в двигателе",
+    "price": 1500,
+    "note": "весь модельный ряд",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 8,
+  "fields": {
+    "category": "Техническое обслуживание",
+    "name": "Замена фильтра воздушного карбюр.двиг.",
+    "price": 250,
+    "note": "402,4218,4215,406.",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 9,
+  "fields": {
+    "category": "Текущий ремонт двигателя",
+    "name": "Мойка. Чистка масляных каналов перед сборкой",
+    "price": 7500,
+    "note": "весь модельный ряд",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 10,
+  "fields": {
+    "category": "Текущий ремонт двигателя",
+    "name": "Замена ГРМ (цепи,звездочки,успокоители и т.п.)",
+    "price": 20000,
+    "note": "406 и модиф",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 11,
+  "fields": {
+    "category": "Текущий ремонт двигателя",
+    "name": "Мойка. Чистка масляных каналов перед сборкой",
+    "price": 7500,
+    "note": "весь модельный ряд",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 12,
+  "fields": {
+    "category": "Текущий ремонт двигателя",
+    "name": "Замена ГРМ (цепи,звездочки,успокоители и т.п.)",
+    "price": 45000,
+    "note": "406 и модиф",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 13,
+  "fields": {
+    "category": "Токарные, фрезерные, шлифовочные и расточные работы",
+    "name": "Фрезеровка головки блока цилиндров",
+    "price": 2800,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 14,
+  "fields": {
+    "category": "Токарные, фрезерные, шлифовочные и расточные работы",
+    "name": "Фрезеровка блока цилиндров",
+    "price": 6000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 15,
+  "fields": {
+    "category": "Токарные, фрезерные, шлифовочные и расточные работы",
+    "name": "Фрезеровка головки блока цилиндров",
+    "price": 6000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 16,
+  "fields": {
+    "category": "Токарные, фрезерные, шлифовочные и расточные работы",
+    "name": "Фрезеровка блока цилиндров",
+    "price": 10000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 17,
+  "fields": {
+    "category": "Система питания",
+    "name": "Замена погружного модуля бензонасоса ",
+    "price": 6000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 18,
+  "fields": {
+    "category": "Система питания",
+    "name": "Замена погружного модуля бензонасоса со снятием бака",
+    "price": 8000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 19,
+  "fields": {
+    "category": "Система питания",
+    "name": "Замена погружного модуля бензонасоса ",
+    "price": 6000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 20,
+  "fields": {
+    "category": "Система питания",
+    "name": "Замена погружного модуля бензонасоса со снятием бака",
+    "price": 8000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 21,
+  "fields": {
+    "category": "Система выпуска газов",
+    "name": "Замена приемной трубы/ нейтрализатора",
+    "price": 4000,
+    "note": "4216,40522,409",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 22,
+  "fields": {
+    "category": "Система выпуска газов",
+    "name": "Замена прокладки приемной трубы/нейтрализатора ",
+    "price": 3000,
+    "note": "4216,40522,409",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 23,
+  "fields": {
+    "category": "Система выпуска газов",
+    "name": "Замена приемной трубы/ нейтрализатора",
+    "price": 6000,
+    "note": "4216,40522,409",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 24,
+  "fields": {
+    "category": "Система выпуска газов",
+    "name": "Замена прокладки приемной трубы/нейтрализатора ",
+    "price": 5000,
+    "note": "4216,40522,409",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 25,
+  "fields": {
+    "category": "Система охлаждения",
+    "name": "Замена радиатора",
+    "price": 5000,
+    "note": "весь модельный ряд",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 26,
+  "fields": {
+    "category": "Система охлаждения",
+    "name": "Замена патрубка термостата ",
+    "price": 2000,
+    "note": "406 и модиф",
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 27,
+  "fields": {
+    "category": "Система охлаждения",
+    "name": "Замена радиатора",
+    "price": 6000,
+    "note": "весь модельный ряд",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 28,
+  "fields": {
+    "category": "Система охлаждения",
+    "name": "Замена патрубка термостата ",
+    "price": 2000,
+    "note": "406 и модиф",
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 29,
+  "fields": {
+    "category": "Сцепление",
+    "name": "Снять-Установить  КПП ",
+    "price": 10000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 30,
+  "fields": {
+    "category": "Сцепление",
+    "name": "Замена болта педали сцепления",
+    "price": 500,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 31,
+  "fields": {
+    "category": "Сцепление",
+    "name": "Снять-Установить  КПП ",
+    "price": 12000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 32,
+  "fields": {
+    "category": "Сцепление",
+    "name": "Замена болта педали сцепления",
+    "price": 500,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 33,
+  "fields": {
+    "category": "Коробка передач",
+    "name": "Замена корпуса рычага КПП",
+    "price": 1000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 34,
+  "fields": {
+    "category": "Коробка передач",
+    "name": "Ремонт КПП (Снять-ремонт-собрать-установить)",
+    "price": 25000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 35,
+  "fields": {
+    "category": "Коробка передач",
+    "name": "Замена корпуса рычага КПП",
+    "price": 1000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 36,
+  "fields": {
+    "category": "Коробка передач",
+    "name": "Ремонт КПП (Снять-ремонт-собрать-установить)",
+    "price": 29000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 37,
+  "fields": {
+    "category": "Карданный вал",
+    "name": "Снять - установить кардан",
+    "price": 3000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 38,
+  "fields": {
+    "category": "Карданный вал",
+    "name": "Замена вилки кардана",
+    "price": 1500,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 39,
+  "fields": {
+    "category": "Карданный вал",
+    "name": "Снять - установить кардан",
+    "price": 2500,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 40,
+  "fields": {
+    "category": "Карданный вал",
+    "name": "Замена вилки кардана",
+    "price": 2000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 41,
+  "fields": {
+    "category": "Задний мост",
+    "name": "Замена заднего моста в сборе Газель",
+    "price": 25000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 42,
+  "fields": {
+    "category": "Задний мост",
+    "name": "Ремонт редуктора заднего моста (снятого) ",
+    "price": 18000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 43,
+  "fields": {
+    "category": "Задний мост",
+    "name": "Замена заднего моста в сборе Газель",
+    "price": 30000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 44,
+  "fields": {
+    "category": "Задний мост",
+    "name": "Ремонт редуктора заднего моста (снятого) ",
+    "price": 20000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 45,
+  "fields": {
+    "category": "Подвеска",
+    "name": "Замена щеки стабилизатора с од.стороны",
+    "price": 1000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 46,
+  "fields": {
+    "category": "Подвеска",
+    "name": "Замена кронштейна  стабилизатора  с щеками",
+    "price": 5000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 47,
+  "fields": {
+    "category": "Подвеска",
+    "name": "Замена щеки стабилизатора с од.стороны",
+    "price": 2000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 48,
+  "fields": {
+    "category": "Подвеска",
+    "name": "Замена кронштейна  стабилизатора  с щеками",
+    "price": 5000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 49,
+  "fields": {
+    "category": "Колеса-ступицы",
+    "name": "Замена подшипников ступицы",
+    "price": 3500,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 50,
+  "fields": {
+    "category": "Колеса-ступицы",
+    "name": "Замена сальника ступицы",
+    "price": 3000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 51,
+  "fields": {
+    "category": "Колеса-ступицы",
+    "name": "Замена подшипников ступицы",
+    "price": 4500,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 52,
+  "fields": {
+    "category": "Колеса-ступицы",
+    "name": "Замена сальника ступицы",
+    "price": 3000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 53,
+  "fields": {
+    "category": "Рулевое управление",
+    "name": "Замена рулевой колонки",
+    "price": 6000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 54,
+  "fields": {
+    "category": "Рулевое управление",
+    "name": "Регулировка рулевого механизма",
+    "price": 600,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 55,
+  "fields": {
+    "category": "Рулевое управление",
+    "name": "Замена рулевой колонки",
+    "price": 5500,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 56,
+  "fields": {
+    "category": "Рулевое управление",
+    "name": "Регулировка рулевого механизма",
+    "price": 600,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 57,
+  "fields": {
+    "category": "Тормозная система",
+    "name": "Регулировка ручного тормоза",
+    "price": 1500,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 58,
+  "fields": {
+    "category": "Тормозная система",
+    "name": "Замена суппорта",
+    "price": 2000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 59,
+  "fields": {
+    "category": "Тормозная система",
+    "name": "Регулировка ручного тормоза",
+    "price": 1000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 60,
+  "fields": {
+    "category": "Тормозная система",
+    "name": "Замена суппорта",
+    "price": 2000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 61,
+  "fields": {
+    "category": "Электрооборудование",
+    "name": "Замена Датчика темпиратуры всасывающего коллектора ",
+    "price": 1000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 62,
+  "fields": {
+    "category": "Электрооборудование",
+    "name": "Замена датчика кислорода ",
+    "price": 2500,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 63,
+  "fields": {
+    "category": "Электрооборудование",
+    "name": "Замена Датчика темпиратуры всасывающего коллектора ",
+    "price": 1000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 64,
+  "fields": {
+    "category": "Электрооборудование",
+    "name": "Замена датчика кислорода ",
+    "price": 2500,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 65,
+  "fields": {
+    "category": "Двери",
+    "name": "Замена стеклоподъёмника ",
+    "price": 2500,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 66,
+  "fields": {
+    "category": "Двери",
+    "name": "Замена ручки стеклоподъмника",
+    "price": 400,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 67,
+  "fields": {
+    "category": "Двери",
+    "name": "Замена стеклоподъёмника ",
+    "price": 2500,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 68,
+  "fields": {
+    "category": "Двери",
+    "name": "Замена ручки стеклоподъмника",
+    "price": 400,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 69,
+  "fields": {
+    "category": "Отопитель",
+    "name": "Замена радиатора отопителя ВОЛГА ",
+    "price": 4000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 70,
+  "fields": {
+    "category": "Отопитель",
+    "name": "Замена отопителя в сборе",
+    "price": 15000,
+    "note": null,
+    "price_category": "Газель"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 71,
+  "fields": {
+    "category": "Отопитель",
+    "name": "Замена радиатора отопителя ВОЛГА ",
+    "price": 4000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "service.service",
+  "pk": 72,
+  "fields": {
+    "category": "Отопитель",
+    "name": "Замена отопителя в сборе",
+    "price": 15000,
+    "note": null,
+    "price_category": "Валдай Дв Д245/Cummin s 3.8 2.8"
+  }
+},
+{
+  "model": "nomenclature.nomenclature",
+  "pk": 1,
+  "fields": {
+    "name": "СТО",
+    "organization": 1,
+    "service": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72
+    ]
+  }
+},
+{
+  "model": "trade_point.tradepoint",
+  "pk": 1,
+  "fields": {
+    "name": "СТО",
+    "address": null,
+    "organization": 1,
+    "nomenclature": 1
+  }
+}
+]
