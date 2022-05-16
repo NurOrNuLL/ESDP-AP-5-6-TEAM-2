@@ -53,3 +53,7 @@ class Contractor(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    class Meta:
+        verbose_name = "Контрагент"
+        verbose_name_plural = "Контрагенты"
