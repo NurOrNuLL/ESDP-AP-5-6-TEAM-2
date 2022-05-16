@@ -31,5 +31,6 @@ class Service(models.Model):
         return f'{self.name}'
 
     class Meta:
+        ordering = ['name', ]
         verbose_name = "Услуга"
         verbose_name_plural = "Услуги"
