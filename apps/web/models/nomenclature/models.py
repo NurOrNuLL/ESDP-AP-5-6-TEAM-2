@@ -18,3 +18,7 @@ class Nomenclature(models.Model):
 
     def __str__(self):
         return f'{self.name}'
+
+    class Meta:
+        verbose_name = "Номенклатура"
+        verbose_name_plural = "Номенклатуры"
