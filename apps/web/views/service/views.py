@@ -35,7 +35,6 @@ class ServiceImportView(TemplateView):
                 )
             else:
                 services = Service.objects.all().delete()
-                print(services)
                 resource.import_data(dataset, dry_run=False)
 
         return redirect('home')
@@ -45,7 +44,6 @@ class ServiceListView(ListView):
     template_name = 'service/list.html'
     model = Service
     context_object_name = 'services'
-    ordering = ('name', 'category', 'price_category')
     paginate_by = 15
 
     def get_filter_form(self):
@@ -78,6 +76,9 @@ class ServiceListView(ListView):
                 {'search': self.filter_values['search'],
                  'category': self.filter_values['category'],
                  'price_category': self.filter_values['price_category']})
+            context['search'] = self.filter_values['search']
+            context['category'] = self.filter_values['category']
+            context['price_category'] = self.filter_values['price_category']
         return context
 
     def get_queryset(self):
