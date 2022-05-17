@@ -1,14 +1,11 @@
 body {
-    background-color: rgb(226, 226, 226);
+    background-color: rgb(236, 236, 236);
 }
 
 .maindiv {
     display: flex;
 }
 
-.sidebar-btn {
-    font-size: 20px;
-}
 
 .sidebar-ul {
     font-size: 17px;
@@ -22,4 +19,12 @@ body {
 .sidebar-link:hover {
     color: rgba(0, 0, 0, .85);
     background-color: rgb(226, 226, 226) !important;
+}
+
+.sidebar-btn {
+    font-size: 20px;
+}
+
+.sidebar-btn:focus {
+    box-shadow: 0 0 0 0 black;
 }
