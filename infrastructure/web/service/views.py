@@ -1,3 +1,6 @@
+import tablib
+from django.forms import model_to_dict
+from django.http import HttpResponse
 from django.views.generic import TemplateView, ListView
 from urllib.parse import urlencode
 from django.db.models import Q
@@ -33,7 +36,7 @@ class ServiceImportView(TemplateView):
                     context={'error': error_messeage}
                 )
             else:
-                services = Service.objects.all().delete()
+                services = Service.objects.all().delete()  # noqa E841
                 resource.import_data(dataset, dry_run=False)
 
         return redirect('home')
@@ -84,9 +87,30 @@ class ServiceListView(ListView):
         if self.filter_values:
             query = (Q(name__icontains=self.filter_values.get('search'))
                      & Q(category__icontains=self.filter_values.get('category'))
-                     & Q(
-                         price_category__icontains=self.filter_values.get(
-                             'price_category')))
+                     & Q(price_category__icontains=self.filter_values.get('price_category'))) # noqa E501
             queryset = self.model.objects.filter(query)
             return queryset
         return self.model.objects.all()
+
+
+class ServiceExportView(TemplateView):
+    """Экспортировать услуги"""
+    template_name = 'service/import.html'
+    main_data = ''
+    resource_class = ServiceResource
+
+    def post(self, request, *args, **kwargs):
+        type = request.POST.get('type')
+        out_resource = list(map(model_to_dict, Service.objects.all()))
+        data = tablib.Dataset(headers=['id', 'category', 'name',
+                                       'note', 'price_category', 'price'])
+        for i in out_resource:
+            data.append(i.values())
+            self.main_data = data.export(type)
+        if type == 'xls' or type == 'xlsx':
+            context = 'application/vnd.ms-excel'
+        else:
+            context = 'text/csv'
+        response = HttpResponse(self.main_data, content_type=context)
+        response['Content-Disposition'] = f'attachment; filename="price.{type}"'
+        return response
