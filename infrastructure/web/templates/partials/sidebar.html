@@ -45,9 +45,9 @@
         </button>
         <div class="collapse sidebar-ul" id="price-list-collapse" style="">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="{% url 'service_list' %}" class="link-dark sidebar-link rounded">Список услуг</a></li>
+            <li><a href="{% url 'service_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список услуг</a></li>
             <li><a href="#" class="link-dark sidebar-link rounded">Добавить услугу</a></li>
-            <li><a href="{% url 'service_import' %}" class="link-dark sidebar-link rounded">Импорт и экспорт услуги из excel</a></li>
+            <li><a href="{% url 'service_import' orgID=1 %}" class="link-dark sidebar-link rounded">Импорт и экспорт услуги из excel</a></li>
           </ul>
         </div>
       </li>

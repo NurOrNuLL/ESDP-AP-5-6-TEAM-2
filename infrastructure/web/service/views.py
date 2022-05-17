@@ -33,13 +33,13 @@ class ServiceImportView(TemplateView):
                 return render(
                     request=request,
                     template_name=self.template_name,
-                    context={'error': error_messeage}
+                    context={'error': error_messeage},
                 )
             else:
                 services = Service.objects.all().delete()  # noqa E841
                 resource.import_data(dataset, dry_run=False)
 
-        return redirect('home')
+        return redirect('home', orgID=1)
 
 
 class ServiceListView(ListView):

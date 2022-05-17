@@ -25,7 +25,7 @@
         {% endfor %}
     </select>
     <button class="col-1 me-2 btn btn-secondary" type="submit">Поиск</button>
-    <a href="{% url 'service_list' %}" class="col-1 btn btn-secondary">Сбросить</a>
+    <a href="{% url 'service_list' orgID=1 %}" class="col-1 btn btn-secondary">Сбросить</a>
 </form>
 <table data-toggle="table">
     <thead>
