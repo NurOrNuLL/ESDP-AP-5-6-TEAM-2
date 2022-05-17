@@ -1,18 +1,36 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="card w-50" style="background-color: transparent !important; border: 0;">
-    <div class="card-body">
-        <h2 class="mb-4">Импортировать услуги из файла</h2>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="mb-3">
-                <div class="form-text text-danger mb-2">{{ error }}</div>
-                <input type="file" class="form-control border-secondary bg-transparent" accept=".xlsx, .xls, .csv" name="excel_file" required>
-                <div class="form-text text-dark">Файл должен быть в расширении .xslx, .xls, .csv</div>
-            </div>
-            <button class="btn btn-secondary" type="submit">Загрузить</button>
-        </form>
+    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+        <div class="card-body">
+            <h2 class="mb-4">Импортировать услуги из файла</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <div class="form-text text-danger mb-2">{{ error }}</div>
+                    <input type="file" class="form-control border-secondary bg-transparent" accept=".xlsx, .xls, .csv"
+                           name="excel_file" required>
+                    <div class="form-text text-dark">Файл должен быть в расширении .xslx, .xls, .csv</div>
+                </div>
+                <button class="btn btn-secondary" type="submit">Загрузить</button>
+            </form>
+        </div>
     </div>
-</div>
+    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+        <div class="card-body">
+            <h2 class="mb-4">Экспортировать услуги из файла</h2>
+            <form method="post" enctype="multipart/form-data" action="{% url 'service_export' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <h6>Выберите расширение</h6>
+                    <select class="form-select" aria-label="Default select example" name="type">
+                        <option value="xlsx">xlsx</option>
+                        <option value="xls">xls</option>
+                        <option value="csv">csv</option>
+                    </select>
+                </div>
+                <button class="btn btn-secondary" type="submit">Экспортировать</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}
