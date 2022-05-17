@@ -11,10 +11,6 @@ class Nomenclature(models.Model):
         'organization.Organization', verbose_name="Организация",
         on_delete=models.PROTECT, null=False, blank=False
     )
-    service = models.ManyToManyField(
-        'service.Service', verbose_name='Услуги',
-        related_name='organization_service'
-    )
 
     def __str__(self):
         return f'{self.name}'

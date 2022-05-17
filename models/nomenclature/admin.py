@@ -15,9 +15,6 @@ class NomenclatureAdmin(admin.ModelAdmin):
         (None, {
             "fields": ("organization", )
         }),
-        (None, {
-            "fields": ("service",)
-        }),
     )
 
 
