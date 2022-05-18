@@ -20,7 +20,7 @@
           <td>{{ contractor.name }}</td>
           <td>{{ contractor.IIN_or_BIN }}</td>
           <td>{{ contractor.phone }}</td>
-          <td><a class="btn btn-primary" href="#">Детали</a></td>
+          <td><a class="btn btn-primary" href="{% url 'contractor_detail' organization.pk contractor.pk %}">Детали</a></td>
         </tr>
       {% endfor %}
       </tbody>
