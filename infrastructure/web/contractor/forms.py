@@ -7,4 +7,3 @@ class ContractorForm(forms.ModelForm):
     class Meta:
         model = Contractor
         exclude = ['organisation']
-
