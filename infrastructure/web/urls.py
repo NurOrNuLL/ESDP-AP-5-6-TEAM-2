@@ -3,6 +3,8 @@ from .order.views import HomePageView
 from .service.views import ServiceImportView, ServiceListView, ServiceExportView
 from .nomenclature.views import NomenclatureCreate
 from .own.views import OwnCreate
+from .contractor.views import ContractorCreate
+
 
 service_urls = [
     path('service/import/', ServiceImportView.as_view(), name="service_import"),
@@ -12,6 +14,10 @@ service_urls = [
 
 nomenclature_urls = [
     path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create")
+]
+
+contractor_urls = [
+    path('contractor/create/', ContractorCreate.as_view(), name="contractor_create")
 ]
 
 own_urls = [
@@ -24,4 +30,5 @@ urlpatterns = [
 
 urlpatterns += service_urls
 urlpatterns += nomenclature_urls
+urlpatterns += contractor_urls
 urlpatterns += own_urls

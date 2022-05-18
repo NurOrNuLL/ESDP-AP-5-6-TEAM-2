@@ -1,0 +1,29 @@
+<form method="post">
+    {% csrf_token %}
+    <div>
+        <label for="contractor" class="form-label">Наименование</label><br>
+        <div class="form-text c-red">{{ form.errors }}</div>
+        <input type="text" class="form-control" id="contractor" name="name"><br>
+    </div>
+    <div>
+        <label for="contractor" class="form-label">Адрес</label><br>
+        <input type="text" class="form-control" id="contractor" name="address"><br>
+    </div>
+    <div>
+        <label for="contractor" class="form-label">ИИН / БИН</label><br>
+        <input type="text" class="form-control" id="contractor" name="IIN_or_BIN"><br>
+    </div>
+    <div>
+        <label for="contractor" class="form-label">Реквизиты</label><br>
+        <input type="text" class="form-control" id="contractor" name="bank_requisition"><br>
+    </div>
+    <div>
+        <label for="contractor" class="form-label">Контакты</label><br>
+        <input type="text" class="form-control" id="contractor" name="phone"><br>
+    </div>
+    <div>
+        <label for="contractor" class="form-label">Доверенное лицо</label><br>
+        <input type="text" class="form-control" id="contractor" name='trust_person'><br>
+    </div>
+    <button type="submit" class="btn btn-secondary">Создать</button>
+</form>

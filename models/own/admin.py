@@ -18,4 +18,3 @@ class OwnAdmin(admin.ModelAdmin):
             'fields': ('number', )
         }),
     )
-

@@ -7,5 +7,3 @@ class NomenclatureForm(forms.ModelForm):
     class Meta:
         model = Nomenclature
         exclude = ['organization']
-
-
