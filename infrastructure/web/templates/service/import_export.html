@@ -3,7 +3,7 @@
 {% block content %}
     <div class="card w-50" style="background-color: transparent !important; border: 0;">
         <div class="card-body">
-            <h2 class="mb-4">Импортировать услуги из файла</h2>
+            <h2 class="mb-4">Импортировать услуги</h2>
             <form method="post" enctype="multipart/form-data" action="{% url 'service_import' orgID=1 %}">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -18,7 +18,7 @@
     </div>
     <div class="card w-50" style="background-color: transparent !important; border: 0;">
         <div class="card-body">
-            <h2 class="mb-4">Экспортировать услуги из файла</h2>
+            <h2 class="mb-4">Экспортировать услуги</h2>
             <form method="post" enctype="multipart/form-data" action="{% url 'service_export' orgID=1 %}">
                 {% csrf_token %}
                 <div class="mb-3">

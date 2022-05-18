@@ -1,5 +1,5 @@
 from django.db import models
-from .category_choices import CATEGORY_CHOICES, PRICE_CATEGORY
+from .category_choices import CATEGORY_CHOICES, MARK_CHOICES
 from django.core.validators import MinValueValidator
 
 
@@ -8,7 +8,7 @@ class Service(models.Model):
     category = models.CharField(
         max_length=100,
         choices=CATEGORY_CHOICES,
-        verbose_name='Категория работ'
+        verbose_name='Категория'
     )
     name = models.CharField(
         max_length=100,
@@ -22,9 +22,15 @@ class Service(models.Model):
         max_length=200, null=True,
         blank=True, verbose_name='Примечание'
     )
-    price_category = models.CharField(
-        max_length=100, choices=PRICE_CATEGORY,
-        verbose_name='Категория цены'
+    mark = models.CharField(
+        max_length=100, choices=MARK_CHOICES,
+        verbose_name='Марка'
+    )
+    nomenclature = models.ForeignKey(
+        'nomenclature.Nomenclature',
+        on_delete=models.PROTECT,
+        related_name='nomenclature_services',
+        verbose_name='Номенклатура'
     )
 
     def __str__(self):

@@ -20,7 +20,7 @@
         <div class="collapse sidebar-ul" id="contragent-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
             <li><a href="#" class="link-dark sidebar-link rounded">Список</a></li>
-            <li><a href="#" class="link-dark sidebar-link rounded">Добавление</a></li>
+            <li><a href="{% url 'contractor_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить контрагента</a></li>
           </ul>
         </div>
       </li>
@@ -34,7 +34,7 @@
                 <li><a href="{% url 'nomenclature_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить номенклатуру</a></li>
               <li><a href="{% url 'service_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список услуг</a></li>
               <li><a href="#" class="link-dark sidebar-link rounded">Добавить услугу</a></li>
-              <li><a href="{% url 'service_import' orgID=1 %}" class="link-dark sidebar-link rounded">Импорт и экспорт услуги из excel</a></li>
+              <li><a href="{% url 'service_import' orgID=1 %}" class="link-dark sidebar-link rounded">Импорт и экспорт</a></li>
             </ul>
           </div>
         </li>

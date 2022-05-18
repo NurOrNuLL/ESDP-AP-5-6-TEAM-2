@@ -20,5 +20,5 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', lambda req: redirect('home', orgID=1)),
-    path('org/<int:orgID>/', include('infrastructure.urls'))
+    path('org/<int:orgID>/', include('infrastructure.web.urls'))
 ]

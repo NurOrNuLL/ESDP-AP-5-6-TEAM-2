@@ -21,7 +21,7 @@ CATEGORY_CHOICES = [
     ('Отопитель', 'Отопитель')
 ]
 
-PRICE_CATEGORY = [
+MARK_CHOICES = [
     ('Газель', 'Газель'),
     ('Валдай Дв Д245/Cummin s 3.8 2.8', 'Валдай Дв Д245/Cummin s 3.8 2.8')
 ]
