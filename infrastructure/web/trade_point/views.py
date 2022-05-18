@@ -19,4 +19,3 @@ class TradePointCreate(TemplateView):
             'form': form,
             'nomenclature': Nomenclature.objects.all()
         })
-

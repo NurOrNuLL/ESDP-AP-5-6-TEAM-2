@@ -1,6 +1,5 @@
 from models.trade_point.models import TradePoint
 from models.organization.models import Organization
-from models.nomenclature.models import Nomenclature
 from django.shortcuts import get_object_or_404
 
 
