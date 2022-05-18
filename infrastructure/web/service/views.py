@@ -5,22 +5,24 @@ from django.views.generic import TemplateView, ListView
 from urllib.parse import urlencode
 from django.db.models import Q
 from django.shortcuts import redirect, render
+
+from models.nomenclature.models import Nomenclature
 from .forms import FilterForm, ServiceImportForm
 from models.service.admin import ServiceResource
 from tablib import Dataset
 from models.service.models import Service
-from models.service.category_choices import CATEGORY_CHOICES, PRICE_CATEGORY
+from models.service.category_choices import CATEGORY_CHOICES, MARK_CHOICES
+from django.shortcuts import get_object_or_404
 
 
 class ServiceImportView(TemplateView):
-    template_name = 'service/import.html'
+    template_name = 'service/import_export.html'
     resource_class = ServiceResource
     form_class = ServiceImportForm
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST, request.FILES)
-        dataset = Dataset()
-        dataset.headers = ('id', 'category', 'name', 'note', 'price_category', 'price')
+        dataset = Dataset(headers=('Номенклатура', 'Название', 'Категория', 'Марка', 'Примечание', 'Цена'))
         resource = self.resource_class()
 
         if form.is_valid():
@@ -29,17 +31,16 @@ class ServiceImportView(TemplateView):
 
             if result.has_errors():
                 error_messeage = "Некоректный документ. Проверьте в нем наличие полей: " \
-                                 "id, category, name, note, price_category, price"
+                                 "Номенклатура, Название, Категория, Марка, Примечание, Цена"
                 return render(
                     request=request,
                     template_name=self.template_name,
                     context={'error': error_messeage},
                 )
             else:
-                services = Service.objects.all().delete()  # noqa E841
                 resource.import_data(dataset, dry_run=False)
 
-        return redirect('home', orgID=1)
+        return redirect('home', orgID=self.kwargs['orgID'])
 
 
 class ServiceListView(ListView):
@@ -72,7 +73,7 @@ class ServiceListView(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form
         context['categories'] = CATEGORY_CHOICES
-        context['price_categories'] = PRICE_CATEGORY
+        context['price_categories'] = MARK_CHOICES
         if self.filter_values:
             context['query'] = urlencode(
                 {'search': self.filter_values['search'],
