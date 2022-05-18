@@ -13,3 +13,6 @@ def create_contractor(data):
         trust_person=data['trust_person'],
         organisation=get_object_or_404(Organization, id=1),
     )
+
+def get_contractors(kwargs):
+    return Contractor.objects.filter(organisation__pk=kwargs['orgID'])
