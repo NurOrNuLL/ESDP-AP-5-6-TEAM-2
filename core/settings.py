@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'models.organization',
     'models.service',
     'models.trade_point',
+    'models.own',
 ]
 
 MIDDLEWARE = [

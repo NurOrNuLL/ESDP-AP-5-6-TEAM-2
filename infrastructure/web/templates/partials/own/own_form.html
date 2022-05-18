@@ -1,0 +1,11 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="own_name" class="form-label">Название собственности:</label><br>
+    <div class="form-text c-red">{{ form.name.errors }}</div>
+    <input type="text" class="form-control" id="own_name" name="name"><br>
+    <label for="own_number" class="form-label">Номер собственности:</label><br>
+    <div class="form-text c-red">{{ form.number.errors }}</div>
+    <input type="text" class="form-control" id="own_number" name="number"><br>
+
+    <button type="submit" class="btn btn-secondary">Создать</button>
+</form>
