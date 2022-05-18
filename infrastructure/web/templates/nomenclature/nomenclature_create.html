@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+        <div class="card-body">
+            <h2 class="mb-4">Добавить номенклатуру</h2>
+            {% include 'partials/nomenclature/nomenclature_form.html' %}
+        </div>
+    </div>
+{% endblock content %}
