@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить контрагента{% endblock %}
+
+{% block content %}
+    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+        <div class="card-body">
+            <h2 class="mb-4">Добавить контрагента</h2>
+            {% include 'partials/contractor/contractor_form.html' %}
+        </div>
+    </div>
+{% endblock content %}
