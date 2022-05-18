@@ -26,6 +26,12 @@ class Service(models.Model):
         max_length=100, choices=PRICE_CATEGORY,
         verbose_name='Категория цены'
     )
+    nomenclature = models.ForeignKey(
+        'nomenclature.Nomenclature',
+        on_delete=models.PROTECT,
+        related_name='nomenclature_services',
+        verbose_name='Номенклатура'
+    )
 
     def __str__(self):
         return f'{self.name}'
