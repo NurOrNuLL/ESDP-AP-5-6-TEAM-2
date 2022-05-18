@@ -4,7 +4,7 @@ from .service.views import ServiceImportView, ServiceListView, ServiceExportView
 from .nomenclature.views import NomenclatureCreate
 from .own.views import OwnCreate
 from .contractor.views import ContractorCreate
-
+from .trade_point.views import TradePointCreate
 
 service_urls = [
     path('service/import/', ServiceImportView.as_view(), name="service_import"),
@@ -14,6 +14,10 @@ service_urls = [
 
 nomenclature_urls = [
     path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create")
+]
+
+trade_point_urls = [
+    path('trade_point/create/', TradePointCreate.as_view(), name="trade_point_create")
 ]
 
 contractor_urls = [
@@ -30,5 +34,6 @@ urlpatterns = [
 
 urlpatterns += service_urls
 urlpatterns += nomenclature_urls
+urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls

@@ -38,6 +38,16 @@
             </ul>
           </div>
         </li>
+        <li class="mb-1">
+          <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#trade-point-collapse" aria-expanded="false">
+            Филиал
+          </button>
+          <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'trade_point_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить филиал</a></li>
+            </ul>
+          </div>
+        </li>
       <li class="mb-1">
         <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#employee-collapse" aria-expanded="false">
           Сотрудники

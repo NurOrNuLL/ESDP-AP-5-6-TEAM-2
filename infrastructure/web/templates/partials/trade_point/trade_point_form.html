@@ -1,0 +1,14 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="nomenclature" class="form-label">Номенклатура</label><br>
+    <select class="form-control" name="nomenclature" id="nomenclature">
+        {% for nom in form.nomenclature.field.queryset %}
+        <option value="{{ nom.pk }}">{{ nom.name }}</option>
+        {% endfor %}
+    </select>
+    <label for="trade_point_name" class="form-label">Название филиала</label><br>
+    <input type="text" class="form-control" id="trade_point_name" name="name"><br>
+    <label for="trade_point_address" class="form-label">Адрес филиала</label><br>
+    <input type="text" class="form-control" id="trade_point_address" name="address"><br>
+    <button type="submit" class="btn btn-secondary">Создать</button>
+</form>
