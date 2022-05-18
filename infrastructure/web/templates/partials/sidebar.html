@@ -19,7 +19,7 @@
         </button>
         <div class="collapse sidebar-ul" id="contragent-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-dark sidebar-link rounded">Список</a></li>
+            <li><a href="{% url 'contractors' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a></li>
             <li><a href="{% url 'contractor_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить контрагента</a></li>
           </ul>
         </div>
