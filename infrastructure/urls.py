@@ -1,6 +1,7 @@
 from django.urls import path
 from .web.order.views import HomePageView
 from .web.service.views import ServiceImportView, ServiceListView, ServiceExportView
+from .web.nomenclature.views import NomenclatureCreate
 
 service_urls = [
     path('service/import/', ServiceImportView.as_view(), name="service_import"),
@@ -8,8 +9,13 @@ service_urls = [
     path('service/export/', ServiceExportView.as_view(), name='service_export')
 ]
 
+nomenclature_urls = [
+    path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create")
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
 
 urlpatterns += service_urls
+urlpatterns += nomenclature_urls
