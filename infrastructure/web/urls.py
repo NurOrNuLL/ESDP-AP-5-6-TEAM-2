@@ -3,7 +3,7 @@ from .order.views import HomePageView
 from .service.views import ServiceImportView, ServiceListView, ServiceExportView
 from .nomenclature.views import NomenclatureCreate
 from .own.views import OwnCreate
-from .contractor.views import ContractorCreate, ContractorList
+from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
 from .trade_point.views import TradePointCreate
 
 service_urls = [
@@ -22,7 +22,8 @@ trade_point_urls = [
 
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
-    path('contractor/list/', ContractorList.as_view(), name="contractors")
+    path('contractor/list/', ContractorList.as_view(), name="contractors"),
+    path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail")
 ]
 
 own_urls = [
