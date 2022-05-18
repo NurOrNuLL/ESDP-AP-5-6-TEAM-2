@@ -1,28 +1,14 @@
 <div style="width: 280px">
     <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom border-secondary">
-      <span class="fs-3 fw-semibold">Торговая точка</span>
+      <span class="fs-3 fw-semibold">GServiceGroup</span>
     </a>
     <ul class="list-unstyled ps-0">
-      <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#tradepoint-collapse" aria-expanded="false">
-          Торговая точка
-        </button>
-        <div class="collapse sidebar-ul" id="tradepoint-collapse">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-dark sidebar-link rounded">Список торговых точек</a></li>
-            <li><a href="#" class="link-dark sidebar-link rounded">Детальный просмотр</a></li>
-            <li><a href="#" class="link-dark sidebar-link rounded">Отчеты</a></li>
-          </ul>
-        </div>
-      </li>
-      <li class="border-top border-secondary my-3"></li>
       <li class="mb-1">
         <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#order-collapse" aria-expanded="false">
           Заказ наряды
         </button>
         <div class="collapse sidebar-ul" id="order-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-dark sidebar-link rounded">Список заказов</a></li>
             <li><a href="#" class="link-dark sidebar-link rounded">Добавление</a></li>
           </ul>
         </div>
@@ -33,27 +19,28 @@
         </button>
         <div class="collapse sidebar-ul" id="contragent-collapse">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-dark sidebar-link rounded">Список контрагентов</a></li>
+            <li><a href="#" class="link-dark sidebar-link rounded">Список</a></li>
             <li><a href="#" class="link-dark sidebar-link rounded">Добавление</a></li>
           </ul>
         </div>
       </li>
       <li class="border-top border-secondary my-3"></li>
-      <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#price-list-collapse" aria-expanded="false">
-          Прайс лист
-        </button>
-        <div class="collapse sidebar-ul" id="price-list-collapse" style="">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="{% url 'service_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список услуг</a></li>
-            <li><a href="#" class="link-dark sidebar-link rounded">Добавить услугу</a></li>
-            <li><a href="{% url 'service_import' orgID=1 %}" class="link-dark sidebar-link rounded">Импорт и экспорт услуги из excel</a></li>
-          </ul>
-        </div>
-      </li>
+        <li class="mb-1">
+          <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#price-list-collapse" aria-expanded="false">
+            Номенклатура
+          </button>
+          <div class="collapse sidebar-ul" id="price-list-collapse" style="">
+            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                <li><a href="{% url 'nomenclature_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить номенклатуру</a></li>
+              <li><a href="{% url 'service_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список услуг</a></li>
+              <li><a href="#" class="link-dark sidebar-link rounded">Добавить услугу</a></li>
+              <li><a href="{% url 'service_import' orgID=1 %}" class="link-dark sidebar-link rounded">Импорт и экспорт</a></li>
+            </ul>
+          </div>
+        </li>
       <li class="mb-1">
         <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#employee-collapse" aria-expanded="false">
-          Мастера
+          Сотрудники
         </button>
         <div class="collapse sidebar-ul" id="employee-collapse" style="">
           <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
