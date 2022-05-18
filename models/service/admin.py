@@ -15,5 +15,5 @@ class ServiceAdmin(ImportExportModelAdmin):
     """Услуги"""
     resource_class = ServiceResource
     list_display = ('id', 'name', 'category',
-                    'price', 'note', 'price_category',)
-    list_display_links = ('id', 'name', )
+                    'price', 'note', 'price_category', 'nomenclature')
+    list_display_links = ('id', 'name')
