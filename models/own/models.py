@@ -8,7 +8,7 @@ class Own(models.Model):
         verbose_name='Наименование собственности'
     )
     contractor = models.ForeignKey(
-        'contractor.Contractor', verbose_name='Контрагент',
+        'contractor.Contractor', related_name='owns', verbose_name='Контрагент',
         on_delete=models.PROTECT, null=False, blank=False
     )
     number = models.CharField(
