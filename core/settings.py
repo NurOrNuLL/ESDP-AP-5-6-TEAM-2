@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'models.contractor',
     'models.nomenclature',
     'models.organization',
-    'models.service',
     'models.trade_point',
     'models.own',
 ]
