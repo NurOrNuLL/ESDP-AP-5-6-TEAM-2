@@ -3,7 +3,7 @@
 {% block title %}Детали контрагента{% endblock %}
 
 {% block content %}
-    <a class="btn btn-primary" href="{% url 'contractors' organization.pk %}">К списку</a><br><br>
+    <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk %}">К списку</a><br><br>
     <h3 class="mb-4">{{ contractor.name }} </h3>
     <div class="card border-success mb-3" style="max-width: 60rem;">
       <div class="card-header bg-transparent border-success">
@@ -22,11 +22,11 @@
           <div class="row">
               <div class="col-md-6">
                   <span class="text-success">Адрес:</span>
-                  <p class="card-text">{{ contractor.address }}</p>
+                  <p class="card-text">{% if contractor.adress %}{{ contractor.address }}{% endif %}</p>
               </div>
               <div class="col-md-6">
                    <span class="text-success">Реквизиты:</span>
-                   <p class="card-text">{{ contractor.bank_requisition }}</p>
+                   <p class="card-text">{% if contractor.bank_requisition %}{{ contractor.bank_requisition }}{% endif %}</p>
               </div>
           </div>
       </div>
@@ -42,5 +42,35 @@
               </div>
           </div>
       </div>
-    </div>
+        <div class="card-footer bg-transparent border-success">
+        <br>
+            <div class="row">
+                  <div class="col-md-9">
+                    <h4>Список собственности:</h4>
+                  </div>
+                  <div class="col-md-3">
+                        <a class="btn btn-outline-secondary" href="{% url 'own_create' organization.pk contractor.pk %}">Добавить в список</a><br>
+                  </div>
+            </div><br>
+            {% for own in contractor.owns.all %}
+                <div class="row">
+                  <div class="col-md-5">
+                      <span class="text-success">Тип: </span>
+                      <span>{{ own.name }}</span>
+                  </div>
+                  <div class="col-md-5">
+                      <span class="text-success">Номер: </span>
+                      <span>{% if own.number %}{{ own.number }}{% else %}не указан{% endif %}</span>
+                  </div>
+                    <div class="col-md-2">
+                        <a class="btn btn-outline-danger" href="#">Удалить</a><br>
+                  </div>
+              </div><br>
+            {% endfor %}
+        </div>
+    </div><br>
+
+
+
+
 {% endblock %}

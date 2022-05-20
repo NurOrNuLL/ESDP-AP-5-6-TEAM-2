@@ -6,7 +6,7 @@ from .models import Nomenclature
 @admin.register(Nomenclature)
 class NomenclatureAdmin(admin.ModelAdmin):
     """Номенклатура"""
-    list_display = ('id', 'name', 'organization')
+    list_display = ('id', 'name', 'organization', 'services')
     list_display_links = ('id', 'name',)
     fieldsets = (
         (None, {
@@ -15,6 +15,9 @@ class NomenclatureAdmin(admin.ModelAdmin):
         (None, {
             "fields": ("organization", )
         }),
+        (None, {
+            "fields": ("services", )
+        })
     )
 
 

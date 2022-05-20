@@ -1,4 +1,33 @@
 from django.db import models
+from .validators import JSONSchemaValidator
+
+MY_JSON_FIELD_SCHEMA = {
+    'schema': 'http://json-schema.org/draft-07/schema#',
+    'type': 'object',
+    'properties': {
+        'Категория': {
+            'type': 'string',
+            'maxLength': 150
+        },
+        'Название': {
+            'type': 'string',
+            'maxLength': 150
+        },
+        'Примечание': {
+            'type': 'string',
+            'maxLength': 300
+        },
+        'Марка': {
+            'type': 'string',
+            'maxLength': 150
+        },
+        'Цена': {
+            'type': 'integer',
+            "minimum": 1
+        }
+    },
+    'required': ['Категория', 'Название', 'Марка', 'Цена']
+}
 
 
 class Nomenclature(models.Model):
@@ -10,6 +39,10 @@ class Nomenclature(models.Model):
     organization = models.ForeignKey(
         'organization.Organization', verbose_name="Организация",
         on_delete=models.PROTECT, null=False, blank=False
+    )
+    services = models.JSONField(
+        null=True, blank=True, default=dict,
+        validators=[JSONSchemaValidator(limit_value=MY_JSON_FIELD_SCHEMA)]
     )
 
     def __str__(self):
