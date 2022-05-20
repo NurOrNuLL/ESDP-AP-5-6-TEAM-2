@@ -5,28 +5,28 @@ MY_JSON_FIELD_SCHEMA = {
     'schema': 'http://json-schema.org/draft-07/schema#',
     'type': 'object',
     'properties': {
-        'category': {
+        'Категория': {
             'type': 'string',
             'maxLength': 150
         },
-        'name': {
+        'Название': {
             'type': 'string',
             'maxLength': 150
         },
-        'note': {
+        'Примечание': {
             'type': 'string',
             'maxLength': 300
         },
-        'mark': {
+        'Марка': {
             'type': 'string',
             'maxLength': 150
         },
-        'price': {
+        'Цена': {
             'type': 'integer',
             "minimum": 1
         }
     },
-    'required': ['category', 'name', 'note', 'mark', 'price']
+    'required': ['Категория', 'Название', 'Марка', 'Цена']
 }
 
 
