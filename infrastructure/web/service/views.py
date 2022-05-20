@@ -56,11 +56,11 @@ class ServiceListView(ListView):
         if self.form.is_valid():
             search = self.form.cleaned_data.get('search')
             category = self.form.cleaned_data.get('category')
-            price_category = self.form.cleaned_data.get('price_category')
+            mark = self.form.cleaned_data.get('mark')
             filter_values = {
                 "search": search,
                 "category": category,
-                "price_category": price_category,
+                "mark": mark,
             }
             return filter_values
 
@@ -73,22 +73,22 @@ class ServiceListView(ListView):
         context = super().get_context_data(**kwargs)
         context['form'] = self.form
         context['categories'] = CATEGORY_CHOICES
-        context['price_categories'] = MARK_CHOICES
+        context['mark'] = MARK_CHOICES
         if self.filter_values:
             context['query'] = urlencode(
                 {'search': self.filter_values['search'],
                  'category': self.filter_values['category'],
-                 'price_category': self.filter_values['price_category']})
+                 'mark': self.filter_values['mark']})
             context['search'] = self.filter_values['search']
             context['category'] = self.filter_values['category']
-            context['price_category'] = self.filter_values['price_category']
+            context['mark'] = self.filter_values['mark']
         return context
 
     def get_queryset(self):
         if self.filter_values:
             query = (Q(name__icontains=self.filter_values.get('search'))
                      & Q(category__icontains=self.filter_values.get('category'))
-                     & Q(price_category__icontains=self.filter_values.get('price_category'))) # noqa E501
+                     & Q(mark__icontains=self.filter_values.get('mark'))) # noqa E501
             queryset = self.model.objects.filter(query)
             return queryset
         return self.model.objects.all()
@@ -104,7 +104,7 @@ class ServiceExportView(TemplateView):
         type = request.POST.get('type')
         out_resource = list(map(model_to_dict, Service.objects.all()))
         data = tablib.Dataset(headers=['id', 'category', 'name',
-                                       'note', 'price_category', 'price'])
+                                       'note', 'mark', 'price'])
         for i in out_resource:
             data.append(i.values())
             self.main_data = data.export(type)
