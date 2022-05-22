@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404
 
 
 def create_contractor(data):
-    Contractor.objects.create(
+    return Contractor.objects.create(
         name=data['name'],
         address=data['address'],
         IIN_or_BIN=data['IIN_or_BIN'],
