@@ -1,7 +1,5 @@
 from django import forms
 
-from models.nomenclature.models import Nomenclature
-
 
 class ServiceImportForm(forms.Form):
     excel_file = forms.FileField(required=True)

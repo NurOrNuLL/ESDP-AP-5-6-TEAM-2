@@ -18,10 +18,12 @@ class ContractorCreate(TemplateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if form.is_valid():
-            trust_person = dict(name=request.POST['trust_person_name'], comment=request.POST['trust_person_comment'])
+            trust_person = dict(name=request.POST['trust_person_name'],
+                                comment=request.POST['trust_person_comment'])
             form.cleaned_data['trust_person'] = trust_person
             contractor = create_contractor(form.cleaned_data)
-            return redirect('contractor_detail', orgID=self.kwargs['orgID'], contrID=contractor.pk)
+            return redirect('contractor_detail',
+                            orgID=self.kwargs['orgID'], contrID=contractor.pk)
         return render(request, self.template_name, {'form': form})
 
 
