@@ -1,5 +1,5 @@
 var ownDeleteForm = document.getElementById('ownDeleteForm');
-var btnDeleteList = Object.values(document.getElementsByClassName('button_delete'));
+var btnDeleteList = Object.values(document.getElementsByClassName('buttonDelete'));
 var modalString = document.getElementById('ownModalQuestion')
 
 btnDeleteList.forEach(element => {
