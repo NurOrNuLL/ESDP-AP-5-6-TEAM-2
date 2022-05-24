@@ -1,0 +1,5 @@
+[flake8]
+ignore = E226, E302, E41, EXE002, A003, W503, **/migrations/** ALL
+max-line-length = 91
+exclude = tests/*, */migrations/*, venv/*
+max-complexity = 3
