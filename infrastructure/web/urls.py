@@ -2,7 +2,7 @@ from django.urls import path
 from .order.views import HomePageView
 from .service.views import ServiceImportView, ServiceListView, ServiceExportView
 from .nomenclature.views import NomenclatureCreate
-from .own.views import OwnCreate
+from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
 from .trade_point.views import TradePointCreate
 
@@ -27,7 +27,8 @@ contractor_urls = [
 ]
 
 own_urls = [
-    path('contractor/<int:contrID>/own/create/', OwnCreate.as_view(), name="own_create")
+    path('contractor/<int:contrID>/own/create/', OwnCreate.as_view(), name="own_create"),
+    path('contractor/<int:contrID>/own/<int:ownID>/delete/', OwnDeleteView.as_view(), name="own_delete")
 ]
 
 urlpatterns = [
@@ -39,3 +40,4 @@ urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls
+

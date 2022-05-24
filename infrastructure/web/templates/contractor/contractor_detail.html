@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Детали контрагента{% endblock %}
 
@@ -53,24 +54,27 @@
                   </div>
             </div><br>
             {% for own in contractor.owns.all %}
-                <div class="row">
-                  <div class="col-md-5">
-                      <span class="text-success">Тип: </span>
-                      <span>{{ own.name }}</span>
-                  </div>
-                  <div class="col-md-5">
-                      <span class="text-success">Номер: </span>
-                      <span>{% if own.number %}{{ own.number }}{% else %}не указан{% endif %}</span>
-                  </div>
+                <div class="row" id="own_instance_{{ own.id }}">
+                    <div class="col-md-5">
+                        <span class="text-success">Тип: </span>
+                        <span>{{ own.name }}</span>
+                    </div>
+                    <div class="col-md-5">
+                        <span class="text-success">Номер: </span>
+                        <span>{% if own.number %}{{ own.number }}{% else %}не указан{% endif %}</span>
+                    </div>
                     <div class="col-md-2">
-                        <a class="btn btn-outline-danger" href="#">Удалить</a><br>
-                  </div>
-              </div><br>
+                        <a class="btn btn-outline-danger button_delete" data-bs-toggle="modal" data-own_id="{{own.id}}" data-contr_id="{{ contractor.id }}" data-org_id="{{ organization.id }}" data-bs-target="#own_modal">Удалить</a><br>
+                    </div>
+                </div><br>
+                {% include 'own/own_delete_modal.html'%}
             {% endfor %}
         </div>
     </div><br>
 
 
-
+    {% block js_block %}
+            <script src="{% static 'js/own/own_delete.js' %}"></script>
+    {% endblock %}
 
 {% endblock %}
