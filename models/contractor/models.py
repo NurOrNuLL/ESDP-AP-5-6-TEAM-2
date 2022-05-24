@@ -46,7 +46,7 @@ class Contractor(models.Model):
         null=True, blank=True, default=dict,
         validators=[JSONSchemaValidator(limit_value=MY_JSON_FIELD_SCHEMA)]
     )
-    organisation = models.ForeignKey(
+    organization = models.ForeignKey(
         'organization.Organization', on_delete=models.PROTECT, null=False, blank=False,
         related_name='contractors', verbose_name='Организация')
 

@@ -11,12 +11,12 @@ def create_contractor(data):
         bank_requisition=data['bank_requisition'],
         phone=data['phone'],
         trust_person=data['trust_person'],
-        organisation=get_object_or_404(Organization, id=1),
+        organization=get_object_or_404(Organization, id=1),
     )
 
 
 def get_contractors(kwargs):
-    return Contractor.objects.filter(organisation__pk=kwargs['orgID'])
+    return Contractor.objects.filter(organization=kwargs['orgID'])
 
 
 def get_contractor_by_id(kwargs):
