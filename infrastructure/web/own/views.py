@@ -1,10 +1,8 @@
-from django.views.generic import TemplateView, DeleteView
+from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-
-from models.own.models import Own
 from services.own_services import create_own, delete_own
 from .forms import OwnForm
-from rest_framework.generics import GenericAPIView, get_object_or_404
+from rest_framework.generics import GenericAPIView
 from .serializer import OwnSerializer
 from rest_framework.response import Response
 import json
@@ -19,7 +17,10 @@ class OwnCreate(TemplateView):
 
         if form.is_valid():
             create_own(form.cleaned_data, contractor_id=self.kwargs.get('contrID'))
-            return redirect('contractor_detail', orgID=self.kwargs.get('orgID'), contrID=self.kwargs.get('contrID'))
+            return redirect(
+                'contractor_detail', orgID=self.kwargs.get('orgID'),
+                contrID=self.kwargs.get('contrID')
+            )
 
         return render(request, self.template_name, {'form': form})
 

@@ -3,7 +3,7 @@ from .validators import JSONSchemaValidator
 
 MY_JSON_FIELD_SCHEMA = {
     'schema': 'http://json-schema.org/draft-07/schema#',
-    'type': 'object',
+    'type': 'array',
     'properties': {
         'Категория': {
             'type': 'string',
@@ -41,7 +41,7 @@ class Nomenclature(models.Model):
         on_delete=models.PROTECT, null=False, blank=False
     )
     services = models.JSONField(
-        null=True, blank=True, default=dict,
+        null=True, blank=True, default=list,
         validators=[JSONSchemaValidator(limit_value=MY_JSON_FIELD_SCHEMA)]
     )
 
