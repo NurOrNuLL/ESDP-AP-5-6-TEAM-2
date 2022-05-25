@@ -2,6 +2,7 @@ from django import forms
 
 
 class ServiceImportForm(forms.Form):
+    nomenclature_id = forms.IntegerField(required=True)
     excel_file = forms.FileField(required=True)
 
 

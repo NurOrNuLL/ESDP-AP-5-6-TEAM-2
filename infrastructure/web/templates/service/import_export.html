@@ -7,7 +7,13 @@
             <form method="post" enctype="multipart/form-data" action="{% url 'service_import' orgID=1 %}">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <div class="form-text text-danger mb-2">{{ error }}</div>
+                    <select name="nomenclature_id" class="form-select border-secondary bg-transparent">
+                        {% for nomenclature in nomenclatures %}
+                            <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
                     <input type="file" class="form-control border-secondary bg-transparent" accept=".xlsx, .xls, .csv"
                            name="excel_file" required>
                     <div class="form-text text-dark">Файл должен быть в расширении .xslx, .xls, .csv</div>

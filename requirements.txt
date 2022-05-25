@@ -3,6 +3,8 @@ asgiref==3.5.0
 astroid==2.11.5
 attrs==21.4.0
 backports.zoneinfo==0.2.1
+certifi==2022.5.18.1
+charset-normalizer==2.0.12
 colorama==0.4.4
 commitizen==2.25.0
 decli==0.5.2
@@ -13,7 +15,9 @@ Django==4.0.4
 django-import-export==2.8.0
 djangorestframework==3.13.1
 et-xmlfile==1.1.0
+excel2json-3==0.1.6
 flake8==4.0.1
+idna==3.3
 importlib-resources==5.7.1
 isort==5.10.1
 Jinja2==3.1.2
@@ -22,9 +26,11 @@ lazy-object-proxy==1.7.1
 MarkupPy==1.14
 MarkupSafe==2.1.1
 mccabe==0.6.1
+numpy==1.22.4
 odfpy==1.4.1
 openpyxl==3.0.9
 packaging==21.3
+pandas==1.4.2
 platformdirs==2.5.2
 postgres==4.0
 prompt-toolkit==3.0.29
@@ -35,9 +41,11 @@ pyflakes==2.4.0
 pylint==2.13.9
 pyparsing==3.0.9
 pyrsistent==0.18.1
+python-dateutil==2.8.2
 pytz==2022.1
 PyYAML==6.0
 questionary==1.10.0
+requests==2.27.1
 six==1.16.0
 sqlparse==0.4.2
 tablib==3.2.1
@@ -46,6 +54,7 @@ tomli==2.0.1
 tomlkit==0.10.2
 typing_extensions==4.2.0
 tzdata==2022.1
+urllib3==1.26.9
 wcwidth==0.2.5
 wrapt==1.14.1
 xlrd==2.0.1
