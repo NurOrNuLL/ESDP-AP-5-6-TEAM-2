@@ -14,4 +14,3 @@ def create_own(data, contractor_id):
 def delete_own(own_id):
     own = get_object_or_404(Own, id=own_id)
     own.delete()
-
