@@ -2,14 +2,20 @@ from django.urls import path
 from .order.views import HomePageView
 from .service.views import ServiceImportView, ServiceListView, ServiceExportView
 from .nomenclature.views import NomenclatureCreate
-from .own.views import OwnCreate
+from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
 from .trade_point.views import TradePointCreate
+from infrastructure.web.service.views import NomenclatureItemsFilterApiView
+
 
 service_urls = [
     path('service/import/', ServiceImportView.as_view(), name="service_import"),
     path('service/list/', ServiceListView.as_view(), name="service_list"),
-    path('service/export/', ServiceExportView.as_view(), name='service_export')
+    path('service/export/', ServiceExportView.as_view(), name='service_export'),
+    path(
+        'nomenclature/<int:id>/services/filter/',
+        NomenclatureItemsFilterApiView.as_view()
+    )
 ]
 
 nomenclature_urls = [
@@ -27,7 +33,11 @@ contractor_urls = [
 ]
 
 own_urls = [
-    path('contractor/<int:contrID>/own/create/', OwnCreate.as_view(), name="own_create")
+    path('contractor/<int:contrID>/own/create/', OwnCreate.as_view(), name="own_create"),
+    path(
+        'contractor/<int:contrID>/own/<int:ownID>/delete/',
+        OwnDeleteView.as_view(), name="own_delete"
+    )
 ]
 
 urlpatterns = [
