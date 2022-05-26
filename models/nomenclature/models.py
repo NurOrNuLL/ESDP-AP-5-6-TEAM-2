@@ -1,32 +1,35 @@
 from django.db import models
 from .validators import JSONSchemaValidator
 
-MY_JSON_FIELD_SCHEMA = {
+SERVICE_JSON_FIELD_SCHEMA = {
     'schema': 'http://json-schema.org/draft-07/schema#',
     'type': 'array',
-    'properties': {
-        'Категория': {
-            'type': 'string',
-            'maxLength': 150
+    'items': {
+        'type': 'object',
+        'properties': {
+            'Название': {
+                'type': 'string',
+                'maxLength': 150
+            },
+            'Категория': {
+                'type': 'string',
+                'maxLength': 150
+            },
+            'Примечание': {
+                'type': 'string',
+                'maxLength': 300
+            },
+            'Марка': {
+                'type': 'string',
+                'maxLength': 150
+            },
+            'Цена': {
+                'type': 'integer',
+                "minimum": 1
+            }
         },
-        'Название': {
-            'type': 'string',
-            'maxLength': 150
-        },
-        'Примечание': {
-            'type': 'string',
-            'maxLength': 300
-        },
-        'Марка': {
-            'type': 'string',
-            'maxLength': 150
-        },
-        'Цена': {
-            'type': 'integer',
-            "minimum": 1
-        }
-    },
-    'required': ['Категория', 'Название', 'Марка', 'Цена']
+        'required': ['Категория', 'Название', 'Марка', 'Цена']
+    }
 }
 
 
@@ -42,7 +45,7 @@ class Nomenclature(models.Model):
     )
     services = models.JSONField(
         null=True, blank=True, default=list,
-        validators=[JSONSchemaValidator(limit_value=MY_JSON_FIELD_SCHEMA)]
+        validators=[JSONSchemaValidator(limit_value=SERVICE_JSON_FIELD_SCHEMA)]
     )
 
     def __str__(self):
@@ -51,3 +54,4 @@ class Nomenclature(models.Model):
     class Meta:
         verbose_name = "Номенклатура"
         verbose_name_plural = "Номенклатуры"
+        ordering = ('id', )
