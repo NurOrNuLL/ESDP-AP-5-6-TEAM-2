@@ -6,6 +6,6 @@ from .models import Contractor
 @admin.register(Contractor)
 class ContractorAdmin(admin.ModelAdmin):
     """Контрагент"""
-    list_display = ('id', 'name', 'address', 'IIN_or_BIN',
-                    'bank_requisition', 'phone', 'trust_person', 'organization')
+    list_display = ('id', 'name', 'address', 'IIN_or_BIN', 'IIC', 'bank_name',
+                    'BIC', 'phone', 'trust_person', 'organization')
     list_display_links = ('id', 'name',)
