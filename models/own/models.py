@@ -16,7 +16,7 @@ class Own(models.Model):
         verbose_name='Номер'
     )
 
-    def __str__(self):
+    def __str__(self: object) -> str:
         return f'{self.name}'
 
     class Meta:
