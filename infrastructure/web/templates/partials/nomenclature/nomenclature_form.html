@@ -1,0 +1,7 @@
+<form method="post">
+    {% csrf_token %}
+    <label for="nomenclature" class="form-label">Название номенклатуры</label><br>
+    <div class="form-text c-red">{{ form.errors }}</div>
+    <input type="text" class="form-control" id="nomenclature" name="name"><br>
+    <button type="submit" class="btn btn-primary">Создать</button>
+</form>
