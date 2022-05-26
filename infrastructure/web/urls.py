@@ -1,25 +1,23 @@
 from django.urls import path
 from .order.views import HomePageView
-from .service.views import ServiceImportView, ServiceListView, ServiceExportView
-from .nomenclature.views import NomenclatureCreate
+from .nomenclature.views import (
+    NomenclatureCreate, NomenclatureImportView,
+    NomenclaturesServiceListView,
+    NomenclatureItemsFilterApiView
+)
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
 from .trade_point.views import TradePointCreate
-from infrastructure.web.service.views import NomenclatureItemsFilterApiView
 
 
-service_urls = [
-    path('service/import/', ServiceImportView.as_view(), name="service_import"),
-    path('service/list/', ServiceListView.as_view(), name="service_list"),
-    path('service/export/', ServiceExportView.as_view(), name='service_export'),
+nomenclature_urls = [
+    path('nomenclature/import/', NomenclatureImportView.as_view(), name="nomenclature_import"),
+    path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create"),
     path(
         'nomenclature/<int:id>/services/filter/',
         NomenclatureItemsFilterApiView.as_view()
-    )
-]
-
-nomenclature_urls = [
-    path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create")
+    ),
+    path('nomenclature/list/', NomenclaturesServiceListView.as_view(), name="nomenclature_list"),
 ]
 
 trade_point_urls = [
@@ -44,7 +42,6 @@ urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
 
-urlpatterns += service_urls
 urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
 urlpatterns += contractor_urls

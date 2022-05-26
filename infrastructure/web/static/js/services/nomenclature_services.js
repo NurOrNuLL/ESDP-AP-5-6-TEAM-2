@@ -1,4 +1,5 @@
 let select = document.getElementById('nomenclature');
+let beforeTableBlock = document.getElementById('beforeTable');
 
 function render(nomenclature, search, category, mark, page, limit) {
     $.ajax({
@@ -6,25 +7,44 @@ function render(nomenclature, search, category, mark, page, limit) {
         method: 'get',
         success: (data) => {
             body.innerHTML = '';
-            data.services.forEach(function (item, i, arr) {
-                body.innerHTML += '<tr><td>' + item.Категория + '</td><td>'
-                    + item.Название + '</td><td>' + item.Примечание + '</td><td>'
-                    + item.Марка + '</td><td>' + item.Цена + '</td></tr>'
-            })
+            if (data.services.length != 0) {
+                beforeTableBlock.innerHTML = '';
+                data.services.forEach(function (item, i, arr) {
+                    if (item.Примечание) {
+                        body.innerHTML += '<tr><td>' + item.Название + '</td><td>'
+                        + item.Категория + '</td><td>' + item.Примечание + '</td><td>'
+                        + item.Марка + '</td><td>' + item.Цена + '</td></tr>'
+                    }
+                    else {
+                        body.innerHTML += '<tr><td>' + item.Название + '</td><td>'
+                        + item.Категория + '</td><td>' + '-' + '</td><td>'
+                        + item.Марка + '</td><td>' + item.Цена + '</td></tr>'
+                    }
+                })
 
-            if (data.page_number === 1) {
-                next.classList.add('disabled')
-                back.classList.add('disabled')
-            } else if (parseInt(page) === data.page_number) {
-                next.classList.add('disabled')
-                back.classList.remove('disabled')
-            } else if (parseInt(page) === 1) {
-                back.classList.add('disabled')
-                next.classList.remove('disabled')
-            } else {
-                next.classList.remove('disabled')
-                back.classList.remove('disabled')
+                if (data.page_number === 1) {
+                    next.classList.add('disabled')
+                    back.classList.add('disabled')
+                } else if (parseInt(page) === data.page_number) {
+                    next.classList.add('disabled')
+                    back.classList.remove('disabled')
+                } else if (parseInt(page) === 1) {
+                    back.classList.add('disabled')
+                    next.classList.remove('disabled')
+                } else {
+                    next.classList.remove('disabled')
+                    back.classList.remove('disabled')
+                }
             }
+            else {
+                beforeTableBlock.innerHTML = '';
+                beforeTableBlock.innerHTML += '<h4 class="text-center">Ничего не найдено!</h4>';
+            }
+        },
+        error: () => {
+            body.innerHTML = '';
+            beforeTableBlock.innerHTML = '';
+            beforeTableBlock.innerHTML += '<h4 class="text-center">Ничего не найдено!</h4>';
         }
     })
 }
