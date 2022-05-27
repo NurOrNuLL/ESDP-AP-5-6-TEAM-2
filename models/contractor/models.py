@@ -24,19 +24,27 @@ class Contractor(models.Model):
     """Контрагент"""
     name = models.CharField(
         max_length=150, null=False, blank=False,
-        verbose_name='Наименование'
+        unique=True, verbose_name='Наименование'
     )
     address = models.CharField(
         max_length=250, null=True, blank=True,
         verbose_name='Адрес'
     )
     IIN_or_BIN = models.CharField(
-        null=False, blank=False, max_length=12,
+        null=False, blank=False, max_length=12, unique=True,
         verbose_name='ИИН/БИН', validators=[RegexValidator(r'^\d{12,12}$')]
     )
-    bank_requisition = models.CharField(
-        max_length=250, null=True, blank=True,
-        verbose_name='Реквизиты банковского счёта'
+    IIC = models.CharField(
+        max_length=100, null=True, blank=True,
+        verbose_name='ИИК'
+    )
+    bank_name = models.CharField(
+        max_length=150, null=True, blank=True,
+        verbose_name='Наименование банка'
+    )
+    BIC = models.CharField(
+        max_length=100, null=True, blank=True,
+        verbose_name='БИК'
     )
     phone = models.CharField(
         max_length=100, null=False, blank=False,
