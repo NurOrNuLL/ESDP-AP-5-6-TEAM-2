@@ -1,3 +1,5 @@
+import tablib
+from django.http import HttpResponse
 from django.views.generic import TemplateView
 from .forms import NomenclatureForm, NomenclatureImportForm
 from django.shortcuts import render, redirect
@@ -34,7 +36,8 @@ class NomenclatureImportView(TemplateView):
             try:
                 jsonschema.validate(json.loads(json_data), SERVICE_JSON_FIELD_SCHEMA)
             except jsonschema.exceptions.ValidationError:
-                context = self.get_context_data(error='Неверный excel, проверте наличие полей: "Название", "Категория", "Примечание", "Марка", "Цена"')
+                context = self.get_context_data(
+                    error='Неверный excel, проверте наличие полей: "Название", "Категория", "Примечание", "Марка", "Цена"')
 
                 return render(self.request, template_name=self.template_name, context=context)
             else:
@@ -43,7 +46,6 @@ class NomenclatureImportView(TemplateView):
                 nomenclature.save()
 
                 return redirect('nomenclature_list', orgID=self.kwargs['orgID'])
-
 
 
 class NomenclaturesServiceListView(TemplateView):
@@ -109,6 +111,7 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
             "page_number": page_number
         }
 
+
 class NomenclatureCreate(TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
     form_class = NomenclatureForm
@@ -121,3 +124,31 @@ class NomenclatureCreate(TemplateView):
             return redirect('home', orgID=1)
 
         return render(request, self.template_name, {'form': form})
+
+
+class NomenclatureExportView(TemplateView):
+    template_name = 'nomenclature/list.html'
+    main_data = ''
+
+    def get(self, request, *args, **kwargs):
+        nomenclature_id = request.GET.get('nomenclature_id')
+        extension = request.GET.get('extension')
+        nomenclatures = Nomenclature.objects.all()
+        headers = []
+        for nomenclature in list(nomenclatures):
+            if int(nomenclature_id) == nomenclature.id:
+                if nomenclature.services:
+                    headers = [list(i.keys()) for i in nomenclature.services]
+                    data = tablib.Dataset(headers=headers[0])
+                    for i in nomenclature.services:
+                        data.append(i.values())
+                        self.main_data = data.export(extension)
+                    response = HttpResponse(self.main_data)
+                    response['Content-Disposition'] = f'attachment; filename="price.{extension}"'
+                    return response
+                else:
+                    data = tablib.Dataset()
+                    self.main_data = data.export(extension)
+                    response = HttpResponse(self.main_data)
+                    response['Content-Disposition'] = f'attachment; filename="price.{extension}"'
+                    return response
