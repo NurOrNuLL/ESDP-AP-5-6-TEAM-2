@@ -7,7 +7,7 @@ from .nomenclature.views import (
 )
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
-from .trade_point.views import TradePointCreate
+from .trade_point.views import TradePointCreate, TradePointList
 
 
 nomenclature_urls = [
@@ -21,7 +21,8 @@ nomenclature_urls = [
 ]
 
 trade_point_urls = [
-    path('trade_point/create/', TradePointCreate.as_view(), name="trade_point_create")
+    path('trade_point/create/', TradePointCreate.as_view(), name="trade_point_create"),
+    path('trade_point/list/', TradePointList.as_view(), name='trade_point_list')
 ]
 
 contractor_urls = [

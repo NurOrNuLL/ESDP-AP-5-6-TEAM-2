@@ -2,19 +2,16 @@ from django.views.generic import TemplateView
 from .forms import NomenclatureForm, NomenclatureImportForm
 from django.shortcuts import render, redirect
 from services.nomenclature_services import NomenclatureService
-import json
 from models.nomenclature.models import Nomenclature, SERVICE_JSON_FIELD_SCHEMA
-import pandas
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.paginator import Paginator
 from .serializers import NomenclatureFilterSerializer
 from models.nomenclature.category_choices import CATEGORY_CHOICES, MARK_CHOICES
-import jsonschema
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
-from typing import Dict, List, Literal
+from typing import List
 
 
 class NomenclatureImportView(TemplateView):
@@ -41,7 +38,6 @@ class NomenclatureImportView(TemplateView):
                 NomenclatureService.import_services(data, form.cleaned_data['nomenclature_id'])
 
                 return redirect('nomenclature_list', orgID=self.kwargs['orgID'])
-
 
 
 class NomenclaturesServiceListView(TemplateView):
@@ -90,6 +86,7 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
             "services": paginated_data,
             "page_number": page_number
         }
+
 
 class NomenclatureCreate(TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
