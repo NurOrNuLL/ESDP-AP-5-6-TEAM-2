@@ -28,3 +28,10 @@ body {
 .sidebar-btn:focus {
     box-shadow: 0 0 0 0 black;
 }
+.sidebar_css {
+    position: fixed;
+    height: 100%;
+}
+.container_css {
+    margin-left: 320px;
+}
