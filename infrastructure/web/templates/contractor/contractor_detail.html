@@ -10,11 +10,11 @@
       <div class="card-header bg-transparent">
           <div class="row">
               <div class="col-md-6">
-                  <span class="text">ИИН/БИН: </span>
+                  <span class="text" style="font-weight: bold">ИИН/БИН: </span>
                   <span>{{ contractor.IIN_or_BIN }}</span>
               </div>
               <div class="col-md-6">
-                  <span class="text">Телефон: </span>
+                  <span class="text" style="font-weight: bold">Телефон: </span>
                   <span>{{ contractor.phone }}</span>
               </div>
           </div>
@@ -22,23 +22,30 @@
       <div class="card-body">
           <div class="row">
               <div class="col-md-6">
-                  <span class="text">Адрес:</span>
+                  <span class="text" style="font-weight: bold">Адрес:</span>
                   <p class="card-text">{% if contractor.address %}{{ contractor.address }}{% endif %}</p>
               </div>
               <div class="col-md-6">
-                   <span class="text">Реквизиты:</span>
-                   <p class="card-text">{% if contractor.bank_requisition %}{{ contractor.bank_requisition }}{% endif %}</p>
+                <span class="text" style="font-weight: bold">Банковские детали:</span><br>
+                {% if contractor.IIC or contractor.bank_name or contractor.BIC %}
+                   <span class="text">ИИК:</span>
+                   <span class="card-text">{{ contractor.IIC }}</span><br>
+                   <span class="text">Банк:</span>
+                   <span class="card-text">{{ contractor.bank_name }}</span><br>
+                   <span class="text">БИК:</span>
+                   <span class="card-text">{{ contractor.BIC }}</span>
+                {% endif %}
               </div>
           </div>
       </div>
       <div class="card-footer bg-transparent">
           <div class="row">
               <div class="col-md-6">
-                  <span class="text">Доверенное лицо: </span>
+                  <span class="text" style="font-weight: bold">Доверенное лицо: </span>
                   <span>{{ contractor.trust_person.name }}</span>
               </div>
               <div class="col-md-6">
-                  <span class="text">Комментарий: </span>
+                  <span class="text" style="font-weight: bold">Комментарий: </span>
                   <span>{{ contractor.trust_person.comment }}</span>
               </div>
           </div>

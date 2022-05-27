@@ -15,11 +15,25 @@
         <input type="number" class="form-control" id="contractor_IIN_or_BIN" name="IIN_or_BIN" value="{{ form.IIN_or_BIN.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.IIN_or_BIN }}</div>
     </div>
-    <div>
-        <label for="contractor_bank_requisition" class="form-label">Реквизиты</label><br>
-        <input type="text" class="form-control" id="contractor_bank_requisition" name="bank_requisition" value="{{ form.bank_requisition.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.bank_requisition }}</div>
+
+    <div id="contractor_banking_details">
+        <div>
+            <label for="contractor_bank_requisition" class="form-label">ИИК</label><br>
+            <input type="text" class="form-control" id="contractor_IIC" name="IIC" value="{{ form.IIC.value|default:'' }}"><br>
+            <div class="form-text c-red">{{ form.errors.IIC }}</div>
+        </div>
+        <div>
+            <label for="contractor_bank_requisition" class="form-label">Наименование банка</label><br>
+            <input type="text" class="form-control" id="contractor_bank_name" name="bank_name" value="{{ form.bank_name.value|default:'' }}"><br>
+            <div class="form-text c-red">{{ form.errors.bank_name }}</div>
+        </div>
+        <div>
+            <label for="contractor_bank_requisition" class="form-label">БИК</label><br>
+            <input type="text" class="form-control" id="contractor_BIC" name="BIC" value="{{ form.BIC.value|default:'' }}"><br>
+            <div class="form-text c-red">{{ form.errors.BIC }}</div>
+        </div>
     </div>
+
     <div>
         <label for="contractor_phone" class="form-label">Контакты</label><br>
         <input type="number" class="form-control" id="contractor_phone" name="phone" value="{{ form.phone.value|default:'' }}"><br>
