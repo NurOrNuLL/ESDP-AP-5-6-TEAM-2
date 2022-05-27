@@ -13,12 +13,12 @@ function render(nomenclature, search, category, mark, page, limit) {
                     if (item.Примечание) {
                         body.innerHTML += '<tr><td>' + item.Название + '</td><td>'
                         + item.Категория + '</td><td>' + item.Примечание + '</td><td>'
-                        + item.Марка + '</td><td>' + item.Цена + '</td></tr>'
+                        + item.Марка + '</td><td><b>' + item.Цена + '</b></td></tr>'
                     }
                     else {
                         body.innerHTML += '<tr><td>' + item.Название + '</td><td>'
                         + item.Категория + '</td><td>' + '-' + '</td><td>'
-                        + item.Марка + '</td><td>' + item.Цена + '</td></tr>'
+                        + item.Марка + '</td><td><b>' + item.Цена + '</b></td></tr>'
                     }
                 })
 
