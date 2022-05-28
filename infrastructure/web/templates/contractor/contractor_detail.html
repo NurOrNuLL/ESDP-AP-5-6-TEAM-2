@@ -5,7 +5,10 @@
 
 {% block content %}
     <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk %}">К списку</a><br><br>
-    <h3 class="mb-4">{{ contractor.name }} </h3>
+    <div class="d-flex mb-4">
+        <h3>{{ contractor.name }} </h3>
+        <a class="ms-2 edit-link" href="{% url 'contractor_update' organization.pk contractor.pk %}"><img width=35 src="{% static 'pics/edit.png' %}"></a><br>
+    </div>
     <div class="card mb-3" >
       <div class="card-header bg-transparent">
           <div class="row">
