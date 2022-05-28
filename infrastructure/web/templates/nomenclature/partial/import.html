@@ -3,7 +3,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="importModalLabel">Импортировать услуги</h4>
+                    <h4 class="modal-title" id="importModalLabel">Загрузка excel файла</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" enctype="multipart/form-data" action="{% url 'nomenclature_import' orgID=1 %}">
@@ -20,9 +20,9 @@
                                 </div>
                                 <div class="mb-3">
                                     <input type="file" class="form-control border-secondary bg-transparent"
-                                           accept=".xlsx, .xls, .csv"
+                                           accept=".xlsx, .xls"
                                            name="excel_file" required>
-                                    <div class="form-text text-dark">Файл должен быть в расширении .xslx, .xls, .csv
+                                    <div class="form-text text-dark">Файл должен быть в расширении .xslx или .xls
                                     </div>
                                 </div>
                             </div>
