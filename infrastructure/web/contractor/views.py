@@ -1,12 +1,11 @@
-import json
 from django.views.generic import TemplateView
-from models.contractor.models import Contractor
 from .forms import ContractorForm
 from django.shortcuts import render, redirect
 from services.contractor_services import ContractorService
 from services.organization_services import OrganizationService
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
+
 
 class ContractorCreate(TemplateView):
     template_name = 'contractor/contractor_create.html'
@@ -17,8 +16,14 @@ class ContractorCreate(TemplateView):
         context['organization'] = OrganizationService.get_organization_by_id(kwargs)
         return context
 
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        context = self.get_context_data(**kwargs)
+        context['trust_person'] = dict()
+
+        return render(request=request, template_name=self.template_name, context=context)
+
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        form = self.form_class(request.POST)
+        form = self.form_class(data=request.POST)
         if form.is_valid():
             trust_person = dict(name=request.POST['trust_person_name'],
                                 comment=request.POST['trust_person_comment'])
@@ -26,7 +31,12 @@ class ContractorCreate(TemplateView):
             contractor = ContractorService.create_contractor(form.cleaned_data)
             return redirect('contractor_detail',
                             orgID=self.kwargs['orgID'], contrID=contractor.pk)
-        return render(request, self.template_name, {'form': form})
+        else:
+            context = self.get_context_data(**kwargs)
+            context['form'] = form
+            context['trust_person'] = dict(name=request.POST['trust_person_name'],
+                                           comment=request.POST['trust_person_comment'])
+            return render(request, template_name=self.template_name, context=context)
 
 
 class ContractorList(TemplateView):
