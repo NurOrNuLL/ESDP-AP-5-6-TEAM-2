@@ -30,7 +30,12 @@ class NomenclatureService:
 
     @staticmethod
     def parse_excel_to_json(file: File) -> JSON:
-        data = pandas.read_excel(file)
+        file_format = str(file).strip().split('.')[1]
+
+        if file_format == 'xlsx':
+            data = pandas.read_excel(file)
+        elif file_format == 'xls':
+            data = pandas.read_excel(file)
 
         return data.to_json(orient='records').replace('null', '""')
 
