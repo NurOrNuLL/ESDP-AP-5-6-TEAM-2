@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'infrastructure',
     'infrastructure.accounts',
     'models.contractor',
     'models.nomenclature',
@@ -75,6 +76,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'custom_tags':'infrastructure.web.template_tags.custom_tags'
+            }
         },
     },
 ]
