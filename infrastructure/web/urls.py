@@ -3,17 +3,18 @@ from .order.views import HomePageView
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
     NomenclaturesServiceListView,
-    NomenclatureItemsFilterApiView
+    NomenclatureItemsFilterApiView,
+    NomenclatureExportView,
 )
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import (
     ContractorCreate, ContractorList,
     ContractorDetail, ContractorUpdate
 )
-from .trade_point.views import TradePointCreate
-
+from .trade_point.views import TradePointCreate, TradePointList
 
 nomenclature_urls = [
+    path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
     path('nomenclature/import/', NomenclatureImportView.as_view(), name="nomenclature_import"),
     path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create"),
     path(
@@ -24,7 +25,8 @@ nomenclature_urls = [
 ]
 
 trade_point_urls = [
-    path('trade_point/create/', TradePointCreate.as_view(), name="trade_point_create")
+    path('trade_point/create/', TradePointCreate.as_view(), name="trade_point_create"),
+    path('trade_point/list/', TradePointList.as_view(), name='trade_point_list')
 ]
 
 contractor_urls = [

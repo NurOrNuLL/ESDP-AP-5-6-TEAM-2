@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2 class="mb-4">Список торговых точек</h2>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th class="col-3">#</th>
+          <th class="col-3">Наименование</th>
+          <th class="col-3">Адрес</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for trade_point in trade_points %}
+        <tr>
+          <th scope="row">{{ trade_point.id }}</th>
+          <td>{{ trade_point.name }}</td>
+          <td>{{ trade_point.address|default:'-' }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+{% endblock content %}
