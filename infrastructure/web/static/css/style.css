@@ -35,3 +35,7 @@ body {
 .container_css {
     margin-left: 320px;
 }
+
+.edit-link:hover {
+    filter: opacity(0.7);
+}
