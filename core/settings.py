@@ -65,6 +65,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'core.urls'
 
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -78,7 +80,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries': {
-                'custom_tags':'infrastructure.web.template_tags.custom_tags'
+                'custom_tags': 'infrastructure.web.template_tags.custom_tags'
             }
         },
     },

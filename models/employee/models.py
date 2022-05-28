@@ -44,8 +44,12 @@ class Employee(models.Model):
         verbose_name='ИИН', validators=[RegexValidator(r'^\d{12,12}$')]
     )
     pdf = models.FileField(upload_to='pdf')
-    address = models.CharField(max_length=50, null=False, blank=False,
-        verbose_name='Адрес')
+    address = models.CharField(
+        max_length=50,
+        null=False,
+        blank=False,
+        verbose_name='Адрес'
+    )
     phone = models.CharField(
         max_length=100, null=False, blank=False,
         verbose_name='Телефон'
