@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'models.nomenclature',
     'models.organization',
     'models.trade_point',
+    'models.employee',
     'models.own',
     'rest_framework',
     'corsheaders',
