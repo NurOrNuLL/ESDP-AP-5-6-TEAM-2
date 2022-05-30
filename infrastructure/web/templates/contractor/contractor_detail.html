@@ -33,9 +33,9 @@
                     <span class="text" style="font-weight: bold">Банковские детали:</span><br>
                     {% if contractor.IIC or contractor.bank_name or contractor.BIC %}
                         <span class="text"><b>ИИК:</b></span>
-                        <span style="padding-left: 8px" class="card-text">{{ contractor.IIC }}</span><br>
+                        <span style="padding-left: 8px" class="card-text">{% if contractor.IIC %}{{ contractor.IIC }}{% endif %}</span><br>
                         <span class="text"><b>Банк:</b></span>
-                        <span style="padding-left: 5px" class="card-text">{{ contractor.bank_name }}</span><br>
+                        <span style="padding-left: 5px" class="card-text">{% if contractor.bank_name %}{{ contractor.bank_name }}{% endif %}</span><br>
                         <span class="text"><b>БИК:</b></span>
                         <span style="padding-left: 9px" class="card-text">{{ contractor.BIC }}</span>
                     {% endif %}
@@ -71,6 +71,7 @@
                 {% for own in contractor.owns.all %}
                     <tr id="own_instance_{{ own.id }}">
                         <th scope="col">{{ own.name }}</th>
+                        <th>{{ own.number }}</th>
                         <th class="d-flex justify-content-end" scope="col"><a
                                 class="btn btn-outline-danger buttonDelete" data-bs-toggle="modal"
                                 data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"
