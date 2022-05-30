@@ -10,10 +10,11 @@ from .nomenclature.views import (
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import (
     ContractorCreate, ContractorList,
-    ContractorDetail, ContractorUpdate
+    ContractorDetail, ContractorUpdate, ContractorFilterApiView
 )
 from .trade_point.views import TradePointCreate, TradePointList
 from .employee.views import EmployeeCreate
+
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
@@ -36,6 +37,7 @@ contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
     path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update")
 ]
 

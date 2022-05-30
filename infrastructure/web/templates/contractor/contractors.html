@@ -1,28 +1,34 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Список контрагентов{% endblock %}
 
 {% block content %}
-    <h2 class="mb-4">Список контрагентов</h2>
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <th scope="col">#</th>
-          <th scope="col">Наименование</th>
-          <th scope="col">ИИН/БИН</th>
-          <th scope="col">Телефон</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for contractor in contractors %}
-        <tr>
-          <th scope="row">{{ contractor.id }}</th>
-          <td>{{ contractor.name }}</td>
-          <td>{{ contractor.IIN_or_BIN }}</td>
-          <td>{{ contractor.phone }}</td>
-          <td><a class="btn btn-outline-secondary" href="{% url 'contractor_detail' organization.pk contractor.pk %}">Детали</a></td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
+  <div class="d-flex p-2">
+    <input id="contractorSearch" class="form-control border-secondary bg-transparent me-2" type="search"
+           placeholder="Поиск"
+           aria-label="Search">
+    <div class="d-flex">
+      <button class="btn btn-secondary" id="back">&#8592;</button>
+        <input type="number" class="form-control bg-transparent border-secondary" style="width: 50px" id="page" value="1" disabled>
+      <button class="btn btn-secondary" id="next">&#8594;</button>
+    </div>
+  </div>
+  <h2 class="mb-4">Список контрагентов</h2>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Наименование</th>
+        <th scope="col">ИИН/БИН</th>
+        <th scope="col">Телефон</th>
+      </tr>
+    </thead>
+    <tbody id="body"></tbody>
+  </table>
+<div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
+
 {% endblock content %}
+{% block js_block %}
+    <script src="{% static 'js/contractor/contractor_view.js' %}"></script>
+{% endblock %}
