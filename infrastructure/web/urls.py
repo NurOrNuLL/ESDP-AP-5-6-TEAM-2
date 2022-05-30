@@ -12,6 +12,7 @@ from .contractor.views import (
     ContractorDetail, ContractorUpdate
 )
 from .trade_point.views import TradePointCreate, TradePointList
+from .employee.views import EmployeeCreate
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
@@ -44,6 +45,10 @@ own_urls = [
     )
 ]
 
+employee_urls = [
+    path('employee/create/', EmployeeCreate.as_view(), name="employee_create")
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
@@ -52,3 +57,4 @@ urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls
+urlpatterns += employee_urls
