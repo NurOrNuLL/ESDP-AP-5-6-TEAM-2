@@ -3,7 +3,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="importModalLabel">Экспорт услуги</h4>
+                    <h4 class="modal-title" id="importModalLabel">Скачаивание excel файла</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="get" enctype="multipart/form-data" action="{% url 'nomenclature_export' orgID=1 %}">
@@ -22,14 +22,13 @@
                                     <select class="form-select" aria-label="Default select example" name="extension">
                                         <option value="xlsx">xlsx</option>
                                         <option value="xls">xls</option>
-                                        <option value="csv">csv</option>
                                     </select>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="submit">Загрузить</button>
+                        <button class="btn btn-primary" type="submit">Скачать</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
                     </div>
                 </form>

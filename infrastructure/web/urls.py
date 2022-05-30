@@ -8,8 +8,12 @@ from .nomenclature.views import (
     NomenclatureFormForImpost
 )
 from .own.views import OwnDeleteView, OwnCreate
-from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
+from .contractor.views import (
+    ContractorCreate, ContractorList,
+    ContractorDetail, ContractorUpdate
+)
 from .trade_point.views import TradePointCreate, TradePointList
+from .employee.views import EmployeeCreate
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
@@ -31,7 +35,8 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail")
+    path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update")
 ]
 
 own_urls = [
@@ -42,6 +47,10 @@ own_urls = [
     )
 ]
 
+employee_urls = [
+    path('employee/create/', EmployeeCreate.as_view(), name="employee_create")
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
@@ -50,3 +59,4 @@ urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls
+urlpatterns += employee_urls

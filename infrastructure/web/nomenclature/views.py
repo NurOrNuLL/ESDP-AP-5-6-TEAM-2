@@ -29,10 +29,11 @@ class NomenclatureImportView(TemplateView):
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
-            data = NomenclatureService.parse_excel_to_json(form.cleaned_data['excel_file'])
+            file = form.cleaned_data['excel_file']
+            data = NomenclatureService.parse_excel_to_json(file)
 
             if not NomenclatureService.validate_json(data, SERVICE_JSON_FIELD_SCHEMA):
-                context = self.get_context_data(error='Некорректный excel')
+                context = self.get_context_data(error='Некорректный excel, проверте его содержимое и расширение')
 
                 return render(self.request, template_name=self.template_name, context=context)
             else:

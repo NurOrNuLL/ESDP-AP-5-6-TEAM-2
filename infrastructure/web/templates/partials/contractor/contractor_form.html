@@ -43,11 +43,11 @@
         <label for="contractor_trust_person" class="form-label">Доверенное лицо</label><br>
         <div class="col-md-6">
             <label for="contractor_trust_person_name" class="form-label">ФИО</label><br>
-            <input type="text" class="form-control" id="contractor_trust_person_name" name='trust_person_name' value="{{ form.trust_person.name.value|default:'' }}"><br>
+            <input type="text" class="form-control" id="contractor_trust_person_name" name='trust_person_name' value="{{ trust_person|get_item:'name'|default:'' }}"><br>
         </div>
         <div class="col-md-6">
             <label for="contractor_trust_person_comment" class="form-label">Комментарий</label><br>
-            <input type="text" class="form-control" id="contractor_trust_person_comment" name='trust_person_comment' value="{{ form.trust_person.comment.value|default:'' }}"><br>
+            <input type="text" class="form-control" id="contractor_trust_person_comment" name='trust_person_comment' value="{{ trust_person|get_item:'comment'|default:'' }}"><br>
         </div>
         <div class="form-text c-red">{{ form.errors.trust_person }}</div>
     </div>

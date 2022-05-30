@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -37,15 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'infrastructure',
     'infrastructure.accounts',
     'models.contractor',
     'models.nomenclature',
     'models.organization',
     'models.trade_point',
+    'models.employee',
     'models.own',
     'rest_framework',
     'corsheaders',
     "celery_progress",
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -63,6 +66,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'core.urls'
 
+AUTH_USER_MODEL = 'accounts.CustomUser'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -75,6 +80,9 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            'libraries': {
+                'custom_tags': 'infrastructure.web.template_tags.custom_tags'
+            }
         },
     },
 ]
@@ -154,8 +162,23 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / "infrastructure/web/static"]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'infrastructure/web/static'),
+]
+AWS_ACCESS_KEY_ID = 'AKIA2M2OPPDRB7G7CJ7A'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'test.aspa'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+AWS_DEFAULT_ACL = 'public-read'
+AWS_LOCATION = 'static'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
+
+DEFAULT_FILE_STORAGE = 'core.storage_backends.MediaStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
