@@ -45,7 +45,6 @@ class NomenclatureImportView(TemplateView):
                 return redirect('nomenclature_list', orgID=self.kwargs['orgID'])
 
 
-
 class NomenclaturesServiceListView(TemplateView):
     template_name = 'nomenclature/list.html'
 

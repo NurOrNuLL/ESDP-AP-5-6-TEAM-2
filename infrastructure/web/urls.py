@@ -6,7 +6,7 @@ from .nomenclature.views import (
     NomenclatureItemsFilterApiView
 )
 from .own.views import OwnDeleteView, OwnCreate
-from .contractor.views import ContractorCreate, ContractorList, ContractorDetail
+from .contractor.views import ContractorCreate, ContractorList, ContractorDetail, ContractorFilterApiView
 from .trade_point.views import TradePointCreate
 
 
@@ -27,7 +27,8 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail")
+    path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/list/filter/', ContractorFilterApiView.as_view())
 ]
 
 own_urls = [

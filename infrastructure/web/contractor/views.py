@@ -1,9 +1,14 @@
 from django.views.generic import TemplateView
+from rest_framework import filters
+from models.contractor.models import Contractor
 from .forms import ContractorForm
 from django.shortcuts import render, redirect
 from services.contractor_services import create_contractor, \
     get_contractors, get_contractor_by_id
 from services.organization_services import get_organization_by_id
+from .serializers import ContractorSerializer
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
 
 
 class ContractorCreate(TemplateView):
@@ -35,6 +40,18 @@ class ContractorList(TemplateView):
         context['contractors'] = get_contractors(kwargs)
         context['organization'] = get_organization_by_id(kwargs)
         return context
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 100
+
+
+class ContractorFilterApiView(generics.ListAPIView):
+    serializer_class = ContractorSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'IIN_or_BIN', 'phone']
+    pagination_class = MyPagination
+    queryset = Contractor.objects.all()
 
 
 class ContractorDetail(TemplateView):
