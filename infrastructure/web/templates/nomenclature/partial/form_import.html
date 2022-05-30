@@ -1,0 +1,31 @@
+{% block content %}
+    <div class="modal fade" id="formimportModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="importModalLabel">Форма заполнения exel</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="get" enctype="multipart/form-data" action="{% url 'nomenclature_form_import' orgID=1 %}">
+                    <div class="modal-body">
+                        <div class="card" style="background-color: transparent !important; border: 0;">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <h6>Выберите расширение</h6>
+                                    <select class="form-select" aria-label="Default select example" name="extension">
+                                        <option value="xlsx">xlsx</option>
+                                        <option value="xls">xls</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Загрузить</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

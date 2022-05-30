@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
+{% load custom_tags %}
+
 
 {% block title %}Добавить контрагента{% endblock %}
 
@@ -6,7 +9,21 @@
     <div class="card w-50" style="background-color: transparent !important; border: 0;">
         <div class="card-body">
             <h2 class="mb-4">Добавить контрагента</h2>
+
+            <div class="row">
+                <div class="col-md-5">
+                    <button type="submit" id="individual_form" class="btn btn-outline-secondary">Физ. лицо</button>
+                </div>
+                <div class="col-md-5">
+                    <button type="submit" id="entity_form" class="btn btn-outline-secondary">Юр. лицо</button>
+                </div>
+            </div>
+
+            <br><br>
                 {% include 'partials/contractor/contractor_form.html' with button_text="Создать" %}
         </div>
     </div>
 {% endblock content %}
+{% block js_block %}
+    <script src="{% static 'js/contractor/contractor_create.js' %}"></script>
+{% endblock %}
