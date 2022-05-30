@@ -26,7 +26,9 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = str(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS = []
-if not DEBUG:
+if DEBUG:
+    ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
+else:
     ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
 
 # Application definition
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'models.trade_point',
     'models.employee',
     'models.own',
+    'models.payment_method',
     'rest_framework',
     'corsheaders',
     'django_filters',
