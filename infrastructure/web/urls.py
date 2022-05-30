@@ -5,6 +5,7 @@ from .nomenclature.views import (
     NomenclaturesServiceListView,
     NomenclatureItemsFilterApiView,
     NomenclatureExportView,
+    NomenclatureFormForImpost
 )
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import (
@@ -12,9 +13,11 @@ from .contractor.views import (
     ContractorDetail, ContractorUpdate
 )
 from .trade_point.views import TradePointCreate, TradePointList
+from .employee.views import EmployeeCreate
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
+    path('nomenclature/form_import/', NomenclatureFormForImpost.as_view(), name='nomenclature_form_import'),
     path('nomenclature/import/', NomenclatureImportView.as_view(), name="nomenclature_import"),
     path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create"),
     path(
@@ -44,6 +47,10 @@ own_urls = [
     )
 ]
 
+employee_urls = [
+    path('employee/create/', EmployeeCreate.as_view(), name="employee_create")
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
@@ -52,3 +59,4 @@ urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls
+urlpatterns += employee_urls

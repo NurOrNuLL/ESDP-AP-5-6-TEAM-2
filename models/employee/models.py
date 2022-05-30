@@ -7,17 +7,14 @@ from .validators import JSONSchemaValidator
 
 TRADEPOINTS_JSON_FIELD_SCHEMA = {
     'schema': 'http://json-schema.org/draft-07/schema#',
-    'type': 'array',
-    'items': {
-        'type': 'object',
-        'properties': {
-            'id': {
-                "type": "number",
-                "minimum": 0
-            },
+    'type': 'object',
+    'properties': {
+        'id': {
+            "type": "number",
+            "minimum": 1
         },
-        'required': ['id', ]
-    }
+    },
+    'required': ['id', ]
 }
 
 

@@ -6,6 +6,8 @@ async-timeout==4.0.2
 attrs==21.4.0
 backports.zoneinfo==0.2.1
 billiard==3.6.4.0
+boto3==1.23.9
+botocore==1.26.10
 celery==5.2.6
 celery-progress==0.1.2
 certifi==2022.5.18.1
@@ -26,6 +28,7 @@ Django==4.0.4
 django-cors-headers==3.12.0
 django-filter==21.1
 django-import-export==2.8.0
+django-storages==1.12.3
 djangorestframework==3.13.1
 et-xmlfile==1.1.0
 excel2json-3==0.1.6
@@ -39,6 +42,7 @@ idna==3.3
 importlib-resources==5.7.1
 isort==5.10.1
 Jinja2==3.1.2
+jmespath==1.0.0
 jsonschema==4.5.1
 kombu==5.2.4
 kwargs==1.0.1
@@ -69,6 +73,7 @@ PyYAML==6.0
 questionary==1.10.0
 redis==4.3.1
 requests==2.27.1
+s3transfer==0.5.2
 self==2020.12.3
 serializers==0.2.4
 six==1.16.0
