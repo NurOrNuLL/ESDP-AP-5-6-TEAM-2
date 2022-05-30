@@ -14,7 +14,9 @@ from .contractor.views import (
 )
 from .trade_point.views import TradePointCreate, TradePointList
 from .employee.views import EmployeeCreate
-
+from infrastructure.accounts.views import (
+    LoginView, LogoutView
+)
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
@@ -53,6 +55,11 @@ employee_urls = [
     path('employee/create/', EmployeeCreate.as_view(), name="employee_create")
 ]
 
+accounts_urls = [
+    path('login/', LoginView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout')
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
@@ -62,3 +69,4 @@ urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls
 urlpatterns += employee_urls
+urlpatterns += accounts_urls
