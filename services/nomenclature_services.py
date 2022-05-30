@@ -1,3 +1,6 @@
+import tablib
+from django.http import HttpResponse
+from requests import Response
 from models.nomenclature.models import Nomenclature
 from models.organization.models import Organization
 from django.shortcuts import get_object_or_404
@@ -5,7 +8,6 @@ import pandas
 from typing import List
 import jsonschema
 import json
-
 
 File = str
 JSON = dict
@@ -50,7 +52,7 @@ class NomenclatureService:
         nomenclature.save()
 
     @staticmethod
-    def get_filtered_services(nomenclature_id: int, search: str='', category: str='', mark: str='') -> List['Nomenclature']:
+    def get_filtered_services(nomenclature_id: int, search: str = '', category: str = '', mark: str = '') -> List['Nomenclature']:
         services = NomenclatureService.get_nomenclature_by_id(nomenclature_id=nomenclature_id).services
         filtered_services = []
 
@@ -67,3 +69,22 @@ class NomenclatureService:
                 filtered_services.append(service)
 
         return filtered_services
+
+    @staticmethod
+    def response_sender(data: str, file_extension: str) -> Response:
+        response = HttpResponse(data)
+        response['Content-Disposition'] = f'attachment; filename="price.{file_extension}"'
+        return response
+
+    @staticmethod
+    def download_a_exel_file_to_user(extension: str, services: list) -> File:
+        headers = ['Цена', 'Марка', 'Название', 'Категория', 'Примечание']
+        if services:
+            data = tablib.Dataset(headers=headers)
+            for service in services:
+                data.append(service.values())
+                data.export(extension)
+            return data.export(extension)
+        else:
+            data = tablib.Dataset(headers=headers)
+            return data.export(extension)
