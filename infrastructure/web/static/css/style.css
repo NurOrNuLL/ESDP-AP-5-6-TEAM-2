@@ -44,5 +44,15 @@ body {
     width: 100%;
     max-width: 330px;
     padding: 15px;
-    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+.btn-outline-secondary {
+    border-color: transparent !important;
+    font-size: 20px;
+    margin-left: 20px;
 }
