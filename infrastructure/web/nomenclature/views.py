@@ -11,7 +11,7 @@ from django.core.paginator import Paginator
 from .serializers import NomenclatureFilterSerializer
 from models.nomenclature.category_choices import CATEGORY_CHOICES, MARK_CHOICES
 from django.http.request import HttpRequest
-from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from typing import List
 
 
@@ -104,12 +104,12 @@ class NomenclatureCreate(TemplateView):
         return render(request, self.template_name, {'form': form})
 
 
-class NomenclatureExportView(GenericAPIView):
+class NomenclatureExportView(TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
     main_data = ''
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
         nomenclature_id = request.GET.get('nomenclature_id')
         extension = request.GET.get('extension')
         nomenclatures = NomenclatureService.get_all_nomenclatures()
@@ -129,6 +129,8 @@ class NomenclatureExportView(GenericAPIView):
                     return NomenclatureService.response_sender(
                         data=self.main_data, file_extension=extension
                     )
+        context = self.get_context_data(error='Добавьте номенклатуру')
+        return render(self.request, template_name=self.template_name, context=context)
 
 
 class NomenclatureFormForImpost(GenericAPIView):
@@ -136,7 +138,7 @@ class NomenclatureFormForImpost(GenericAPIView):
     template_name = 'nomenclature/list.html'
     exel_form = ''
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
         extension = request.GET.get('extension')
         headers = ['Цена', 'Марка', 'Название', 'Категория', 'Примечание']
         data = tablib.Dataset(headers=headers)
