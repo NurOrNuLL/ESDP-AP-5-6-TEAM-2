@@ -3,7 +3,6 @@ from rest_framework import filters
 from models.contractor.models import Contractor
 from .forms import ContractorForm
 from django.shortcuts import render, redirect
-from services.organization_services import get_organization_by_id
 from .serializers import ContractorSerializer
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
