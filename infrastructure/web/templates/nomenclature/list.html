@@ -28,6 +28,9 @@
     </div>
     <div class="d-flex justify-content-between">
         <div>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formimportModal">
+                Форма для заполнения exel
+            </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
                 Загрузить excel
             </button>
@@ -74,6 +77,7 @@
     <div style="position: absolute; left: 50%; top: 50%;" id="beforeTable"></div>
     {% include 'nomenclature/partial/import.html' %}
     {% include 'nomenclature/partial/export.html' %}
+    {% include 'nomenclature/partial/form_import.html' %}
 {% endblock %}
 {% block js_block %}
     <script src="{% static 'js/services/nomenclature_services.js' %}"></script>
