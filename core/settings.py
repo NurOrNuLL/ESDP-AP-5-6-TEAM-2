@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'models.trade_point',
     'models.employee',
     'models.own',
+    'models.payment_method',
     'rest_framework',
     'corsheaders',
     'django_filters',
