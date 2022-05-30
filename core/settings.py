@@ -47,9 +47,15 @@ INSTALLED_APPS = [
     'models.own',
     'rest_framework',
     'corsheaders',
+    'django_filters',
     "celery_progress",
     'storages'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
