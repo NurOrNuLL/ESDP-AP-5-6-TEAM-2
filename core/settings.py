@@ -20,12 +20,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-bbp5kln3$iqjjmm_j^)66ivw5y7=$hxmr5-nxk1v0eoh&7omyi'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = str(os.environ.get('DEBUG'))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+if DEBUG:
+    ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
+else:
+    ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
 
 # Application definition
 
@@ -45,6 +49,9 @@ INSTALLED_APPS = [
     'models.trade_point',
     'models.employee',
     'models.own',
+    'models.payment_method',
+    'models.payment',
+    'models.order',
     'rest_framework',
     'corsheaders',
     'django_filters',
@@ -100,11 +107,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'postgress',
-        'USER': 'postgress',
-        'PASSWORD': 'postgress',
+        'NAME': os.environ.get('PSQL_NAME'),
+        'USER': os.environ.get('PSQL_USER'),
+        'PASSWORD': os.environ.get('PSQL_PASS'),
         'HOST': 'localhost',
-        'PORT': 5432,
+        'PORT': os.environ.get('PSQL_PORT'),
     }
 }
 
@@ -167,8 +174,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
+
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "infrastructure/web/static"]
+
 
 
 # Default primary key field type
@@ -176,8 +185,8 @@ STATICFILES_DIRS = [BASE_DIR / "infrastructure/web/static"]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_HOST = '0.0.0.0'
-REDIS_PORT = '6379'
+REDIS_HOST = os.environ.get('REDIS_HOST')
+REDIS_PORT = os.environ.get('REDIS_PORT')
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ":" + REDIS_PORT + '/0'

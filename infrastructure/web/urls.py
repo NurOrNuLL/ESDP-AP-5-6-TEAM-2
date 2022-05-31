@@ -15,7 +15,6 @@ from .contractor.views import (
 from .trade_point.views import TradePointCreate, TradePointList
 from .employee.views import EmployeeCreate
 
-
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
     path('nomenclature/form_import/', NomenclatureFormForImpost.as_view(), name='nomenclature_form_import'),

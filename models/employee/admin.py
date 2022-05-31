@@ -7,5 +7,5 @@ from .models import Employee
 class EmployeeAdmin(admin.ModelAdmin):
     """Сотрудники"""
     list_display = ('name', 'surname', 'role', 'IIN', 'pdf',
-                    'address', 'phone', 'birthdate', 'tradepoints')
+                    'address', 'phone', 'birthdate', 'tradepoint')
     list_display_links = ('name',)

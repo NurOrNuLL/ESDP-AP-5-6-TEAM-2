@@ -28,7 +28,7 @@ $.ajax({
 
         data.results.forEach(function (item) {
             body.innerHTML += '<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>'
-                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td></tr>'
+                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/contractor/' + item.id + '/">Детали</a></td></tr>'
         })
     },
     error: (response) => {
@@ -146,10 +146,8 @@ search.addEventListener('input', (e) => {
                 emptyBody.innerHTML += '<h4 class="text-center" >Ничего не найдено!</h4>';
             }
         },
-        error: () => {
-                body.innerHTML = '';
-                emptyBody.innerHTML = '';
-                emptyBody.innerHTML += '<h4 class="text-center" >Ничего не найдено!</h4>';
+        error: (response) => {
+            console.log(response);
         }
         })
 })
