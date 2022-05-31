@@ -1,62 +1,80 @@
 <div style="width: 280px">
-    <a href="/" class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom border-secondary">
-      <span class="fs-3 fw-semibold">GServiceGroup</span>
+    <a href="/"
+       class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom border-secondary">
+        <span class="fs-3 fw-semibold">GServiceGroup</span>
     </a>
     <ul class="list-unstyled ps-0">
-      <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#order-collapse" aria-expanded="false">
-          Заказ наряды
-        </button>
-        <div class="collapse sidebar-ul" id="order-collapse">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-dark sidebar-link rounded">Добавление</a></li>
-          </ul>
-        </div>
-      </li>
-      <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#contragent-collapse" aria-expanded="false">
-          Контрагенты
-        </button>
-        <div class="collapse sidebar-ul" id="contragent-collapse">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="{% url 'contractors' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a></li>
-            <li><a href="{% url 'contractor_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить контрагента</a></li>
-          </ul>
-        </div>
-      </li>
-      <li class="border-top border-secondary my-3"></li>
         <li class="mb-1">
-          <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#price-list-collapse" aria-expanded="false">
-            Номенклатура
-          </button>
-          <div class="collapse sidebar-ul" id="price-list-collapse" style="">
-            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li><a href="{% url 'nomenclature_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить номенклатуру</a></li>
-                <li><a href="{% url 'nomenclature_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список услуг</a></li>
-            </ul>
-          </div>
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#order-collapse" aria-expanded="false">
+                Заказ наряды
+            </button>
+            <div class="collapse sidebar-ul" id="order-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-dark sidebar-link rounded">Добавление</a></li>
+                </ul>
+            </div>
         </li>
         <li class="mb-1">
-          <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#trade-point-collapse" aria-expanded="false">
-            Филиал
-          </button>
-          <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
-            <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                <li><a href="{% url 'trade_point_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить филиал</a></li>
-                <li><a href="{% url 'trade_point_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a></li>
-            </ul>
-          </div>
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#contragent-collapse" aria-expanded="false">
+                Контрагенты
+            </button>
+            <div class="collapse sidebar-ul" id="contragent-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'contractors' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'contractor_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                        контрагента</a></li>
+                </ul>
+            </div>
         </li>
-      <li class="mb-1">
-        <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse" data-bs-target="#employee-collapse" aria-expanded="false">
-          Сотрудники
-        </button>
-        <div class="collapse sidebar-ul" id="employee-collapse" style="">
-          <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-            <li><a href="#" class="link-dark sidebar-link rounded">Список мастеров</a></li>
-            <li><a href="{% url 'employee_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить сотрудника</a></li>
-          </ul>
-        </div>
-      </li>
+        <li class="border-top border-secondary my-3"></li>
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#price-list-collapse" aria-expanded="false">
+                Номенклатура
+            </button>
+            <div class="collapse sidebar-ul" id="price-list-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'nomenclature_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                        номенклатуру</a></li>
+                    <li><a href="{% url 'nomenclature_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список
+                        услуг</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#trade-point-collapse" aria-expanded="false">
+                Филиал
+            </button>
+            <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'trade_point_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                        филиал</a></li>
+                    <li><a href="{% url 'trade_point_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#employee-collapse" aria-expanded="false">
+                Сотрудники
+            </button>
+            <div class="collapse sidebar-ul" id="employee-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-dark sidebar-link rounded">Список мастеров</a></li>
+                    <li><a href="{% url 'employee_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                        мастера</a></li>
+                    <li><a href="{% url 'register' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                        пользователя</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="border-top border-secondary my-3"></li>
+        {% if request.user.is_authenticated %}
+            <a class="btn btn-outline-secondary fw-bold align-items-center" aria-current="page" href="{% url 'logout' orgID=1 %}">Выйти</a>
+        {% endif %}
     </ul>
 </div>

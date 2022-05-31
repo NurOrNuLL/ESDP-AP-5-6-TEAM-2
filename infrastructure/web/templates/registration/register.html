@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+    <h3>Создать акаунт</h2>
+    <br>
+
+    <div class="w-50">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <label for="username" class="form-label">Логин</label>
+                <input type="text" class="form-control" id="username" name="username" value="{{ register_form.username.value|default:'' }}" required>
+                <div class="form-text" style="color: red;">{% for err in register_form.errors.username %}{{ err }}{% endfor %}</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <label for="password" class="form-label">Пароль</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                    <div class="form-text" style="color: red;">{% for err in register_form.errors.password %}{{ err }}{% endfor %}</div>
+                </div>
+                <div class="col">
+                    <label for="password_confirm" class="form-label">Повторите пароль</label>
+                    <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                    <div class="form-text" style="color: red;">{% for err in register_form.errors.password_confirm %}{{ err }}{% endfor %}</div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <label for="name" class="form-label">Имя</label>
+                    <input type="text" class="form-control" id="name" name="name" value="{{ employee_form.name.value|default:'' }}" required>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.name %}{{ err }}{% endfor %}</div>
+                </div>
+                <div class="col">
+                    <label for="surname" class="form-label">Фамилия</label>
+                    <input type="text" class="form-control" id="surname" name="surname" value="{{ employee_form.surname.value|default:'' }}" required>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.surname %}{{ err }}{% endfor %}</div>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <label for="employee_role" class="form-label">Роль</label>
+                    <select class="form-select" name="role" id="role">
+                        {% for role in roles %}
+                            {% if role.0 == employee_form.role.value %}
+                                <option selected value="{{ role.0 }}">{{ role.1 }}</option>
+                            {% else %}
+                                <option value="{{ role.0 }}">{{ role.1 }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.role %}{{ err }}{% endfor %}</div>
+                </div>
+                <div class="col">
+                    <label for="employee_birthdate" class="form-label">Дата рождения</label>
+                    <input type="date" class="form-control" id="employee_birthdate" name="birthdate" value="{{ employee_form.birthdate.value|default:'' }}" required>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.birthdate %}{{ err }}{% endfor %}</div>
+                </div>
+                <div class="col">
+                    <label for="employee_tradepoints" class="form-label">Филиалы</label>
+                    <select class="form-select" id="tradepoint" name="tradepoint">
+                        {% for tp in tradepoints %}
+                            {% if tp.id|slugify != employee_form.tradepoint.value %}
+                                <option value="{{ tp.id }}">{{ tp.name }}</option>
+                            {% elif tp.id|slugify == employee_form.tradepoint.value %}
+                                <option selected value="{{ tp.id }}">{{ tp.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.tradepoint %}{{ err }}{% endfor %}</div>
+                </div>
+            </div>
+            <br>
+            <div class="col">
+                <label for="employee_address" class="form-label">Адрес</label>
+                <input type="text" class="form-control" id="employee_address" name="address" value="{{ employee_form.address.value|default:'' }}" required>
+                <div class="form-text" style="color: red;">{% for err in employee_form.errors.address %}{{ err }}{% endfor %}</div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <label for="employee_IIN" class="form-label">ИИН</label>
+                    <input type="number" class="form-control" id="employee_IIN" name="IIN" value="{{ employee_form.IIN.value|default:'' }}" required>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.IIN %}{{ err }}{% endfor %}</div>
+                </div>
+                <div class="col">
+                    <label for="employee_phone" class="form-label">Телефон</label>
+                    <input type="number" class="form-control" id="employee_phone" name="phone" value="{{ employee_form.phone.value|default:'' }}" required>
+                    <div class="form-text" style="color: red;">{% for err in employee_form.errors.phone %}{{ err }}{% endfor %}</div>
+                </div>
+            </div>
+            <br>
+            <div>
+                <label for="employee_pdf" class="form-label">Документы</label>
+                <input type="file" class="form-control" id="employee_pdf" name="pdf" value="{{ employee_form.pdf.value|default:'' }}" accept=".pdf" required>
+                <div class="form-text" style="color: red;">{% for err in employee_form.errors.pdf %}{{ err }}{% endfor %}</div>
+            </div>
+            <br>
+            <button type="submit" class="btn btn-primary">Зарегистрировать</button>
+        </form>
+    </div>
+{% endblock content %}
