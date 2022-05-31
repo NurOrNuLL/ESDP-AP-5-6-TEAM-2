@@ -2,7 +2,7 @@ import uuid
 
 from django.core.validators import RegexValidator
 from django.db import models
-from .validators import JSONSchemaValidator
+from .validators import birthdate_validator
 
 
 TRADEPOINTS_JSON_FIELD_SCHEMA = {
@@ -20,13 +20,10 @@ TRADEPOINTS_JSON_FIELD_SCHEMA = {
 
 class Employee(models.Model):
     """Сотрудники"""
-    MASTER = 'MASTER'
-    ADMINISTRATOR = 'ADMINISTRATOR'
-    MANAGER = 'MANAGER'
     ROLE = [
-        (MASTER, 'MASTER'),
-        (ADMINISTRATOR, 'ADMINISTRATOR'),
-        (MANAGER, 'MANAGER'),
+        ('Мастер', 'Мастер'),
+        ('Управляющий', 'Управляющий'),
+        ('Менеджер', 'Менеджер'),
     ]
     uuid = models.CharField(
         max_length=100000,
@@ -59,10 +56,10 @@ class Employee(models.Model):
         max_length=100, null=False, blank=False,
         verbose_name='Телефон'
     )
-    birthdate = models.DateField()
-    tradepoints = models.JSONField(
-        null=True, blank=True, default=list,
-        validators=[JSONSchemaValidator(limit_value=TRADEPOINTS_JSON_FIELD_SCHEMA)]
+    birthdate = models.DateField(validators=[birthdate_validator])
+    tradepoint = models.ForeignKey(
+        'trade_point.TradePoint', on_delete=models.PROTECT,
+        related_name='tradepoint_employee', verbose_name='Филиал'
     )
 
     class Meta:
