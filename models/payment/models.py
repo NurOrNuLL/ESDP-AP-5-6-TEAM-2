@@ -7,8 +7,8 @@ class Payment(models.Model):
     status = models.CharField(max_length=100, null=False, blank=False,
                               choices=PAYMENT_STATUS_CHOICES, verbose_name='Статус оплаты')
     method = models.ForeignKey(
-        'payment_method.PaymentMethod', on_delete=models.PROTECT, null=False, blank=False,
-        related_name='payments', verbose_name='Метод оплаты')
+        'payment_method.PaymentMethod', on_delete=models.PROTECT, null=True, blank=True,
+        related_name='payments', verbose_name='Способ оплаты')
     type = models.JSONField(null=True, blank=True, default=dict)
 
     def __str__(self):
