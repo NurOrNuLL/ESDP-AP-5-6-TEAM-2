@@ -3,10 +3,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from django.views.generic import TemplateView
 from django.http import HttpRequest, HttpResponse
+
+from services.employee_services import EmployeeServices
 from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
-from models.trade_point.models import TradePoint
+from services.trade_point_services import TradePointServices
 from models.employee.models import Employee
 
 
@@ -18,7 +20,7 @@ class RegisterView(TemplateView):
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['roles'] = [('Управляющий', 'Управляющий'), ('Менеджер', 'Менеджер')]
-        context['tradepoints'] = TradePoint.objects.all()
+        context['tradepoints'] = TradePointServices.get_trade_points(self.kwargs)
 
         return context
 
@@ -27,8 +29,8 @@ class RegisterView(TemplateView):
 
         register_data = {
             'username': post_data.pop('username')[0],
-            'password': post_data.pop('password'),
-            'password_confirm': post_data.pop('password_confirm')
+            'password': post_data.pop('password')[0],
+            'password_confirm': post_data.pop('password_confirm')[0]
         }
 
         employee_data = post_data
@@ -38,18 +40,8 @@ class RegisterView(TemplateView):
 
         if register_form.is_valid() and employee_form.is_valid():
             user = register_form.save()
-            Employee.objects.create(
-                uuid=user.uuid,
-                name=employee_form.cleaned_data['name'],
-                surname=employee_form.cleaned_data['surname'],
-                role=employee_form.cleaned_data['role'],
-                IIN=employee_form.cleaned_data['IIN'],
-                pdf=employee_form.cleaned_data['pdf'],
-                address=employee_form.cleaned_data['address'],
-                phone=employee_form.cleaned_data['phone'],
-                birthdate=employee_form.cleaned_data['birthdate'],
-                tradepoint=employee_form.cleaned_data['tradepoint']
-            )
+
+            EmployeeServices.create_employee_with_uuid(user.uuid, employee_form.cleaned_data)
 
             return redirect('home', orgID=self.kwargs['orgID'])
         else:

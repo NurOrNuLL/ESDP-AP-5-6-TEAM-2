@@ -2,7 +2,7 @@ import uuid
 
 from django.core.validators import RegexValidator
 from django.db import models
-from .validators import JSONSchemaValidator
+from .validators import birthdate_validator
 
 
 TRADEPOINTS_JSON_FIELD_SCHEMA = {
@@ -56,7 +56,7 @@ class Employee(models.Model):
         max_length=100, null=False, blank=False,
         verbose_name='Телефон'
     )
-    birthdate = models.DateField()
+    birthdate = models.DateField(validators=[birthdate_validator])
     tradepoint = models.ForeignKey(
         'trade_point.TradePoint', on_delete=models.PROTECT,
         related_name='tradepoint_employee', verbose_name='Филиал'
