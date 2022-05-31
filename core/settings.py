@@ -91,6 +91,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'infrastructure.web.trade_point.context_processor.trade_point_context',
             ],
             'libraries': {
                 'custom_tags': 'infrastructure.web.template_tags.custom_tags'

@@ -17,3 +17,4 @@ class TradePointServices:
     @staticmethod
     def get_trade_points(kwargs: dict) -> List['TradePoint']:
         return TradePoint.objects.filter(organization=kwargs['orgID'])
+

@@ -35,3 +35,4 @@ class TradePointList(TemplateView):
         context = super().get_context_data(**kwargs)
         context['trade_points'] = TradePointServices.get_trade_points(kwargs)
         return context
+

@@ -18,6 +18,8 @@ __pycache__/
 #dotenv
 .env
 
+/pdf
+
 # C extensions
 *.so
 
