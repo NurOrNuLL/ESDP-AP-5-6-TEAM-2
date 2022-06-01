@@ -1,8 +1,17 @@
+{% load static%}
 <div style="width: 280px">
-    <a href="/"
-       class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom border-secondary">
+    <a href="{% url 'home' orgID=1 %}"
+       class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
         <span class="fs-3 fw-semibold">GServiceGroup</span>
     </a>
+    <div class="d-flex align-items-center mb-3 link-dark text-decoration-none border-bottom">
+    <select class="form-select mb-3 border-bottom" aria-label="Default select example" id="tradepointChoices">
+        {% for item in trade_points %}
+            <option selected>{{ item.name }}</option>
+        {% endfor %}
+    </select>
+    </div>
+
     <ul class="list-unstyled ps-0">
         <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
@@ -28,7 +37,7 @@
                 </ul>
             </div>
         </li>
-        <li class="border-top border-secondary my-3"></li>
+        <li class="border-top my-3"></li>
         <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
                     data-bs-target="#price-list-collapse" aria-expanded="false">
@@ -72,7 +81,7 @@
                 </ul>
             </div>
         </li>
-        <li class="border-top border-secondary my-3"></li>
+        <li class="border-top my-3"></li>
         {% if request.user.is_authenticated %}
             <a class="btn btn-outline-secondary fw-bold align-items-center" aria-current="page" href="{% url 'logout' orgID=1 %}">Выйти</a>
         {% endif %}

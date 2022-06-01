@@ -15,7 +15,7 @@
 <body>
 <div class="maindiv" style="min-height: 100vh">
     <div class="p-3 sidebar_css" style=" background-color: white">
-        {% include "partials/sidebar.html" %}
+        {% include "partials/sidebar.html" with trade_points=trade_points %}
     </div>
     <div class="container-fluid p-3 container_css">
         {% block content %}{% endblock content %}
