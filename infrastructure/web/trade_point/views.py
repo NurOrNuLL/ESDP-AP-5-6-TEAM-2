@@ -20,7 +20,7 @@ class TradePointCreate(TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             TradePointServices.create_trade_point(form.cleaned_data)
-            return redirect('home', orgID=1)
+            return redirect('home_redirect')
 
         return render(request, self.template_name, {
             'form': form,

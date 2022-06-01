@@ -4,10 +4,10 @@
 {% block title %}Детали контрагента{% endblock %}
 
 {% block content %}
-    <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk %}">К списку</a><br><br>
+    <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk tpID %}">К списку</a><br><br>
     <div class="d-flex mb-4">
         <h3>{{ contractor.name }} </h3>
-        <a class="ms-2 edit-link" href="{% url 'contractor_update' organization.pk contractor.pk %}"><img width=35
+        <a class="ms-2 edit-link" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}"><img width=35
                                                                                                           src="{% static 'pics/edit.png' %}"></a><br>
     </div>
     <div class="card mb-3">
@@ -61,7 +61,7 @@
                     <h5>Список собственности:</h5>
                 </div>
                 <div>
-                    <a class="btn btn-outline-secondary" href="{% url 'own_create' organization.pk contractor.pk %}">Добавить
+                    <a class="btn btn-outline-secondary" href="{% url 'own_create' organization.pk tpID contractor.pk %}">Добавить
                         в список</a><br>
                 </div>
             </div>
@@ -88,4 +88,7 @@
     {% block js_block %}
         <script src="{% static 'js/own/own_delete.js' %}"></script>
     {% endblock %}
+    <script>
+        var tpID = {{ tpID }}
+    </script>
 {% endblock %}

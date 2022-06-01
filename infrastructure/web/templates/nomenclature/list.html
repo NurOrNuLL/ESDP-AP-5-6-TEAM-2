@@ -28,14 +28,14 @@
     </div>
     <div class="d-flex justify-content-between">
         <div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formimportModal">
-                Форма для заполнения exel
-            </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
                 Загрузить excel
             </button>
             <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exportModal">
                 Скачать excel
+            </button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formimportModal">
+                Форма для заполнения exel
             </button>
         </div>
         {% if error %}
@@ -78,6 +78,9 @@
     {% include 'nomenclature/partial/import.html' %}
     {% include 'nomenclature/partial/export.html' %}
     {% include 'nomenclature/partial/form_import.html' %}
+    <script>
+        var tpID = {{ tpID }};
+    </script>
 {% endblock %}
 {% block js_block %}
     <script src="{% static 'js/services/nomenclature_services.js' %}"></script>

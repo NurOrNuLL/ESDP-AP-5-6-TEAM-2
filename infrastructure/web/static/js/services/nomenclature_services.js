@@ -3,7 +3,7 @@ let beforeTableBlock = document.getElementById('beforeTable');
 
 function render(nomenclature, search, category, mark, page, limit) {
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/nomenclature/${nomenclature}/services/filter?search=${search}&category=${category}&mark=${mark}&page=${page}&limit=${limit}`,
+        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/nomenclature/${nomenclature}/services/filter?search=${search}&category=${category}&mark=${mark}&page=${page}&limit=${limit}`,
         method: 'get',
         success: (data) => {
             body.innerHTML = '';
@@ -41,7 +41,8 @@ function render(nomenclature, search, category, mark, page, limit) {
                 beforeTableBlock.innerHTML += '<h4 class="text-center">Ничего не найдено!</h4>';
             }
         },
-        error: () => {
+        error: (response) => {
+            console.log(response)
             body.innerHTML = '';
             beforeTableBlock.innerHTML = '';
             beforeTableBlock.innerHTML += '<h4 class="text-center">Ничего не найдено!</h4>';
