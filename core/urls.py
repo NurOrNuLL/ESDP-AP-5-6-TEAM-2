@@ -16,10 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from django.shortcuts import redirect
+from infrastructure.web.order.views import HomeRedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', lambda req: redirect('home', orgID=1)),
+    path('', HomeRedirectView.as_view(), name='home_redirect'),
     path('org/<int:orgID>/accounts/', include('infrastructure.accounts.urls')),
-    path('org/<int:orgID>/', include('infrastructure.web.urls')),
+    path('org/<int:orgID>/tp/<int:tpID>/', include('infrastructure.web.urls')),
 ]

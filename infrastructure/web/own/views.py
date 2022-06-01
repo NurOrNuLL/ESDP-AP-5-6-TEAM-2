@@ -5,7 +5,6 @@ from .forms import OwnForm
 from rest_framework.generics import GenericAPIView
 from .serializer import OwnSerializer
 from rest_framework.response import Response
-import json
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 
@@ -21,7 +20,8 @@ class OwnCreate(TemplateView):
             OwnServices.create_own(form.cleaned_data, contractor_id=self.kwargs.get('contrID'))
             return redirect(
                 'contractor_detail', orgID=self.kwargs.get('orgID'),
-                contrID=self.kwargs.get('contrID')
+                contrID=self.kwargs.get('contrID'),
+                tpID=self.kwargs['tpID']
             )
 
         return render(request, self.template_name, {'form': form})
@@ -31,8 +31,7 @@ class OwnDeleteView(GenericAPIView):
     serializer_class = OwnSerializer
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> JsonResponse:
-        data = json.loads(request.body)
-        serializer = self.serializer_class(data=data)
+        serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
             OwnServices.delete_own(serializer.data.get('own_id'))

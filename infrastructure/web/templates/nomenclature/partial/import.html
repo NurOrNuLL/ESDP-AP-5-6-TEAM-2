@@ -6,7 +6,7 @@
                     <h4 class="modal-title" id="importModalLabel">Загрузка excel файла</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form method="post" enctype="multipart/form-data" action="{% url 'nomenclature_import' orgID=1 %}">
+                <form method="post" enctype="multipart/form-data" action="{% url 'nomenclature_import' orgID=1 tpID=tpID %}">
                     <div class="modal-body">
                         <div class="card" style="background-color: transparent !important; border: 0;">
                             <div class="card-body">

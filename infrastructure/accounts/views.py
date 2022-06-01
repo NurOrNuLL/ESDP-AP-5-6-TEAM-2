@@ -21,6 +21,7 @@ class RegisterView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['roles'] = [('Управляющий', 'Управляющий'), ('Менеджер', 'Менеджер')]
         context['tradepoints'] = TradePointServices.get_trade_points(self.kwargs)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
 
         return context
 
@@ -43,7 +44,7 @@ class RegisterView(TemplateView):
 
             EmployeeServices.create_employee_with_uuid(user.uuid, employee_form.cleaned_data)
 
-            return redirect('home', orgID=self.kwargs['orgID'])
+            return redirect('home_redirect')
         else:
             context = self.get_context_data()
             context['register_form'] = register_form
@@ -70,7 +71,7 @@ class LoginView(View):
             login(request, user)
             if next_page:
                 return redirect(next_page)
-            return redirect('home', orgID=1)
+            return redirect('home_redirect')
         else:
             context['has_error'] = True
         return render(request, 'registration/login.html', context=context)

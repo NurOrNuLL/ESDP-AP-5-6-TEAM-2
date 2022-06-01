@@ -28,7 +28,9 @@
     <tbody id="body"></tbody>
   </table>
 <div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
-
+<script>
+    var tpID = {{ tpID }}
+</script>
 {% endblock content %}
 {% block js_block %}
     <script src="{% static 'js/contractor/contractor_view.js' %}"></script>

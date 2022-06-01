@@ -1,15 +1,31 @@
 {% load static%}
 <div style="width: 280px">
-    <a href="{% url 'home' orgID=1 %}"
+    <a href="{% url 'home_redirect' %}"
        class="d-flex align-items-center pb-3 mb-3 link-dark text-decoration-none border-bottom">
         <span class="fs-3 fw-semibold">GServiceGroup</span>
     </a>
     <div class="d-flex align-items-center mb-3 link-dark text-decoration-none border-bottom">
-    <select class="form-select mb-3 border-bottom" aria-label="Default select example" id="tradepointChoices">
-        {% for item in trade_points %}
-            <option selected>{{ item.name }}</option>
-        {% endfor %}
-    </select>
+    {% if request.user.is_staff %}
+        <select class="form-select mb-3 border-bottom" aria-label="Default select example" id="tradepointChoices">
+            {% for item in trade_points %}
+                {% if item.id == tpID %}
+                    <option selected value="{{ item.id }}">{{ item.name }}</option>
+                {% else %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    {% else %}
+        <select class="form-select mb-3 border-bottom" disabled aria-label="Default select example" id="tradepointChoices">
+            {% for item in trade_points %}
+                {% if item.id == tpID %}
+                    <option selected value="{{ item.id }}">{{ item.name }}</option>
+                {% else %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    {% endif %}
     </div>
 
     <ul class="list-unstyled ps-0">
@@ -31,8 +47,8 @@
             </button>
             <div class="collapse sidebar-ul" id="contragent-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'contractors' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a></li>
-                    <li><a href="{% url 'contractor_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                    <li><a href="{% url 'contractors' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
                         контрагента</a></li>
                 </ul>
             </div>
@@ -45,9 +61,9 @@
             </button>
             <div class="collapse sidebar-ul" id="price-list-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'nomenclature_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                    <li><a href="{% url 'nomenclature_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
                         номенклатуру</a></li>
-                    <li><a href="{% url 'nomenclature_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список
+                    <li><a href="{% url 'nomenclature_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список
                         услуг</a></li>
                 </ul>
             </div>
@@ -59,9 +75,9 @@
             </button>
             <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'trade_point_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                    <li><a href="{% url 'trade_point_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
                         филиал</a></li>
-                    <li><a href="{% url 'trade_point_list' orgID=1 %}" class="link-dark sidebar-link rounded">Список</a>
+                    <li><a href="{% url 'trade_point_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a>
                     </li>
                 </ul>
             </div>
@@ -74,7 +90,7 @@
             <div class="collapse sidebar-ul" id="employee-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="#" class="link-dark sidebar-link rounded">Список мастеров</a></li>
-                    <li><a href="{% url 'employee_create' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
+                    <li><a href="{% url 'employee_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
                         мастера</a></li>
                     <li><a href="{% url 'register' orgID=1 %}" class="link-dark sidebar-link rounded">Добавить
                         пользователя</a></li>

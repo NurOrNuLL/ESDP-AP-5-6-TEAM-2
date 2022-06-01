@@ -5,9 +5,7 @@ from django.core.validators import MinValueValidator
 class Order(models.Model):
     """Заказ-наряд"""
     ORDER_STATUS_CHOICES = [('in_process', 'В работе'), ('completed', 'Завершен')]
-    trade_point = models.ForeignKey(
-        'trade_point.TradePoint', on_delete=models.PROTECT, null=False, blank=False,
-        related_name='branch_orders', verbose_name='Филиал')
+
     contractor = models.ForeignKey(
         'contractor.Contractor', on_delete=models.PROTECT, null=False, blank=False,
         related_name='orders', verbose_name='Контрагент')

@@ -6,7 +6,7 @@ let page = document.getElementById('page');
 let search = document.getElementById('contractorSearch');
 
 $.ajax({
-    url: `http://127.0.0.1:8000/org/1/contractor/list/filter/?search=`,
+    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/list/filter/?search=`,
     method: 'GET',
     success: (data) => {
         if (data.next && data.previous === null) {
@@ -28,7 +28,7 @@ $.ajax({
 
         data.results.forEach(function (item) {
             body.innerHTML += '<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>'
-                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/contractor/' + item.id + '/">Детали</a></td></tr>'
+                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.id + '/">Детали</a></td></tr>'
         })
     },
     error: (response) => {
@@ -77,7 +77,7 @@ back.addEventListener('click', (e) => {
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
   $.ajax({
-    url: `http://127.0.0.1:8000/org/1/contractor/list/filter/?page=${page.value}&search=${search.value}`,
+    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/list/filter/?page=${page.value}&search=${search.value}`,
     method: 'GET',
     success: (data) => {
         body.innerText = ""
@@ -112,7 +112,7 @@ next.addEventListener('click', (e) => {
 
 search.addEventListener('input', (e) => {
       $.ajax({
-        url: `http://127.0.0.1:8000/org/1/contractor/list/filter/?search=${search.value}`,
+        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/list/filter/?search=${search.value}`,
         method: 'GET',
         success: (data) => {
             body.innerHTML = '';
@@ -151,4 +151,3 @@ search.addEventListener('input', (e) => {
         }
         })
 })
-

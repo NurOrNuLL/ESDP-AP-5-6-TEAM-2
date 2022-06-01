@@ -1,6 +1,10 @@
 from typing import List
 
 from models.employee.models import Employee
+from django.core.exceptions import ObjectDoesNotExist
+
+from models.trade_point.models import TradePoint
+from django.http import HttpRequest
 
 
 class EmployeeServices:
@@ -37,3 +41,17 @@ class EmployeeServices:
     @staticmethod
     def get_employee() -> List['Employee']:
         return Employee.ROLE
+
+    @staticmethod
+    def get_attached_tradepoint_id(request: HttpRequest, uuid: str) -> int:
+        try:
+            employee = Employee.objects.get(uuid=uuid)
+        except ObjectDoesNotExist:
+            tradepointID = request.COOKIES.get('tradepointID')
+
+            if tradepointID:
+                return int(tradepointID)
+            else:
+                return TradePoint.objects.first().id
+        else:
+            return Employee.objects.get(uuid=uuid).tradepoint.id
