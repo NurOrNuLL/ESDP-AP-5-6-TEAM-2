@@ -1,11 +1,12 @@
-from django.urls import path
+from django.urls import path, include
 from .order.views import HomePageView
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
     NomenclaturesServiceListView,
     NomenclatureItemsFilterApiView,
     NomenclatureExportView,
-    NomenclatureFormForImpost
+    NomenclatureFormForImpost,
+    NomenclatureDownloadView
 )
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import (
@@ -17,6 +18,7 @@ from .employee.views import EmployeeCreate
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
+    path('nomenclature/export/download/', NomenclatureDownloadView.as_view(), name='nomenclature_download'),
     path('nomenclature/form_import/', NomenclatureFormForImpost.as_view(), name='nomenclature_form_import'),
     path('nomenclature/import/', NomenclatureImportView.as_view(), name="nomenclature_import"),
     path('nomenclature/create/', NomenclatureCreate.as_view(), name="nomenclature_create"),
