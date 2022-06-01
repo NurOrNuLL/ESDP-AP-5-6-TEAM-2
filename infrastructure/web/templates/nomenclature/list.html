@@ -78,6 +78,33 @@
     {% include 'nomenclature/partial/import.html' %}
     {% include 'nomenclature/partial/export.html' %}
     {% include 'nomenclature/partial/form_import.html' %}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            $("#exportData").on("submit", (e) => {
+                e.preventDefault()
+                let formData = new FormData($("#exportData")[0])
+                let nomenclature_id = document.getElementById('nomenclature_id')
+                let exstension = document.getElementById('extension')
+                $.ajax({
+                    type: "GET",
+                    url: "{% url 'nomenclature_export' orgID=1 %}" + `?nomenclature_id=${nomenclature_id.value}&extension=${exstension.value}`,
+                    success: function (res) {
+                        if (res.task_id) {
+                            window.open(`{% url 'nomenclature_download' orgID=1 %}?task_id=${res.task_id}`)
+                        } else {
+                            console.log(res)
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                })
+
+            })
+        });
+    </script>
 {% endblock %}
 {% block js_block %}
     <script src="{% static 'js/services/nomenclature_services.js' %}"></script>
