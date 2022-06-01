@@ -13,18 +13,18 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="maindiv" style="min-height: 100vh">
-        <div class="p-3 sidebar_css" style=" background-color: white">
-            {% include "partials/sidebar.html" %}
-        </div>
-        <div class="container-fluid p-3 container_css">
-            {% block content %}{% endblock content %}
-        </div>
+<div class="maindiv" style="min-height: 100vh">
+    <div class="p-3 sidebar_css" style=" background-color: white">
+        {% include "partials/sidebar.html" with trade_points=trade_points %}
     </div>
-    <script src='{% static "js/jquery.js" %}'></script>
-    <script src='{% static "js/sidebars.js" %}'></script>
-    <script src='{% static "js/bootstrap.js" %}'></script>
-    <script src='{% static "js/bootstrap-table.min.js" %}'></script>
-    {% block js_block %}{% endblock %}
+    <div class="container-fluid p-3 container_css">
+        {% block content %}{% endblock content %}
+    </div>
+</div>
+<script src='{% static "js/jquery.js" %}'></script>
+<script src='{% static "js/sidebars.js" %}'></script>
+<script src='{% static "js/bootstrap.js" %}'></script>
+<script src='{% static "js/bootstrap-table.min.js" %}'></script>
+{% block js_block %}{% endblock %}
 </body>
 </html>

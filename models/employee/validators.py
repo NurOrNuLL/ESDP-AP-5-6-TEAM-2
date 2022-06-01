@@ -1,13 +1,7 @@
-import django
-from django.core.validators import BaseValidator
-import jsonschema
+import datetime
+from django.core.exceptions import ValidationError
 
+def birthdate_validator(date: datetime.date) -> None:
 
-class JSONSchemaValidator(BaseValidator):
-    def compare(self, value, schema):
-        try:
-            jsonschema.validate(value, schema)
-        except jsonschema.exceptions.ValidationError:
-            raise django.core.exceptions.ValidationError(
-                '%(value)s failed JSON schema check', params={'value': value}
-            )
+    if date > datetime.date.today() or datetime.date.today().year - date.year > 99:
+        raise ValidationError(f'Укажите дату в диапазоне от {datetime.date.today().year - 99} до текущего дня {datetime.date.today().year} года!')

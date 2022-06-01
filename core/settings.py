@@ -49,6 +49,9 @@ INSTALLED_APPS = [
     'models.trade_point',
     'models.employee',
     'models.own',
+    'models.payment_method',
+    'models.payment',
+    'models.order',
     'rest_framework',
     'corsheaders',
     'django_filters',
@@ -88,6 +91,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'infrastructure.web.trade_point.context_processor.trade_point_context',
             ],
             'libraries': {
                 'custom_tags': 'infrastructure.web.template_tags.custom_tags'
