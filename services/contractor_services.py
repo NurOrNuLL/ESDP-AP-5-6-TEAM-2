@@ -1,8 +1,6 @@
 from models.contractor.models import Contractor
 from models.organization.models import Organization
 from typing import List
-from django.http.request import HttpRequest
-from django.forms import ModelForm
 
 
 class ContractorService:
@@ -21,19 +19,22 @@ class ContractorService:
         )
 
     @staticmethod
-    def update_contractor(contractor: Contractor, request: HttpRequest, form: ModelForm) -> None:
-        trust_person = dict(name=request.POST['trust_person_name'],
-                            comment=request.POST['trust_person_comment'])
+    def update_contractor(contractor: Contractor, data: dict) -> None:
+        contractor.name = data['name']
+        contractor.address = data['address']
+        contractor.IIN_or_BIN = data['IIN_or_BIN']
+        contractor.IIC = data['IIC']
+        contractor.bank_name = data['bank_name']
+        contractor.BIC = data['BIC']
+        contractor.phone = data['phone']
+        contractor.trust_person = {
+            'name': data['trust_person_name'],
+            'comment': data['trust_person_comment']
+        }
 
-        contractor.name = form.cleaned_data['name']
-        contractor.address = form.cleaned_data['address']
-        contractor.IIN_or_BIN = form.cleaned_data['IIN_or_BIN']
-        contractor.IIC = form.cleaned_data['IIC']
-        contractor.bank_name = form.cleaned_data['bank_name']
-        contractor.BIC = form.cleaned_data['BIC']
-        contractor.phone = form.cleaned_data['phone']
-        contractor.trust_person = trust_person
         contractor.save()
+
+        return contractor
 
     @staticmethod
     def get_contractors(kwargs: dict) -> List['Contractor']:
