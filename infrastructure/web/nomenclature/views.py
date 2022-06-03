@@ -1,6 +1,4 @@
-import pandas
 import tablib
-from django.core import serializers
 from django.views.generic import TemplateView
 from services.employee_services import EmployeeServices
 from .forms import NomenclatureForm, NomenclatureImportForm
@@ -17,10 +15,9 @@ from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
 from typing import List, Dict, Any
 import json
-import os
 from celery.result import AsyncResult
-from celery_progress.backend import Progress
 from ..nomenclature import tasks
+from celery_progress.backend import Progress
 
 
 class NomenclatureImportView(TemplateView):
@@ -129,12 +126,9 @@ class NomenclatureExportView(TemplateView):
         task = tasks.get_services_task.delay(nomenclature_pk=nomenclature_id, extension=extension)
         return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
 
-# def get_progress_view(request):
-#     progress = Progress(request.GET.get("task_id"))
-#     return HttpResponse(json.dumps(progress.get_info()), content_type='application/json')
-
 
 class NomenclatureDownloadView(TemplateView):
+    """При удачном выполнении задачи выдает загруженный файл"""
     template_name = 'nomenclature/list.html'
     services_file = ''
 
@@ -143,7 +137,7 @@ class NomenclatureDownloadView(TemplateView):
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
         return context
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
         celery_result = AsyncResult(request.GET.get('task_id'))
         main_data = celery_result.result.get('main_data')
         extension = celery_result.result.get('extension')
@@ -152,14 +146,9 @@ class NomenclatureDownloadView(TemplateView):
             context = self.get_context_data(error='Отсутсвуют прайсы или номенклатура')
             return render(self.request, template_name=self.template_name, context=context)
         else:
-            headers = ['Цена', 'Марка', 'Название', 'Категория', 'Примечание']
-            data = tablib.Dataset(headers=headers)
-            for i in main_data:
-                data.append(i.values())
-                self.services_file = data.export(extension)
-            response = HttpResponse(self.services_file)
-            response['Content-Disposition'] = f'attachment; filename="price.{extension}"'
-            return response
+            self.services_file = NomenclatureService.download_a_exel_file_to_user(file_data=main_data,
+                                                                                  file_extension=extension)
+            return NomenclatureService.response_sender(data=self.services_file, file_extension=extension)
 
 
 class NomenclatureFormForImpost(GenericAPIView):
@@ -175,3 +164,18 @@ class NomenclatureFormForImpost(GenericAPIView):
         return NomenclatureService.response_sender(
             data=self.exel_form, file_extension=extension
         )
+
+
+class NomenclatureProgressView(TemplateView):
+    """Для получения данных о 100% загрузке"""
+    template_name = 'nomenclature/list.html'
+
+    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        task_id = AsyncResult(request.GET.get('task_id'))
+        progress = Progress(task_id)
+        return HttpResponse(json.dumps(progress.get_info()), content_type='application/json')
