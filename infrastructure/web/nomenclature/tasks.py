@@ -8,11 +8,9 @@ def get_services_task(nomenclature_pk, extension):
     if nomenclatures:
         for nomenclature in list(nomenclatures):
             if int(nomenclature_pk) == nomenclature.id:
-                json = {'main_data': nomenclature.services, 'extension': extension}
-                return json
-            else:
-                json = {'main_data': False, 'extension': extension}
-                return json
+                if nomenclature.services:
+                    json = {'main_data': nomenclature.services, 'extension': extension}
+                    return json
     else:
         json = {'main_data': False, 'extension': extension}
         return json

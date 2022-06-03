@@ -6,7 +6,8 @@ from .nomenclature.views import (
     NomenclatureItemsFilterApiView,
     NomenclatureExportView,
     NomenclatureFormForImpost,
-    NomenclatureDownloadView
+    NomenclatureDownloadView,
+    NomenclatureProgressView
 )
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import (
@@ -18,6 +19,7 @@ from .employee.views import EmployeeCreate
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
+    path("celery-progress/", NomenclatureProgressView.as_view(), name="progress"),
     path('nomenclature/export/download/', NomenclatureDownloadView.as_view(), name='nomenclature_download'),
     path('nomenclature/form_import/', NomenclatureFormForImpost.as_view(), name='nomenclature_form_import'),
     path('nomenclature/import/', NomenclatureImportView.as_view(), name="nomenclature_import"),
