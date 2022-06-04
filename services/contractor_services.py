@@ -40,5 +40,5 @@ class ContractorService:
         return Contractor.objects.filter(organization=kwargs['orgID'])
 
     @staticmethod
-    def get_contractor_by_id(contr_id: int) -> Contractor:
-        return Contractor.objects.get(id=contr_id)
+    def get_contractor_by_id(contrID: int) -> Contractor:
+        return Contractor.objects.get(id=contrID)

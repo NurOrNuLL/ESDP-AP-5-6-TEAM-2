@@ -1,10 +1,11 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 
+ORDER_STATUS_CHOICES = [('В работе', 'В работе'), ('Завершен', 'Завершен')]
+
 
 class Order(models.Model):
     """Заказ-наряд"""
-    ORDER_STATUS_CHOICES = [('in_process', 'В работе'), ('completed', 'Завершен')]
     trade_point = models.ForeignKey(
         'trade_point.TradePoint', on_delete=models.PROTECT, null=False, blank=False,
         related_name='branch_orders', verbose_name='Филиал')
