@@ -9,6 +9,7 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from services.contractor_services import ContractorService
 from services.organization_services import OrganizationService
+from services.trade_point_services import TradePointServices
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 
@@ -74,8 +75,9 @@ class ContractorDetail(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
         context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
         return context
 
 

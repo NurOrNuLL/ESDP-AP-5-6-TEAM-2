@@ -16,3 +16,7 @@ class OwnServices:
     def delete_own(own_id: int) -> None:
         own = get_object_or_404(Own, id=own_id)
         own.delete()
+
+    @staticmethod
+    def get_own_by_id(kwargs: dict) -> Own:
+        return Own.objects.get(id=kwargs['ownID'])

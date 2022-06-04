@@ -61,11 +61,14 @@
                     <h5>Список собственности:</h5>
                 </div>
                 <div>
-                    <a class="btn btn-outline-secondary" href="{% url 'own_create' organization.pk tpID contractor.pk %}">Добавить
+                    <a class="btn btn-outline-secondary" href="{% url 'own_create' orgID tpID contrID %}">Добавить
                         в список</a><br>
                 </div>
             </div>
             <br>
+            <p>{{ organization.id }}</p>
+            <p>{{ trade_point.id }}</p>
+            <p>{{ contractor.id }}</p>
             <table class="table table-striped">
                 <tbody>
                 {% for own in contractor.owns.all %}
@@ -77,6 +80,8 @@
                                 data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"
                                 data-org_id="{{ organization.id }}"
                                 data-bs-target="#own_modal">Удалить</a><br>
+                                <a class="btn btn-primary" style="margin-left: 15px"
+                                    href="{% url 'order_create' orgID tpID contrID own.pk %}">Заказ-наряд</a>
                         </th>
                     </tr>
                     {% include 'own/own_delete_modal.html' %}
