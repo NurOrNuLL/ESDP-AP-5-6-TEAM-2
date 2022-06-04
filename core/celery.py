@@ -1,5 +1,10 @@
 import os
 
+import dotenv
+
+env_file = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), '.env')
+dotenv.read_dotenv(env_file)
+
 from celery import Celery
 
 # Set the default Django settings module for the 'celery' program.

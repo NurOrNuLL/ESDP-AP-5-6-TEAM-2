@@ -115,7 +115,19 @@ class ContractorUpdate(TemplateView):
         form = self.form_class(data=request.POST, instance=contractor)
 
         if form.is_valid():
-            ContractorService.update_contractor(contractor, request, form)
+            data = {
+                'name': form.cleaned_data['name'],
+                'address': form.cleaned_data['address'],
+                'IIN_or_BIN': form.cleaned_data['IIN_or_BIN'],
+                'IIC': form.cleaned_data['IIC'],
+                'bank_name': form.cleaned_data['bank_name'],
+                'BIC': form.cleaned_data['BIC'],
+                'phone': form.cleaned_data['phone'],
+                'trust_person_name': request.POST['trust_person_name'],
+                'trust_person_comment': request.POST['trust_person_comment']
+            }
+
+            ContractorService.update_contractor(contractor, data)
 
             return redirect('contractor_detail', orgID=1, contrID=self.kwargs['contrID'], tpID=self.kwargs['tpID'])
         else:
