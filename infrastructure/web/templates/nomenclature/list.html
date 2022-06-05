@@ -52,15 +52,6 @@
             </div>
         {% endif %}
         <div class="d-flex justify-content-center">
-            <div id="export-progress-container" class="col-md-12">
-                <div id="export-progress-message"> . . .</div>
-                <div class="progress">
-                    <div id="export-progress-bar"
-                         class="progress-bar progress-bar-striped progress-bar-animated"
-                         role="progressbar" aria-valuemin="0" aria-valuemax="100">
-                    </div>
-                </div>
-            </div>
             <input type="number" class="form-control me-1 bg-transparent border-secondary" style="width: 80px;"
                    value="100" id="limit">
             <div class="btn-group align-items-center">
@@ -94,50 +85,58 @@
             integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
     <script>
-        runExportData = () => {
+        $("#exportData").on("submit", (e) => {
+            e.preventDefault()
+            let formData = new FormData($("#exportData")[0])
             let nomenclature_id = document.getElementById('nomenclature_id')
             let exstension = document.getElementById('extension')
+            console.log(formData)
             $.ajax({
                 type: "GET",
                 url: "{% url 'nomenclature_export' orgID=1 tpID=tpID %}" + `?nomenclature_id=${nomenclature_id.value}&extension=${exstension.value}`,
+                data: formData,
+                contentType: false,
+                processData: false,
+                cache: false,
+                async: true,
                 success: function (res) {
-
                     getProgress(
                         taskId = res.task_id,
                         progressBarId = "export-progress-bar",
                         progressBarMessageId = "export-progress-message",
                         isDownloadFile = true
                     )
-
                 },
                 error: function (err) {
                     console.log(err);
                 },
             })
-        }
+        })
+
         getProgress = (taskId, progressBarId, progressBarMessageId, isDownloadFile = false) => {
-                var progressUrl = `{% url 'progress' orgID=1 tpID=tpID %}?task_id=${taskId}`;
-                function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
-                    progressBarMessageElement.innerHTML = `Progress ${progress.percent}% . . .`
-                    progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
-                    progressBarElement.setAttribute("aria-valuenow", progress.percent)
-                }
+            var progressUrl = `{% url 'progress' orgID=1 tpID=tpID %}?task_id=${taskId}`;
 
-                function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
-                    alert("Загрузка выполнено на 100%")
-                    progressBarMessageElement.innerHTML = " . . ."
-                    progressBarElement.setAttribute("style", "width: 0%")
-                    progressBarElement.setAttribute("aria-valuenow", 0)
-                    if (isDownloadFile) window.open(`{% url 'nomenclature_download' orgID=1 tpID=tpID %}?task_id=${taskId}`);
-                }
-
-                CeleryProgressBar.initProgressBar(progressUrl, {
-                    progressBarId: progressBarId,
-                    progressBarMessageId: progressBarMessageId,
-                    onProgress: onExportUserProgress,
-                    onSuccess: onExportUserSuccess,
-                })
+            function onExportUserProgress(progressBarElement, progressBarMessageElement, progress) {
+                progressBarMessageElement.innerHTML = `Загружено ${progress.percent}% . . .`
+                progressBarElement.setAttribute("style", `width: ${progress.percent}%`)
+                progressBarElement.setAttribute("aria-valuenow", progress.percent)
             }
+
+            function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
+                alert("Загрузка выполнено на 100%")
+                progressBarMessageElement.innerHTML = " . . ."
+                progressBarElement.setAttribute("style", "width: 0%")
+                progressBarElement.setAttribute("aria-valuenow", 0)
+                if (isDownloadFile) window.open(`{% url 'nomenclature_download' orgID=1 tpID=tpID %}?task_id=${taskId}`);
+            }
+
+            CeleryProgressBar.initProgressBar(progressUrl, {
+                progressBarId: progressBarId,
+                progressBarMessageId: progressBarMessageId,
+                onProgress: onExportUserProgress,
+                onSuccess: onExportUserSuccess,
+            })
+        }
     </script>
 {% endblock %}
 {% block js_block %}

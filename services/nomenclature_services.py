@@ -1,6 +1,5 @@
 import tablib
 from django.http import HttpResponse, HttpResponseRedirect
-from requests import Response
 from models.nomenclature.models import Nomenclature
 from models.organization.models import Organization
 from django.shortcuts import get_object_or_404

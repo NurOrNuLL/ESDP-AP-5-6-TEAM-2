@@ -1,0 +1,42 @@
+<form method="POST">
+{% csrf_token %}
+    <div>
+        <label for="order_finished_at" class="form-label">Дата завершения</label><br>
+        <input type="date" class="form-control" id="order_finished_at" name="finished_at" value="{{ order_form.finished_at.value|default:'' }}">
+        <div class="form-text error-red">{{ order_form.errors.finished_at }}</div>
+    </div><br>
+    <div>
+        <label for="order_status" class="form-label">Статус заказ-наряда</label><br>
+        <select class="form-select" id="order_status" name="status" value="{{ order_form.finished_at.value|default:'' }}">
+        {% for status in order_statuses %}
+            <option value="{{ status.1 }}">{{ status.1 }}</option>
+        {% endfor %}
+        </select>
+        <div class="form-text error-red">{{ order_form.errors.status }}</div>
+    </div><br>
+    <div>
+        <label for="payment_status" class="form-label">Оплата</label><br>
+        <select class="form-select" id="payment_status" name="payment_status" value="{{ payment_form.finished_at.value|default:'' }}">
+        {% for status in payment_statuses %}
+            <option value="{{ status.1 }}">{{ status.1 }}</option>
+        {% endfor %}
+        </select>
+        <div class="form-text error-red">{{ payment_form.errors.payment_status }}</div>
+    </div><br>
+    <div>
+        <label for="order_price" class="form-label">Общая сумма</label><br>
+        <input type="number" class="form-control" id="order_price" name="price" value="{{ order_form.price.value|default:'' }}">
+        <div class="form-text error-red">{{ order_form.errors.price }}</div>
+    </div><br>
+    <div>
+        <label for="order_mileage" class="form-label">Пробег</label><br>
+        <input type="text" class="form-control" id="order_mileage" name="mileage" value="{{ order_form.mileage.value|default:'' }}">
+        <div class="form-text error-red">{{ order_form.errors.mileage }}</div>
+    </div><br>
+    <div>
+        <label for="order_note" class="form-label">Комментарий</label><br>
+        <input type="text" class="form-control" id="order_note" name="note" value="{{ order_form.note.value|default:'' }}"><br>
+        <div class="form-text error-red">{{ order_form.errors.note }}</div>
+    </div><br>
+    <button type="submit" class="btn btn-primary">{{ button_text }}</button>
+</form>
