@@ -1,17 +1,32 @@
 version: '3'
 
 services:
+  web:
+    container_name: sto
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - static_volume:/static
+    env_file:
+      - .env_prod
+    image: sto
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
 
   postgres:
     container_name: postgres
     image: postgres:latest
     restart: always
     ports:
-      - '5432:5432'
+      - "5435:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
     env_file:
-      - .env
+      - .env_prod
 
   redis:
     container_name: redis
@@ -22,8 +37,17 @@ services:
     volumes:
       - redis:/data
 
+  nginx:
+    build: ./nginx
+    image: nginx
+    container_name: nginx
+    volumes:
+      - static_volume:/static
+    ports:
+      - "8084:80"
+    depends_on:
+      - web
 volumes:
   postgres:
   redis:
-
-
+  static_volume:
