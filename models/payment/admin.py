@@ -6,5 +6,5 @@ from .models import Payment
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
     """Оплата"""
-    list_display = ('id', 'payment_status', 'method', 'type')
-    list_display_links = ('id', 'payment_status', 'method', 'type')
+    list_display = ('id', 'payment_status', 'method', 'details')
+    list_display_links = ('id', 'payment_status', 'method', 'details')
