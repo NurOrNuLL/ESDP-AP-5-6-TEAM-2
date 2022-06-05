@@ -12,7 +12,7 @@ class ContractorServicesTest(TestCase):
         with patch('models.contractor.models.Contractor.objects.get') as get_contrator:
             get_contrator.return_value = contractor
 
-            returned_contractor = ContractorService.get_contractor_by_id(contr_id=contractor.id)
+            returned_contractor = ContractorService.get_contractor_by_id(contrID=contractor.id)
 
             self.assertEqual(returned_contractor, contractor)
             get_contrator.assert_called_once_with(id=contractor.id)
