@@ -22,5 +22,5 @@ class OrderService:
         return Order.objects.filter(trade_point=kwargs['tpID'])
 
     @staticmethod
-    def get_order_by_id(ord_id: int) -> Order:
-        return Order.objects.get(id=ord_id)
+    def get_order_by_id(ordID: int) -> Order:
+        return Order.objects.get(id=ordID)

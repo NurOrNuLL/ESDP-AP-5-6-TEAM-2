@@ -20,7 +20,7 @@ class ContractorCreate(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
-        context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['tpID'] = self.kwargs['tpID']
         return context
 
@@ -75,7 +75,7 @@ class ContractorDetail(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
-        context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
         return context

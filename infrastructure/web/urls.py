@@ -1,5 +1,8 @@
 from django.urls import path, include
-from .order.views import HomePageView, OrderCreateFromContractor
+from .order.views import (
+    HomePageView, OrderCreateFromContractor,
+    OrderDetail
+)
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
     NomenclaturesServiceListView,
@@ -59,6 +62,8 @@ employee_urls = [
 order_urls = [
     path('contractor/<int:contrID>/own/<int:ownID>/order/create/',
          OrderCreateFromContractor.as_view(), name="order_create"),
+    path('contractor/<int:contrID>/own/<int:ownID>/order/<int:ordID>/',
+         OrderDetail.as_view(), name="order_detail"),
 ]
 
 urlpatterns = [

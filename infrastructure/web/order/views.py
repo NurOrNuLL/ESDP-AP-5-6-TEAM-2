@@ -47,7 +47,7 @@ class OrderCreateFromContractor(TemplateView):
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
-        context['own'] = OwnServices.get_own_by_id(kwargs)
+        context['own'] = OwnServices.get_own_by_id(self.kwargs)
         context['payment_statuses'] = PAYMENT_STATUS_CHOICES
         context['order_statuses'] = ORDER_STATUS_CHOICES
         return context
@@ -75,9 +75,24 @@ class OrderCreateFromContractor(TemplateView):
             payment = PaymentService.create_payment(payment_form.cleaned_data)
             order_form.cleaned_data['payment'] = payment
             order = OrderService.create_order(order_form.cleaned_data)
-            return redirect('contractor_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], contrID=self.kwargs['contrID'])
+            return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
+                            contrID=self.kwargs['contrID'], ownID=self.kwargs['ownID'], ordID=order.pk)
         else:
             context = self.get_context_data(**kwargs)
             context['order_form'] = order_form
             context['payment_form'] = payment_form
             return render(request, template_name=self.template_name, context=context)
+
+
+
+class OrderDetail(TemplateView):
+    template_name = 'order/order_detail.html'
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
+        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        context['own'] = OwnServices.get_own_by_id(self.kwargs)
+        context['order'] = OrderService.get_order_by_id(self.kwargs['ordID'])
+        return context

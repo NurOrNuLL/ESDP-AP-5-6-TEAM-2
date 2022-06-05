@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали заказ-наряда{% endblock %}
+
+{% block content %}
+    <a class="btn btn-outline-secondary" href="">К списку</a><br><br>
+    <div class="d-flex mb-4">
+        <h3> Детали заказ-наряда {{ order.contractor }}</h3>
+        <a class="ms-2 edit-link" href="#"><img width=35 src="{% static 'pics/edit.png' %}"></a><br>
+    </div>
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Собственность: </span>
+                    <span style="padding-left: 5px" class="card-text">{{ order.own }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Пробег: </span>
+                    <span style="padding-left: 5px" class="card-text">{% if order.mileage %}{{ order.mileage }}{% else %}-{% endif %}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Дата и время создания:</span><br>
+                    <span style="padding-left: 5px" class="card-text">{{ order.created_at }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Дата и время завершения:</span><br>
+                    <span style="padding-left: 5px" class="card-text">
+                        {% if order.finished_at %}{{ order.finished_at }}{% else %}-{% endif %}</span>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Статус заказ-наряда:</span>
+                    <span style="padding-left: 5px" class="card-text">{{ order.status }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Примечание:</span>
+                    <span style="padding-left: 5px" class="card-text">{% if order.note %}{{ order.note }}{% else %}-{% endif %}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Общая стоимость:</span>
+                    <span style="padding-left: 5px" class="card-text">{{ order.price }} тг</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Оплата:</span>
+                    <span style="padding-left: 5px" class="card-text">{{ order.payment.payment_status }}</span>
+                </div>
+            </div>
+        </div>
+        <div  class="card-body">
+           <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Метод оплаты:</span>
+                    <span style="padding-left: 5px" class="card-text">{% if order.payment.method %}{{ order.payment.method }}{% else %}-{% endif %}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Детали платежа:</span>
+                    {% if order.payment.details %}
+                        {% if order.payment.details.cash %}
+                            <span style="padding-left: 5px" class="card-text">
+                                {% if order.payment.details.cash %}{{ order.payment.details.cash }}{% else %}-{% endif %}
+                            </span>
+                        {% elif order.payment.details.cashless %}
+                            <br><span style="padding-left: 5px" class="card-text">Накладная #
+                                {{ order.payment.details.cashless.consignment }}</span><br>
+                            <span style="padding-left: 5px">Счёт-фактура #
+                                {{ order.payment.details.cashless.invoice }}</span>
+                        {% elif order.payment.details.kaspi %}
+                            {% if order.payment.details.kaspi.qr %}
+                                <span style="padding-left: 5px" class="card-text">{{ order.payment.details.kaspi.qr }}</span>
+                            {% elif order.payment.details.kaspi.red %}
+                                <span style="padding-left: 5px" class="card-text">{{ order.payment.details.kaspi.red }}</span>
+                            {% elif order.payment.details.kaspi.transfer %}
+                                <span style="padding-left: 5px" class="card-text">{{ order.payment.details.kaspi.transfer }}</span>
+                            {% endif %}
+                        {% endif %}
+                    {% else %}
+                        <span style="padding-left: 5px" class="card-text">-</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
