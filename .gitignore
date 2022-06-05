@@ -17,6 +17,7 @@ __pycache__/
 
 #dotenv
 .env
+.env_prod
 
 /pdf
 

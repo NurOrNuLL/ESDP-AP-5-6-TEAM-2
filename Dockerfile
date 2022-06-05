@@ -8,8 +8,9 @@ ENV PYTHONUNBUFFERED 1
 COPY requirements.txt /app/
 
 RUN pip install --upgrade pip
-
 RUN pip install -r requirements.txt
 
-CMD ["python3", "manage.py", "runserver"]
+COPY ./entrypoint.sh /
+ENTRYPOINT ["sh", "/entrypoint.sh"]
+
 COPY . .
