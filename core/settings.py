@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': os.environ.get('PSQL_NAME'),
         'USER': os.environ.get('PSQL_USER'),
         'PASSWORD': os.environ.get('PSQL_PASS'),
-        'HOST': os.environ.get('PSQL_HOST'),
+        'HOST': 'localhost',
         'PORT': os.environ.get('PSQL_PORT'),
     }
 }
