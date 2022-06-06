@@ -17,6 +17,9 @@ def get_services_task(self, nomenclature_pk, extension):
                                                        description="Inserting record into row")
                     json = {'main_data': nomenclature.services, 'extension': extension}
                     return json
+                else:
+                    json = {'main_data': False, 'extension': extension}
+                    return json
 
     else:
         json = {'main_data': False, 'extension': extension}
