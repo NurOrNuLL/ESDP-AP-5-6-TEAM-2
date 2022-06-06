@@ -11,7 +11,7 @@ class OwnServicesTest(TestCase):
 
         with patch('models.own.models.Own.objects.get') as get_own:
             get_own.return_value = own
-            returned_own = OwnServices.get_own_by_id({'ownID':own.id})
+            returned_own = OwnServices.get_own_by_id({'ownID': own.id})
 
             self.assertEqual(returned_own, own)
             get_own.assert_called_once_with(id=own.id)
@@ -24,25 +24,26 @@ class OwnServicesTest(TestCase):
             'number': 'HHH777J'
         }
         with patch('models.own.models.Own.objects.create') as create_own:
-            with patch('models.contractor.models.Contractor.objects.get') as get_contractor:
-                    create_own.return_value = Mock(
-                        spec=Own,
-                        name=data['name'],
-                        number=data['number']
-                    )
+            with patch(
+                    'models.contractor.models.Contractor.objects.get'
+            ) as get_contractor:
+                create_own.return_value = Mock(
+                    spec=Own,
+                    name=data['name'],
+                    number=data['number']
+                )
 
-                    get_contractor.return_value = contractor
+                get_contractor.return_value = contractor
 
-                    own = OwnServices.create_own(data, contractor_id=contractor.id)
-                    queryset.append(own)
+                own = OwnServices.create_own(data, contractor_id=contractor.id)
+                queryset.append(own)
 
-                    self.assertIn(own, queryset)
-                    create_own.assert_called_once_with(
-                        name=data['name'],
-                        number=data['number'],
-                        contractor=contractor
-                    )
-
+                self.assertIn(own, queryset)
+                create_own.assert_called_once_with(
+                    name=data['name'],
+                    number=data['number'],
+                    contractor=contractor
+                )
 
     def test_delete_own(self):
         own = Mock(spec=Own, id=1)
