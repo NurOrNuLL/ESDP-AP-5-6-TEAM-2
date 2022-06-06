@@ -17,13 +17,12 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
-from django.shortcuts import redirect
 from infrastructure.web.order.views import HomeRedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeRedirectView.as_view(), name='home_redirect'),
-    path('org/<int:orgID>/accounts/', include('infrastructure.accounts.urls')),
+    path('accounts/', include('infrastructure.accounts.urls')),
     path('org/<int:orgID>/tp/<int:tpID>/', include('infrastructure.web.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

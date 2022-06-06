@@ -19,6 +19,7 @@ from .contractor.views import (
 )
 from .trade_point.views import TradePointCreate, TradePointList
 from .employee.views import EmployeeCreate
+from infrastructure.accounts.views import RegisterView
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
@@ -56,7 +57,8 @@ own_urls = [
 ]
 
 employee_urls = [
-    path('employee/create/', EmployeeCreate.as_view(), name="employee_create")
+    path('employee/create/', EmployeeCreate.as_view(), name="employee_create"),
+    path('register/', RegisterView.as_view(), name='register')
 ]
 
 order_urls = [

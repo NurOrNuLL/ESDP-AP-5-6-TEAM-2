@@ -9,7 +9,6 @@ from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
 from services.trade_point_services import TradePointServices
-from models.employee.models import Employee
 
 
 class RegisterView(TemplateView):
@@ -81,4 +80,4 @@ class LogoutView(View):
 
     def get(self, request, *args, **kwargs):
         logout(self.request)
-        return redirect('login', orgID=1)
+        return redirect('login')

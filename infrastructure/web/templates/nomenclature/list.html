@@ -90,7 +90,6 @@
             let formData = new FormData($("#exportData")[0])
             let nomenclature_id = document.getElementById('nomenclature_id')
             let exstension = document.getElementById('extension')
-            console.log(formData)
             $.ajax({
                 type: "GET",
                 url: "{% url 'nomenclature_export' orgID=1 tpID=tpID %}" + `?nomenclature_id=${nomenclature_id.value}&extension=${exstension.value}`,
