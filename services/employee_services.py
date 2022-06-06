@@ -1,4 +1,5 @@
 import io
+import os
 from typing import List
 
 import boto3
@@ -67,8 +68,8 @@ class EmployeeServices:
         s3_client = boto3.client(
             's3',
             endpoint_url='https://s3.us-east-2.amazonaws.com/',
-            aws_access_key_id='AKIA2M2OPPDRB7G7CJ7A',
-            aws_secret_access_key='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',
+            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
             region_name='us-east-2',
         )
         with open(local_path, 'rb') as f:
