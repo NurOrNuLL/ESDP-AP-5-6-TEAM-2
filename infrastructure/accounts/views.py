@@ -86,4 +86,4 @@ class LogoutView(View):
 
     def get(self, request, *args, **kwargs):
         logout(self.request)
-        return redirect('login', orgID=1)
+        return redirect('login')

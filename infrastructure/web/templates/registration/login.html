@@ -13,7 +13,7 @@
 </head>
 <body class="text-center">
 <main class="form-signin">
-    <form action="{% url 'login' orgID=1 %}{% if next %}?next={{ next }}{% endif %}" method="post">
+    <form action="{% url 'login' %}{% if next %}?next={{ next }}{% endif %}" method="post">
         {% csrf_token %}
         <h1 class="h3 mb-3 fw-normal">Авторизация</h1>
         <div class="form-floating">
