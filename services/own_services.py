@@ -1,6 +1,5 @@
 from models.own.models import Own
 from models.contractor.models import Contractor
-from django.shortcuts import get_object_or_404
 
 
 class OwnServices:
@@ -9,12 +8,12 @@ class OwnServices:
         return Own.objects.create(
             name=data['name'],
             number=data['number'],
-            contractor=get_object_or_404(Contractor, id=contractor_id)
+            contractor=Contractor.objects.get(id=contractor_id)
         )
 
     @staticmethod
     def delete_own(own_id: int) -> None:
-        own = get_object_or_404(Own, id=own_id)
+        own = Own.objects.get(id=own_id)
         own.delete()
 
     @staticmethod
