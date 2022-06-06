@@ -25,7 +25,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = str(os.environ.get('DEBUG'))
 
-ALLOWED_HOSTS = ['localhost']
+ALLOWED_HOSTS = ['*']
 if DEBUG:
     ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
 else:
@@ -111,7 +111,7 @@ DATABASES = {
         'NAME': os.environ.get('PSQL_NAME'),
         'USER': os.environ.get('PSQL_USER'),
         'PASSWORD': os.environ.get('PSQL_PASS'),
-        'HOST': 'localhost',
+        'HOST': os.environ.get('PSQL_HOST'),
         'PORT': os.environ.get('PSQL_PORT'),
     }
 }
@@ -176,10 +176,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "infrastructure/web/static"]
-
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

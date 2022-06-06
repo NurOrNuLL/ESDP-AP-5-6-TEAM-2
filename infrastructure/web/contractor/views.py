@@ -9,6 +9,7 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from services.contractor_services import ContractorService
 from services.organization_services import OrganizationService
+from services.trade_point_services import TradePointServices
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 
@@ -19,7 +20,7 @@ class ContractorCreate(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
-        context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['tpID'] = self.kwargs['tpID']
         return context
 
@@ -74,8 +75,9 @@ class ContractorDetail(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
+        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
-        context['organization'] = OrganizationService.get_organization_by_id(kwargs)
         return context
 
 
@@ -113,7 +115,19 @@ class ContractorUpdate(TemplateView):
         form = self.form_class(data=request.POST, instance=contractor)
 
         if form.is_valid():
-            ContractorService.update_contractor(contractor, request, form)
+            data = {
+                'name': form.cleaned_data['name'],
+                'address': form.cleaned_data['address'],
+                'IIN_or_BIN': form.cleaned_data['IIN_or_BIN'],
+                'IIC': form.cleaned_data['IIC'],
+                'bank_name': form.cleaned_data['bank_name'],
+                'BIC': form.cleaned_data['BIC'],
+                'phone': form.cleaned_data['phone'],
+                'trust_person_name': request.POST['trust_person_name'],
+                'trust_person_comment': request.POST['trust_person_comment']
+            }
+
+            ContractorService.update_contractor(contractor, data)
 
             return redirect('contractor_detail', orgID=1, contrID=self.kwargs['contrID'], tpID=self.kwargs['tpID'])
         else:

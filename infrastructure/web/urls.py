@@ -1,12 +1,16 @@
 from django.urls import path, include
-from .order.views import HomePageView
+from .order.views import (
+    HomePageView, OrderCreateFromContractor,
+    OrderDetail
+)
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
     NomenclaturesServiceListView,
     NomenclatureItemsFilterApiView,
     NomenclatureExportView,
     NomenclatureFormForImpost,
-    NomenclatureDownloadView
+    NomenclatureDownloadView,
+    NomenclatureProgressView
 )
 from .own.views import OwnDeleteView, OwnCreate
 from .contractor.views import (
@@ -18,6 +22,7 @@ from .employee.views import EmployeeCreate
 
 nomenclature_urls = [
     path('nomenclature/export/', NomenclatureExportView.as_view(), name='nomenclature_export'),
+    path("celery-progress/", NomenclatureProgressView.as_view(), name="progress"),
     path('nomenclature/export/download/', NomenclatureDownloadView.as_view(), name='nomenclature_download'),
     path('nomenclature/form_import/', NomenclatureFormForImpost.as_view(), name='nomenclature_form_import'),
     path('nomenclature/import/', NomenclatureImportView.as_view(), name="nomenclature_import"),
@@ -54,6 +59,13 @@ employee_urls = [
     path('employee/create/', EmployeeCreate.as_view(), name="employee_create")
 ]
 
+order_urls = [
+    path('contractor/<int:contrID>/own/<int:ownID>/order/create/',
+         OrderCreateFromContractor.as_view(), name="order_create"),
+    path('contractor/<int:contrID>/own/<int:ownID>/order/<int:ordID>/',
+         OrderDetail.as_view(), name="order_detail"),
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
 ]
@@ -63,3 +75,4 @@ urlpatterns += trade_point_urls
 urlpatterns += contractor_urls
 urlpatterns += own_urls
 urlpatterns += employee_urls
+urlpatterns += order_urls

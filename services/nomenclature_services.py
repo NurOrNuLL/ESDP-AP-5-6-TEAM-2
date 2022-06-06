@@ -1,9 +1,7 @@
 import tablib
-from django.http import HttpResponse
-from requests import Response
+from django.http import HttpResponse, HttpResponseRedirect
 from models.nomenclature.models import Nomenclature
 from models.organization.models import Organization
-from django.shortcuts import get_object_or_404
 import pandas
 from typing import List
 import jsonschema
@@ -19,7 +17,7 @@ class NomenclatureService:
     def create_nomenclature(data: dict) -> Nomenclature:
         return Nomenclature.objects.create(
             name=data['name'],
-            organization=get_object_or_404(Organization, id=1)
+            organization=Organization.objects.get(id=1),
         )
 
     @staticmethod
@@ -57,7 +55,8 @@ class NomenclatureService:
         nomenclature.save()
 
     @staticmethod
-    def get_filtered_services(nomenclature_id: int, search: str = '', category: str = '', mark: str = '') -> List['Nomenclature']:
+    def get_filtered_services(nomenclature_id: int, search: str = '', category: str = '', mark: str = '') -> List[
+        'Nomenclature']:
         services = NomenclatureService.get_nomenclature_by_id(nomenclature_id=nomenclature_id).services
         filtered_services = []
 
@@ -76,20 +75,16 @@ class NomenclatureService:
         return filtered_services
 
     @staticmethod
-    def response_sender(data: str, file_extension: str) -> Response:
+    def response_sender(data: str, file_extension: str) -> HttpResponse or HttpResponseRedirect:
         response = HttpResponse(data)
         response['Content-Disposition'] = f'attachment; filename="price.{file_extension}"'
         return response
 
     @staticmethod
-    def download_a_exel_file_to_user(extension: str, services: list) -> File:
+    def download_a_exel_file_to_user(file_data, file_extension):
         headers = ['Цена', 'Марка', 'Название', 'Категория', 'Примечание']
-        if services:
-            data = tablib.Dataset(headers=headers)
-            for service in services:
-                data.append(service.values())
-                data.export(extension)
-            return data.export(extension)
-        else:
-            data = tablib.Dataset(headers=headers)
-            return data.export(extension)
+        data = tablib.Dataset(headers=headers)
+        for i in file_data:
+            data.append(i.values())
+            file_data = data.export(file_extension)
+        return file_data
