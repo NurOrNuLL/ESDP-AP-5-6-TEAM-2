@@ -2,7 +2,6 @@ import tablib
 from django.http import HttpResponse, HttpResponseRedirect
 from models.nomenclature.models import Nomenclature
 from models.organization.models import Organization
-from django.shortcuts import get_object_or_404
 import pandas
 from typing import List
 import jsonschema
@@ -18,7 +17,7 @@ class NomenclatureService:
     def create_nomenclature(data: dict) -> Nomenclature:
         return Nomenclature.objects.create(
             name=data['name'],
-            organization=get_object_or_404(Organization, id=1)
+            organization=Organization.objects.get(id=1),
         )
 
     @staticmethod
