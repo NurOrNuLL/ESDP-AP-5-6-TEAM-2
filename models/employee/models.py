@@ -5,19 +5,6 @@ from django.db import models
 from .validators import birthdate_validator
 
 
-TRADEPOINTS_JSON_FIELD_SCHEMA = {
-    'schema': 'http://json-schema.org/draft-07/schema#',
-    'type': 'object',
-    'properties': {
-        'id': {
-            "type": "number",
-            "minimum": 1
-        },
-    },
-    'required': ['id', ]
-}
-
-
 class Employee(models.Model):
     """Сотрудники"""
     ROLE = [
@@ -45,7 +32,11 @@ class Employee(models.Model):
         null=False, blank=False, max_length=12, unique=True,
         verbose_name='ИИН', validators=[RegexValidator(r'^\d{12,12}$')]
     )
-    pdf = models.FileField(upload_to='pdf')
+    image = models.ImageField(
+        upload_to='image',
+        blank=False,
+        null=False
+    )
     address = models.CharField(
         max_length=50,
         null=False,
@@ -59,7 +50,7 @@ class Employee(models.Model):
     birthdate = models.DateField(validators=[birthdate_validator])
     tradepoint = models.ForeignKey(
         'trade_point.TradePoint', on_delete=models.PROTECT,
-        related_name='tradepoint_employee', verbose_name='Филиал'
+        verbose_name='Филиал'
     )
 
     class Meta:
