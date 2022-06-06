@@ -16,6 +16,11 @@ class EmployeeCreate(TemplateView):
         'role': 'Мастер'
     }
 
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['tpID'] = self.kwargs['tpID']
+        return context
+
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
         context = self.get_context_data(**kwargs)
         context['tradepoints'] = EmployeeServices.get_tradepoint()

@@ -17,11 +17,11 @@ class EmployeeServices:
             surname=data['surname'],
             role=data['role'],
             IIN=data['IIN'],
-            pdf=data['pdf'],
+            image=data['image'],
             address=data['address'],
             phone=data['phone'],
             birthdate=data['birthdate'],
-            tradepoint=data['tradepoints']
+            tradepoint=data['tradepoint']
         )
 
     @staticmethod
@@ -32,7 +32,7 @@ class EmployeeServices:
                 surname=data['surname'],
                 role=data['role'],
                 IIN=data['IIN'],
-                pdf=data['pdf'],
+                image=data['image'],
                 address=data['address'],
                 phone=data['phone'],
                 birthdate=data['birthdate'],
