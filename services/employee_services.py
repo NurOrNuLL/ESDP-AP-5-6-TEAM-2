@@ -64,6 +64,10 @@ class EmployeeServices:
             return Employee.objects.get(uuid=uuid).tradepoint.id
 
     @staticmethod
+    def get_employees() -> List['Employee']:
+        return Employee.objects.filter()
+
+    @staticmethod
     def upload_image(local_path, path, bucket_name='test.aspa', acl='public-read'):
         s3_client = boto3.client(
             's3',

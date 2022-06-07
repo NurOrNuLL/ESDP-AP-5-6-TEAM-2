@@ -4,8 +4,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.http.request import HttpRequest
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from rest_framework import generics, filters
+from rest_framework.pagination import PageNumberPagination
+
+from models.employee.models import Employee
+from services.organization_services import OrganizationService
 from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
+from .serializers import EmployeeSerializer
 from .tasks import upload
 
 
@@ -42,3 +48,30 @@ class EmployeeCreate(TemplateView):
             context['roles'] = self.initial_data
             context['tradepoints'] = EmployeeServices.get_tradepoint()
             return render(request, self.template_name, context)
+
+
+class EmployeeList(TemplateView):
+    template_name = 'employee/employees.html'
+
+    # def get_context_data(self, **kwargs: dict) -> dict:
+    #     context = super().get_context_data(**kwargs)
+    #     context['employees'] = EmployeeServices.get_employees(kwargs)
+    #     context['tpID'] = self.kwargs['tpID']
+    #     context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+    #     return context
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 100
+
+
+class EmployeeFilterApiView(generics.ListAPIView):
+    serializer_class = EmployeeSerializer
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'surname', 'IIN', 'phone']
+    pagination_class = MyPagination
+    queryset = Employee.objects.all()
+
+
+class EmployeeDetail(TemplateView):
+    template_name = 'employee/employee_detail.html'
