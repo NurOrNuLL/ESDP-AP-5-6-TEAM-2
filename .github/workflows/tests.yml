@@ -22,4 +22,4 @@ jobs:
       - name: Run tests with pytest
         run: |
           pip install pytest
-          pytest
+          python manage.py test
