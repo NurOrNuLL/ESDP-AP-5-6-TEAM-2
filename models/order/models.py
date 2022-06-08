@@ -1,7 +1,41 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from .validators import JSONSchemaValidator
 
 ORDER_STATUS_CHOICES = [('В работе', 'В работе'), ('Завершен', 'Завершен')]
+
+JOBS_JSON_SCHEMA = {
+    'schema': 'http://json-schema.org/draft-07/schema#',
+    'type': 'array',
+    'items': {
+        'type': 'object',
+        'properties': {
+            'Заказ': {
+                'type': 'integer',
+                'minimum': 1
+            },
+            'Название услуги': {
+                'type': 'string',
+                'maxLength': 500
+            },
+            'Цена услуги': {
+                'type': 'integer',
+                'minimum': 1
+            },
+            'Гарантия': {
+                'type': 'boolean',
+                'default': False
+            },
+            'Мастера': {
+                'type': 'array',
+                'items': {
+                    'type': 'number'
+                }
+            }
+        },
+        'required': ['Заказ', 'Название услуги', 'Цена услуги', 'Гарантия', 'Мастера']
+    }
+}
 
 
 class Order(models.Model):
@@ -30,6 +64,7 @@ class Order(models.Model):
                             blank=True, verbose_name='Примечание')
     mileage = models.IntegerField(null=True, blank=True,
                                   validators=[MinValueValidator(0)], verbose_name='Пробег')
+    jobs = models.JSONField(verbose_name='Работы', validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
 
     def __str__(self):
         return f'{self.created_at, self.contractor, self.price, self.status}'
