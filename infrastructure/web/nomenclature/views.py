@@ -16,11 +16,13 @@ from django.http.response import HttpResponse, HttpResponseRedirect, JsonRespons
 from typing import List, Dict, Any
 import json
 from celery.result import AsyncResult
-from ..nomenclature import tasks
 from celery_progress.backend import Progress
+from ..nomenclature.tasks.import_exel import import_exel_file
+from ..nomenclature.tasks.export_exel import export_exel_file
 
 
 class NomenclatureImportView(TemplateView):
+    """Импорт прайса для выбранной номенклатуры"""
     template_name = 'nomenclature/list.html'
     form_class = NomenclatureImportForm
 
@@ -36,16 +38,15 @@ class NomenclatureImportView(TemplateView):
 
         if form.is_valid():
             file = form.cleaned_data['excel_file']
+            nomenclature_id = form.cleaned_data['nomenclature_id']
             data = NomenclatureService.parse_excel_to_json(file)
-
-            if not NomenclatureService.validate_json(data, SERVICE_JSON_FIELD_SCHEMA):
-                context = self.get_context_data(error='Некорректный excel, проверте его содержимое и расширение')
-
-                return render(self.request, template_name=self.template_name, context=context)
+            validated_data = NomenclatureService.validate_json(data, SERVICE_JSON_FIELD_SCHEMA)
+            if validated_data:
+                task = import_exel_file.delay(file=validated_data, nom_id=nomenclature_id)
+                return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
             else:
-                NomenclatureService.import_services(data, form.cleaned_data['nomenclature_id'])
-
-                return redirect('nomenclature_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+                context = self.get_context_data(error='Некорректный excel, проверте его содержимое и расширение')
+                return render(self.request, template_name=self.template_name, context=context)
 
 
 class NomenclaturesServiceListView(TemplateView):
@@ -123,7 +124,7 @@ class NomenclatureExportView(TemplateView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
         nomenclature_id = request.GET.get('nomenclature_id')
         extension = request.GET.get('extension')
-        task = tasks.get_services_task.delay(nomenclature_pk=nomenclature_id, extension=extension)
+        task = export_exel_file.delay(nomenclature_pk=nomenclature_id, extension=extension)
         return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
 
 
@@ -177,5 +178,7 @@ class NomenclatureProgressView(TemplateView):
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         task_id = AsyncResult(request.GET.get('task_id'))
-        progress = Progress(task_id)
-        return HttpResponse(json.dumps(progress.get_info()), content_type='application/json')
+        if task_id:
+            progress = Progress(task_id)
+            return HttpResponse(json.dumps(progress.get_info()), content_type='application/json')
+        raise Http404

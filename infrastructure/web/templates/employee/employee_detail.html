@@ -1,1 +1,57 @@
-{% block content%}Страница в разработке{% endblock %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали Сотрудника{% endblock %}
+
+{% block content %}
+    <a class="btn btn-outline-secondary" href="{% url 'employees' orgID tpID %}">К списку</a><br><br>
+    <div class="d-flex mb-4">
+        <h3>{{ employee.name }} {{ employee.surname }}</h3>
+    </div>
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-8">
+                    <span class="text" style="font-weight: bold">Позиция: </span>
+                    <span>{{ employee.role }}</span>
+                </div>
+                <div class="col-md-4">
+                    <span class="text" style="font-weight: bold">Филиал: </span>
+                    <span style="padding-left: 5px">{{ employee.tradepoint.name }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <span class="text" style="font-weight: bold;">Персональная информация:</span><br><br>
+                    <span class="text"><b>ИИH:</b></span>
+                    <span style="padding-left: 8px" class="card-text">{{ employee.IIN }}</span><br>
+                    <span class="text"><b>Дата рождения:</b></span>
+                    <span style="padding-left: 5px" class="card-text">{{ employee.birthdate }}</span><br>
+                    <span class="text"><b>Адрес:</b></span>
+                    <span style="padding-left: 9px" class="card-text">{{ employee.address }}</span><br>
+                    <span class="text"><b>Номер телефона:</b></span>
+                    <span style="padding-left: 9px" class="card-text">{{ employee.phone }}</span>
+                </div>
+                <div class="col-md-4" style="position: relative">
+                    <span class="text" style="font-weight: bold">Фото документа:</span><br><br>
+                    <div id="imageContainer">
+                        <img src="" class="rounded float-start" alt="Здесь будет фото документов"><br>
+                    </div>
+                    <a class="btn btn-primary" style="position: absolute; bottom: 5px" download href="#">Скачать</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-12">
+                    <span class="text" style="font-weight: bold">Уникальный идентификатор:</span>
+                    <span style="padding-left: 5px">{{ employee.uuid }}</span>
+                </div>
+            </div>
+        </div>
+    <script>
+        var tpID = {{ tpID }}
+    </script>
+{% endblock %}

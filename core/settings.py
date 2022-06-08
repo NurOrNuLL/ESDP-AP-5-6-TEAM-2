@@ -110,6 +110,7 @@ DATABASES = {
         'PORT': os.environ.get('PSQL_PORT'),
     }
 }
+
 if os.environ.get('GITHUB_WORKFLOW'):
     DATABASES = {
         'default': {
@@ -121,6 +122,7 @@ if os.environ.get('GITHUB_WORKFLOW'):
             'PORT': '5432',
         }
     }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
