@@ -3,7 +3,6 @@ import os
 from typing import List
 
 import boto3
-import slug as slug
 
 from models.employee.models import Employee
 from django.core.exceptions import ObjectDoesNotExist
