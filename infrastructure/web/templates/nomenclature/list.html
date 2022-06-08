@@ -92,8 +92,6 @@
                 let formData = new FormData($("#importExel")[0])
                 // formData.append("csrfmiddlewaretoken", "{% csrf_token %}")
 
-
-                console.log(formData)
                 $.ajax({
                     type: "POST",
                     url: "{% url 'nomenclature_import' orgID=1 tpID=tpID %}",
