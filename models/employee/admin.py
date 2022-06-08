@@ -6,6 +6,6 @@ from .models import Employee
 @admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     """Сотрудники"""
-    list_display = ('name', 'surname', 'role', 'IIN', 'pdf',
+    list_display = ('name', 'surname', 'role', 'IIN', 'image',
                     'address', 'phone', 'birthdate', 'tradepoint')
     list_display_links = ('name',)

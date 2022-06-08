@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
@@ -9,6 +11,8 @@ from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
 from services.trade_point_services import TradePointServices
+from models.employee.models import Employee
+from infrastructure.web.employee.tasks import upload
 
 
 class RegisterView(TemplateView):
@@ -39,11 +43,13 @@ class RegisterView(TemplateView):
         employee_form = self.employee_form_class(employee_data, request.FILES)
 
         if register_form.is_valid() and employee_form.is_valid():
+            local_path = '/home/asparukh/Desktop/super_sto/ESDP-AP-5-6-TEAM-2/image/' + str(employee_form.cleaned_data['image'])
+            path = 'image/' + str(employee_form.cleaned_data['image'])
             user = register_form.save()
-
+            task = upload.apply_async(args=[local_path, path], ignore_result=True)
             EmployeeServices.create_employee_with_uuid(user.uuid, employee_form.cleaned_data)
 
-            return redirect('home_redirect')
+            return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
         else:
             context = self.get_context_data()
             context['register_form'] = register_form

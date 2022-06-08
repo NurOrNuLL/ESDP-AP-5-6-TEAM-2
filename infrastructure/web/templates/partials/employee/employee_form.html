@@ -1,56 +1,67 @@
-<form method="POST" enctype="multipart/form-data">
+<form method="POST" id="emp" enctype="multipart/form-data">
     {% csrf_token %}
     <div>
         <label for="employee_name" class="form-label">Имя</label><br>
-        <input type="text" class="form-control" id="employee_name" name="name" value="{{ form.name.value|default:'' }}"><br>
+        <input type="text" class="form-control" id="employee_name" name="name"
+               value="{{ form.name.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.name }}</div>
     </div>
     <div>
         <label for="employee_surname" class="form-label">Фамилия</label><br>
-        <input type="text" class="form-control" id="employee_surname" name="surname" value="{{ form.surname.value|default:'' }}"><br>
+        <input type="text" class="form-control" id="employee_surname" name="surname"
+               value="{{ form.surname.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.surname }}</div>
     </div>
-    <div>
+    <div class="d-none">
         <label for="employee_role" class="form-label">Роль</label><br>
-        <select class="form-control" name="role" id="role">
-            {% for nom in role %}
-                {% if nom.0 == form.nom.value %}
-                    <option selected value="{{ nom.0 }}">{{ nom.1 }}</option>
-                {% else %}
-                    <option value="{{ nom.0 }}">{{ nom.1 }}</option>
-                {% endif %}
+        <select class="form-select" name="role" id="role">
+            {% for role in roles.items %}
+                <option>{{ role.1 }}</option>
             {% endfor %}
         </select>
         <div class="form-text c-red">{{ form.errors.role }}</div>
     </div>
     <div>
         <label for="employee_IIN" class="form-label">ИИН</label><br>
-        <input type="number" class="form-control" id="employee_IIN" name="IIN" value="{{ form.IIN.value|default:'' }}"><br>
+        <input type="number" class="form-control" id="employee_IIN" name="IIN"
+               value="{{ form.IIN.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.IIN }}</div>
     </div>
     <div>
-        <label for="employee_pdf" class="form-label">Документы</label><br>
-        <input type="file" class="form-control" id="employee_pdf" name="pdf" value="{{ form.pdf.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.pdf }}</div>
+        <label for="employee_image" class="form-label">Фотография удостоверения</label><br>
+        <input type="file" class="form-control" id="employee_image" name="image"
+               value="{{ form.image.value|default:'' }}"><br>
+        <div class="form-text c-red">{{ form.errors.image }}</div>
     </div>
     <div>
         <label for="employee_address" class="form-label">Адрес</label><br>
-        <input type="text" class="form-control" id="employee_address" name="address" value="{{ form.address.value|default:'' }}"><br>
+        <input type="text" class="form-control" id="employee_address" name="address"
+               value="{{ form.address.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.address }}</div>
     </div>
     <div>
         <label for="employee_phone" class="form-label">Телефон</label><br>
-        <input type="number" class="form-control" id="employee_phone" name="phone" value="{{ form.phone.value|default:'' }}"><br>
+        <input type="number" class="form-control" id="employee_phone" name="phone"
+               value="{{ form.phone.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.phone }}</div>
     </div>
     <div>
         <label for="employee_birthdate" class="form-label">Дата рождения</label><br>
-        <input type="date" class="form-control" id="employee_birthdate" name="birthdate" value="{{ form.birthdate.value|default:'' }}"><br>
+        <input type="date" class="form-control" id="employee_birthdate" name="birthdate"
+               value="{{ form.birthdate.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.birthdate }}</div>
     </div>
     <div>
-        <label for="employee_tradepoints" class="form-label">Филиалы</label><br>
-        <input type="text" class="form-control" id="employee_tradepoints" name="tradepoints" value="{{ form.tradepoints.value|default:'' }}"><br>
+        <label for="employee_tradepoint" class="form-label">Филиалы</label><br>
+        <select class="form-select" name="tradepoint" id="employee_tradepoint">
+            {% for tradepoint in tradepoints %}
+                {% if tradepoint == form.tradepoint.value %}
+                    <option selected value="{{ tradepoint.pk }}">{{ tradepoint.name }}</option>
+                {% else %}
+                    <option value="{{ tradepoint.pk }}">{{ tradepoint.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
         <div class="form-text c-red">{{ form.errors.tradepoints }}</div>
     </div>
     <button type="submit" class="btn btn-primary">{{ button_text }}</button>
