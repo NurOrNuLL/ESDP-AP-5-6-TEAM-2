@@ -15,6 +15,7 @@ class OrderService:
             payment=data['payment'],
             note=data['note'],
             mileage=data['mileage'],
+            jobs=data['jobs'],
         )
 
     @staticmethod
