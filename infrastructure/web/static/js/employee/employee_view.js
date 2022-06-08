@@ -9,7 +9,6 @@ $.ajax({
     url: `http://127.0.0.1:8000/org/1/tp/${tpID}/employee/list/filter/?search=`,
     method: 'GET',
     success: (data) => {
-        console.log(data)
         if (data.next && data.previous === null) {
             next.classList.remove('disabled')
             back.classList.add('disabled')
@@ -28,11 +27,9 @@ $.ajax({
         }
 
         data.results.forEach(function (item) {
-            if (item.tradepoint === tpID) {
-                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
-                    + item.role + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/'
-                    + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
-                }
+            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
+                + item.role + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/'
+                + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
             })
     },
     error: (response) => {
@@ -103,11 +100,9 @@ next.addEventListener('click', (e) => {
         }
 
         data.results.forEach(function (item) {
-            if (item.tradepoint === tpID) {
-                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
-                    + item.role + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/'
-                    + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
-                }
+            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
+                + item.role + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/'
+                + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
             })
     },
     error: (response) => {
@@ -142,7 +137,7 @@ search.addEventListener('input', (e) => {
 
             if(data.results.length) {
                 data.results.forEach(function (item) {
-                    if (item.tradepoint === tpID) {
+                    if (item) {
                         body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
                             + item.role + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/'
                             + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
