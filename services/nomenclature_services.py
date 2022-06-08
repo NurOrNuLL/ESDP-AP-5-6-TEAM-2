@@ -43,10 +43,9 @@ class NomenclatureService:
     def validate_json(data: JSON, json_schema: JSONSchema) -> True or False:
         try:
             jsonschema.validate(json.loads(data), json_schema)
+            return data
         except jsonschema.exceptions.ValidationError:
             return False
-        else:
-            return True
 
     @staticmethod
     def import_services(data: JSON, nomenclature_id: int) -> None:
