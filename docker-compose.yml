@@ -48,7 +48,6 @@ services:
       dockerfile: ./Dockerfile_celery
     volumes:
       - .:/app
-    env_file:
       - .env_prod
     links:
       - redis
