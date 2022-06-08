@@ -3,6 +3,7 @@ import os
 from typing import List
 
 import boto3
+
 from models.employee.models import Employee
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -44,6 +45,10 @@ class EmployeeServices:
     @staticmethod
     def get_employee() -> List['Employee']:
         return Employee.ROLE
+
+    @staticmethod
+    def get_employee_by_uuid(empUID: str) -> Employee:
+        return Employee.objects.get(uuid=empUID)
 
     @staticmethod
     def get_tradepoint() -> List['TradePoint']:

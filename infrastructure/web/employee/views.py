@@ -9,6 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from models.employee.models import Employee
 from services.organization_services import OrganizationService
+from services.trade_point_services import TradePointServices
 from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
 from .serializers import EmployeeSerializer
@@ -53,14 +54,6 @@ class EmployeeCreate(TemplateView):
 class EmployeeList(TemplateView):
     template_name = 'employee/employees.html'
 
-    # def get_context_data(self, **kwargs: dict) -> dict:
-    #     context = super().get_context_data(**kwargs)
-    #     context['employees'] = EmployeeServices.get_employees(kwargs)
-    #     context['tpID'] = self.kwargs['tpID']
-    #     context['organization'] = OrganizationService.get_organization_by_id(kwargs)
-    #     return context
-
-
 class MyPagination(PageNumberPagination):
     page_size = 100
 
@@ -75,3 +68,11 @@ class EmployeeFilterApiView(generics.ListAPIView):
 
 class EmployeeDetail(TemplateView):
     template_name = 'employee/employee_detail.html'
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
+        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['employee'] = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
+        print(context['employee'])
+        return context
