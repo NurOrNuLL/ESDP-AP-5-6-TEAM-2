@@ -54,6 +54,7 @@ class EmployeeCreate(TemplateView):
 class EmployeeList(TemplateView):
     template_name = 'employee/employees.html'
 
+
 class MyPagination(PageNumberPagination):
     page_size = 100
 
@@ -63,7 +64,10 @@ class EmployeeFilterApiView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'surname', 'IIN', 'phone']
     pagination_class = MyPagination
-    queryset = Employee.objects.all()
+
+
+    def get_queryset(self):
+        return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))
 
 
 class EmployeeDetail(TemplateView):
@@ -74,5 +78,4 @@ class EmployeeDetail(TemplateView):
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['employee'] = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
-        print(context['employee'])
         return context
