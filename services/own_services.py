@@ -8,6 +8,7 @@ class OwnServices:
         return Own.objects.create(
             name=data['name'],
             number=data['number'],
+            is_part=data['is_part'],
             contractor=Contractor.objects.get(id=contractor_id)
         )
 
