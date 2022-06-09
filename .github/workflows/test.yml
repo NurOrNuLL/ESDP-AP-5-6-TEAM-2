@@ -25,8 +25,8 @@ jobs:
         ports:
           - 6379:6379
         env:
-          REDIS_HOST: localhost
-          REDIS_PORT: 6379
+          REDIS_HOST: 'localhost'
+          REDIS_PORT: '6379'
     steps:
       - uses: actions/checkout@v2
       - name: Install Python 3
