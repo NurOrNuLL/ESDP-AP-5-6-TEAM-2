@@ -40,7 +40,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: connect to Redis
-        run: celery.sh
+        run: docker run redis
         env:
           REDIS_HOST: '0.0.0.0'
           REDIS_PORT: '6379'
