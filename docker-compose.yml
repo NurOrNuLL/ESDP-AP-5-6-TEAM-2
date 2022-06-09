@@ -3,6 +3,7 @@ version: '3'
 services:
   web:
     container_name: sto
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -43,11 +44,13 @@ services:
 
   celery:
     image: celery
+    restart: always
     build:
       context: .
       dockerfile: ./Dockerfile_celery
     volumes:
       - .:/app
+    env_file:
       - .env_prod
     links:
       - redis
@@ -58,6 +61,7 @@ services:
   nginx:
     build: ./nginx
     image: nginx:latest
+    restart: always
     container_name: nginx
     volumes:
       - static_volume:/app/static
