@@ -1,9 +1,10 @@
+import json
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from services.own_services import OwnServices
 from .forms import OwnForm
 from rest_framework.generics import GenericAPIView
-from .serializer import OwnSerializer
+from .serializer import OwnSerializer, OwnIdSerializer
 from rest_framework.response import Response
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -28,7 +29,7 @@ class OwnCreate(TemplateView):
 
 
 class OwnDeleteView(GenericAPIView):
-    serializer_class = OwnSerializer
+    serializer_class = OwnIdSerializer
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> JsonResponse:
         serializer = self.serializer_class(data=request.data)
@@ -38,3 +39,13 @@ class OwnDeleteView(GenericAPIView):
             return Response(serializer.data)
         else:
             return Response(serializer.errors)
+
+
+class OwnList(GenericAPIView):
+    serializer_class = OwnSerializer
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> JsonResponse:
+        owns = OwnServices.get_own_by_contr_id(request.GET['contrID'])
+        serializer = self.serializer_class(owns, many=True)
+
+        return Response(serializer.data)

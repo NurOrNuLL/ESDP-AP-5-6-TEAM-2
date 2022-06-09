@@ -1,10 +1,15 @@
 from django.template.context_processors import request
 from django.views import View
 from django.views.generic import TemplateView
-from .forms import OrderForm, PaymentForm
+from .forms import (
+    OrderForm, PaymentForm,
+    OrderCreateFormStage1, OrderCreateFormStage2,
+    OrderCreateFormStage3
+)
 from django.shortcuts import render, redirect
 from models.order.models import ORDER_STATUS_CHOICES
 from models.payment.models import PAYMENT_STATUS_CHOICES
+from models.nomenclature.category_choices import 
 from services.employee_services import EmployeeServices
 from services.order_services import OrderService
 from services.payment_services import PaymentService
@@ -35,6 +40,72 @@ class HomePageView(LoginRequiredMixin, TemplateView):
 class HomeRedirectView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         return redirect('home', orgID=1, tpID=EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid))
+
+
+class OrderCreateViewStage1(TemplateView):
+    template_name = 'order/order_create_stage1.html'
+    form_class = OrderCreateFormStage1
+
+    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['contractors'] = ContractorService.get_contractors(self.kwargs)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+
+        return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        context = self.get_context_data()
+
+        session_contractor_id = request.session.get('contractor')
+        session_own_id = request.session.get('own')
+
+        if session_contractor_id and session_own_id:
+            context['session_contractor'] = ContractorService.get_contractor_by_id(session_contractor_id)
+            context['session_own'] = OwnServices.get_own_by_id({'ownID': session_own_id})
+            context['owns'] = OwnServices.get_own_by_contr_id(session_contractor_id)
+
+        return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            request.session['contractor'] = form.cleaned_data['contractor'].id
+            request.session['own'] = form.cleaned_data['own'].id
+
+            return redirect('order_create_stage2', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+        else:
+            context = self.get_context_data()
+            context['form'] = form
+
+            return render(request, self.template_name, context)
+
+
+class OrderCreateViewStage2(TemplateView):
+    template_name = 'order/order_create_stage2.html'
+    form_class = OrderCreateFormStage2
+
+    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['catygories'] =
+        context['services'] = TradePointServices.get_trade_point_by_id(context).nomenclature.services
+        context['employees'] = EmployeeServices.get_employee_by_tradepoint(
+            tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+        ).filter(role='Мастер')
+
+        return context
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            pass
+        else:
+            context = self.get_context_data()
+            context['form'] = form
+
+            return render(request, self.template_name, context)
 
 
 class OrderCreateFromContractor(TemplateView):

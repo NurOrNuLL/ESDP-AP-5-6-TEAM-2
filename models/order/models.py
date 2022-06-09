@@ -10,10 +10,6 @@ JOBS_JSON_SCHEMA = {
     'items': {
         'type': 'object',
         'properties': {
-            'Заказ': {
-                'type': 'integer',
-                'minimum': 1
-            },
             'Название услуги': {
                 'type': 'string',
                 'maxLength': 500
@@ -33,7 +29,7 @@ JOBS_JSON_SCHEMA = {
                 }
             }
         },
-        'required': ['Заказ', 'Название услуги', 'Цена услуги', 'Гарантия', 'Мастера']
+        'required': ['Название услуги', 'Цена услуги', 'Гарантия', 'Мастера']
     }
 }
 
