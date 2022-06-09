@@ -9,7 +9,7 @@ from .forms import (
 from django.shortcuts import render, redirect
 from models.order.models import ORDER_STATUS_CHOICES
 from models.payment.models import PAYMENT_STATUS_CHOICES
-from models.nomenclature.category_choices import 
+
 from services.employee_services import EmployeeServices
 from services.order_services import OrderService
 from services.payment_services import PaymentService
@@ -88,7 +88,6 @@ class OrderCreateViewStage2(TemplateView):
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
-        context['catygories'] =
         context['services'] = TradePointServices.get_trade_point_by_id(context).nomenclature.services
         context['employees'] = EmployeeServices.get_employee_by_tradepoint(
             tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
@@ -106,6 +105,23 @@ class OrderCreateViewStage2(TemplateView):
             context['form'] = form
 
             return render(request, self.template_name, context)
+
+
+class OrderCreateViewStage3(TemplateView):
+    template_name = 'order/order_create_stage3.html'
+    form_class = OrderCreateFormStage3
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            pass
+        else:
+            context = self.get_context_data()
+            context['form'] = form
+
+            return render(request, self.template_name, context)
+
 
 
 class OrderCreateFromContractor(TemplateView):

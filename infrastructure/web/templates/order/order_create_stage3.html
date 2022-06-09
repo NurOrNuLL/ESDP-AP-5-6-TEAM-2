@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <h2>Создание заказ-наряда</h2>
+    <div class="w-50">
+        <div class="progress" style="height: 20px; background-color: white;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100">3\3</div>
+        </div>
+        <br>
+        <form method="POST" id="emp_reg" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div>
+                <label for="contractor" class="form-label">Статус оплаты</label>
+                <select class="form-control selectpicker" id="payment" name="payment" data-live-search="true">
+                    <optgroup label="Статус Оплаты">
+                        <option selected>{{ order.payment.payment_status }}</option>
+                    </optgroup>
+                </select>
+                <div class="form-text" style="color: red;">
+                    {% for err in form.errors.payment %}{{ err }}{% endfor %}</div>
+            </div>
+            <br>
+            <div class="col">
+                <label for="own" class="form-label">Пробег</label>
+                    <input type="number" class="form-control" value="{{ order.mileage }}">
+                <div class="form-text" style="color: red;">
+                    {% for err in form.errors.mileage %}{{ err }}{% endfor %}</div>
+            </div>
+            <br>
+            <div class="col">
+            <label for="own" class="form-label">Примечание</label>
+                <input type="text" class="form-control" value="{{ order.note }}">
+            <div class="form-text" style="color: red;">
+                {% for err in form.errors.note %}{{ err }}{% endfor %}
+            </div><br>
+            <button disabled class="btn btn-secondary">Назад</button>
+            <button type="submit" class="btn btn-primary">Далее</button>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}

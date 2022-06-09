@@ -26,6 +26,12 @@ class OrderCreateFormStage2(forms.Form):
     employee = forms.MultipleChoiceField(required=True)
 
 
+class OrderCreateFormStage3(forms.Form):
+    payment = forms.ChoiceField(required=True)
+    mileage = forms.CharField(required=True)
+    note = forms.Textarea()
+
+
 class OrderCreateFormStage3(forms.ModelForm):
     class Meta:
         model = Order
