@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    container_name: sto
+    container_name: gservicegroup
     restart: always
     build:
       context: .
@@ -11,7 +11,7 @@ services:
       - static_volume:/app/static
     env_file:
       - .env_prod
-    image: sto
+    image: gservicegroup
     ports:
       - "8000:8000"
     depends_on:

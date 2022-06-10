@@ -31,4 +31,4 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           context: .
           file: ./Dockerfile
-          tags: esdp2/GServiceGroup:latest, esdp2/GServiceGroup:${{ steps.date.outputs.date }}
+          tags: esdp2/gservicegroup:latest, esdp2/gservicegroup:${{ steps.date.outputs.date }}
