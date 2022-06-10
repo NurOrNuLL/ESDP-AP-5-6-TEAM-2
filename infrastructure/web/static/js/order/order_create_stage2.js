@@ -9,6 +9,8 @@ let nothingSelected = document.getElementById('nothingSelected')
 
 let serviceEmployeeForm = document.getElementById('serviceEmployeeForm')
 
+let employees = eval(document.getElementById('employees').innerText.trim())
+
 
 service.addEventListener('change', e => {
     if (service.selectedOptions.length != 0) {
@@ -16,8 +18,11 @@ service.addEventListener('change', e => {
         nothingSelected.classList.add('d-none');
 
         for (let i = 0; i < service.selectedOptions.length; i++) {
-            tableBody.innerHTML += `<tr class="service-row" data-service-name="${service.selectedOptions[i].dataset['serviceName']}" data-service-garanty="false" data-service-price="${service.selectedOptions[i].dataset['servicePrice']}">
+            tableBody.innerHTML += `<tr class="service-row" data-service-name="${service.selectedOptions[i].dataset['serviceName']}" data-service-employees="[]" data-service-garanty="false" data-service-price="${service.selectedOptions[i].dataset['servicePrice']}">
                                         <td>${service.selectedOptions[i].dataset['serviceName']}</td>
+                                        <td>
+                                            <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выберите мастеров" data-max-options="5" data-selected-text-format="count"></select>
+                                        </td>
                                         <td>
                                             <div class="form-check form-switch">
                                                 <input class="form-check-input garanty" type="checkbox" role="switch">
@@ -26,6 +31,30 @@ service.addEventListener('change', e => {
                                         <th>${service.selectedOptions[i].dataset['servicePrice']}</th>
                                     </tr>`;
         }
+
+        let employeeSelects = document.querySelectorAll('select.employee-select')
+
+        for (empSelect of employeeSelects) {
+            employees.forEach(emp => {
+                empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN} ">${emp.name} ${emp.surname}</option>`
+            })
+        }
+
+        $('.selectpicker').selectpicker('render');
+
+        console.log(employeeSelects);
+
+        Object.values(employeeSelects).forEach(empSelect => {
+            empSelect.addEventListener('change', e => {
+                let selectedValues = [];
+
+                for (let i = 0; i < empSelect.selectedOptions.length; i++) {
+                    selectedValues.push(empSelect.selectedOptions[i].value)
+                }
+
+                empSelect.parentElement.parentElement.parentElement.dataset['serviceEmployees'] = selectedValues;
+            })
+        })
 
         let garantyBtns = document.getElementsByClassName('garanty');
 
@@ -52,7 +81,6 @@ serviceEmployeeForm.addEventListener('submit', e => {
     let resultServices = document.getElementById('resultServices');
     let serviceRows = document.getElementsByClassName('service-row');
 
-
     let result = [];
 
     for (let i = 0; i < serviceRows.length; i++) {
@@ -60,8 +88,9 @@ serviceEmployeeForm.addEventListener('submit', e => {
 
         result.push({
             'Название услуги': element.dataset['serviceName'],
-            'Цена услуги': element.dataset['servicePrice'],
-            'Гарантия': element.dataset['serviceGaranty'],
+            'Цена услуги': eval(element.dataset['servicePrice']),
+            'Гарантия': eval(element.dataset['serviceGaranty']),
+            'Мастера': element.dataset['serviceEmployees'].split(',').map(element => {return eval(element)})
         });
     }
 

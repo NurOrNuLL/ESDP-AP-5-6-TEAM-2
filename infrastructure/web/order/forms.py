@@ -1,6 +1,8 @@
 from django import forms
 from models.order.models import Order
 from models.payment.models import Payment
+from models.order.validators import JSONSchemaValidator
+from models.order.models import JOBS_JSON_SCHEMA
 
 
 class OrderForm(forms.ModelForm):
@@ -22,8 +24,7 @@ class OrderCreateFormStage1(forms.ModelForm):
 
 
 class OrderCreateFormStage2(forms.Form):
-    services = forms.CharField(required=True)
-    employee = forms.MultipleChoiceField(required=True)
+    jobs = forms.JSONField(required=True, validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
 
 
 class OrderCreateFormStage3(forms.ModelForm):

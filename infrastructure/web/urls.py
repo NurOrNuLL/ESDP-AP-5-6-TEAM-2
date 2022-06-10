@@ -2,7 +2,7 @@ from django.urls import path, include
 from .order.views import (
     HomePageView, OrderCreateFromContractor,
     OrderDetail, OrderCreateViewStage1,
-    OrderCreateViewStage2
+    OrderCreateViewStage2, OrderCreateViewStage3
 )
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
@@ -73,7 +73,8 @@ order_urls = [
     path('contractor/<int:contrID>/own/<int:ownID>/order/<int:ordID>/',
          OrderDetail.as_view(), name="order_detail"),
     path('order/create/stage/1/', OrderCreateViewStage1.as_view(), name='order_create_stage1'),
-    path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2')
+    path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2'),
+    path('order/create/stage/3/', OrderCreateViewStage3.as_view(), name='order_create_stage3')
 ]
 
 urlpatterns = [

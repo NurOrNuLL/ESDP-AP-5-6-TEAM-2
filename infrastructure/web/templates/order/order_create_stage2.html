@@ -13,11 +13,13 @@
         <div>
             <label for="service" class="form-label">Услуги</label>
             <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Выберите услуги" data-selected-text-format="count">
-                <optgroup label="Услуги">
-                    {% for service in services %}
-                        <option data-service-name="{{ service|get_item:'Название' }}" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Категория' }} - {{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
-                    {% endfor %}
-                </optgroup>
+                {% for category in categories %}
+                    <optgroup label="{{ category.0 }}">
+                        {% for service in services|get_item:category.0 %}
+                            <option data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endfor %}
             </select>
         </div>
         <br>
@@ -26,6 +28,7 @@
             <thead>
                 <tr>
                     <th scope="col">Название услуги</th>
+                    <th scope="col">Мастера</th>
                     <th scope="col">Гарантия</th>
                     <th scope="col">Цена</th>
                 </tr>
@@ -35,25 +38,15 @@
         <h6 class="text-center" id="nothingSelected">Ничего не выбрано!</h6>
         <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" value="[]" name="services" id="resultServices">
-            <br>
-            <div>
-                <label for="employee" class="form-label">Мастера</label>
-                <select class="form-control selectpicker" id="employee" name="employee" multiple data-live-search="true" title="Выберите мастеров">
-                    <optgroup label="Мастера" data-max-options="5">
-                        {% for employee in employees %}
-                            <option value="{{ employee.IIN }}" data-subtext="{{ employee.IIN }}">{{ employee.name }}</option>
-                        {% endfor %}
-                    </optgroup>
-                </select>
-                <div class="form-text" style="color: red;">
-                    {% for err in form.errors.employee %}{{ err }}{% endfor %}</div>
-            </div>
+            <input type="hidden" name="jobs" id="resultServices">
             <br>
             <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
             <button type="submit" class="btn btn-primary">Далее</button>
         </form>
     </div>
+    <p class="d-none" id="employees">
+        {{ employees }}
+    </p>
 {% endblock content %}
 
 {% block js_block %}

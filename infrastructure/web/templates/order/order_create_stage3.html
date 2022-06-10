@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <h2>Создание заказ-наряда</h2>
+    <div class="w-50">
+        <div class="progress" style="height: 20px; background-color: white;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 99%;" aria-valuenow="99" aria-valuemin="0" aria-valuemax="100">3\3</div>
+        </div>
+        <br>
+        <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="jobs" id="resultServices">
+            <br>
+            <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+            <button type="submit" class="btn btn-primary">Далее</button>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block js_block %}
+
+    <script src="{% static 'js/order/order_create_stage3.js' %}"></script>
+
+{% endblock js_block %}
