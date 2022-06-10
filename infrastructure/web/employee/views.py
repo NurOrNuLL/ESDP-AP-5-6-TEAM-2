@@ -38,7 +38,7 @@ class EmployeeCreate(TemplateView):
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
-            local_path = '/home/asparukh/Desktop/super_sto/ESDP-AP-5-6-TEAM-2/image/' + str(form.cleaned_data['image'])
+            local_path = 'image/' + str(form.cleaned_data['image'])
             path = 'image/' + str(form.cleaned_data['image'])
             task = upload.apply_async(args=[local_path, path], ignore_result=True)
             EmployeeServices.create_employee(form.cleaned_data)
