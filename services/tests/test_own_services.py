@@ -21,7 +21,8 @@ class OwnServicesTest(TestCase):
         queryset = [Mock(spec=Own)]
         data = {
             'name': 'Gaz',
-            'number': 'HHH777J'
+            'number': 'HHH777J',
+            'is_part': 'False'
         }
         with patch('models.own.models.Own.objects.create') as create_own:
             with patch(
@@ -30,7 +31,8 @@ class OwnServicesTest(TestCase):
                 create_own.return_value = Mock(
                     spec=Own,
                     name=data['name'],
-                    number=data['number']
+                    number=data['number'],
+                    is_part=data['is_part']
                 )
 
                 get_contractor.return_value = contractor
@@ -42,6 +44,7 @@ class OwnServicesTest(TestCase):
                 create_own.assert_called_once_with(
                     name=data['name'],
                     number=data['number'],
+                    is_part=data['is_part'],
                     contractor=contractor
                 )
 
