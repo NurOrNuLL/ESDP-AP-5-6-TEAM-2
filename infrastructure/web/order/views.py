@@ -11,11 +11,7 @@ from .forms import (
 from django.shortcuts import render, redirect
 from models.order.models import ORDER_STATUS_CHOICES
 from models.payment.models import PAYMENT_STATUS_CHOICES
-<<<<<<< HEAD
 from models.nomenclature.category_choices import CATEGORY_CHOICES
-=======
-
->>>>>>> b52599719697b6bfa734f0df5a919514377863ec
 from services.employee_services import EmployeeServices
 from services.order_services import OrderService
 from services.payment_services import PaymentService
