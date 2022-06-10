@@ -34,7 +34,7 @@
                         var taskId = res.task_id
                         if (taskId){
                             alert('Загрузка выполнено на 100%')
-                            window.open('{% url 'home' orgID=1 tpID=tpID %}')
+                            window.location.replace('{% url 'home' orgID=1 tpID=tpID %}')
                         }
                     },
                     error: function (err) {

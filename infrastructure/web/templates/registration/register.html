@@ -114,7 +114,7 @@
             <div>
                 <label for="employee_image" class="form-label">Фотография удостоверения</label>
                 <input type="file" class="form-control" id="employee_image" name="image"
-                       value="{{ employee_form.image.value|default:'' }}" required>
+                       value="{{ employee_form.image.value|default:'' }}" accept="image/*" required>
                 <div class="form-text" style="color: red;">
                     {% for err in employee_form.errors.image %}{{ err }}{% endfor %}</div>
             </div>
@@ -147,7 +147,7 @@
                         console.log(taskId)
                         if (taskId){
                             alert('Загрузка выполнено на 100%')
-                            window.open('{% url 'home_redirect' %}')
+                            window.location.replace('{% url 'home_redirect' %}')
                         }
                     },
                     error: function (err) {
