@@ -23,14 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = str(os.environ.get('DEBUG'))
+DEBUG = bool(os.environ.get('DEBUG'))
 
 ALLOWED_HOSTS = ['*']
-if DEBUG:
-    ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
-else:
-    ALLOWED_HOSTS += [os.environ.get('ALLOWED_HOST')]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -62,7 +57,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -75,6 +69,12 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8084',
+    'http://localhost:8000',
+    'http://0.0.0.0:8000',
+    'http://195.201.135.12'
+]
 
 ROOT_URLCONF = 'core.urls'
 
@@ -112,9 +112,10 @@ DATABASES = {
         'USER': os.environ.get('PSQL_USER'),
         'PASSWORD': os.environ.get('PSQL_PASS'),
         'HOST': os.environ.get('PSQL_HOST'),
-        'PORT': 5432,
+        'PORT': os.environ.get('PSQL_PORT'),
     }
 }
+
 
 LOGGING = {
     'version': 1,
@@ -184,6 +185,19 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'github_actions',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
+
 REDIS_HOST = '0.0.0.0'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'

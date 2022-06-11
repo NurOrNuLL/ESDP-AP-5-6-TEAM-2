@@ -9,6 +9,7 @@ from rest_framework.pagination import PageNumberPagination
 
 from models.employee.models import Employee
 from services.organization_services import OrganizationService
+from services.trade_point_services import TradePointServices
 from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
 from .serializers import EmployeeSerializer
@@ -37,7 +38,7 @@ class EmployeeCreate(TemplateView):
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
-            local_path = '/home/asparukh/Desktop/super_sto/ESDP-AP-5-6-TEAM-2/image/' + str(form.cleaned_data['image'])
+            local_path = 'image/' + str(form.cleaned_data['image'])
             path = 'image/' + str(form.cleaned_data['image'])
             task = upload.apply_async(args=[local_path, path], ignore_result=True)
             EmployeeServices.create_employee(form.cleaned_data)
@@ -53,13 +54,6 @@ class EmployeeCreate(TemplateView):
 class EmployeeList(TemplateView):
     template_name = 'employee/employees.html'
 
-    # def get_context_data(self, **kwargs: dict) -> dict:
-    #     context = super().get_context_data(**kwargs)
-    #     context['employees'] = EmployeeServices.get_employees(kwargs)
-    #     context['tpID'] = self.kwargs['tpID']
-    #     context['organization'] = OrganizationService.get_organization_by_id(kwargs)
-    #     return context
-
 
 class MyPagination(PageNumberPagination):
     page_size = 100
@@ -70,8 +64,18 @@ class EmployeeFilterApiView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'surname', 'IIN', 'phone']
     pagination_class = MyPagination
-    queryset = Employee.objects.all()
+
+
+    def get_queryset(self):
+        return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))
 
 
 class EmployeeDetail(TemplateView):
     template_name = 'employee/employee_detail.html'
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
+        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['employee'] = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
+        return context
