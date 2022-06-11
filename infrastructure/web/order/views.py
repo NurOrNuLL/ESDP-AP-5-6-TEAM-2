@@ -1,8 +1,8 @@
+import json
 from django.template.context_processors import request
 from django.views import View
 from django.views.generic import TemplateView
 
-from infrastructure.web.employee.serializers import EmployeeSerializer
 from .forms import (
     OrderForm, PaymentForm,
     OrderCreateFormStage1, OrderCreateFormStage2,
@@ -61,6 +61,8 @@ class OrderCreateViewStage1(TemplateView):
         session_contractor_id = request.session.get('contractor')
         session_own_id = request.session.get('own')
 
+        print(request.session.items())
+
         if session_contractor_id and session_own_id:
             context['session_contractor'] = ContractorService.get_contractor_by_id(session_contractor_id)
             context['session_own'] = OwnServices.get_own_by_id({'ownID': session_own_id})
@@ -109,6 +111,16 @@ class OrderCreateViewStage2(TemplateView):
         context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
 
         return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        context = self.get_context_data()
+
+        session_jobs = request.session.get('jobs')
+
+        if session_jobs:
+            context['session_jobs'] = json.dumps(session_jobs)
+
+        return render(request, self.template_name, context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         form = self.form_class(request.POST)

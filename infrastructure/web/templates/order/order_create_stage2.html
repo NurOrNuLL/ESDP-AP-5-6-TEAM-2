@@ -16,7 +16,7 @@
                 {% for category in categories %}
                     <optgroup label="{{ category.0 }}">
                         {% for service in services|get_item:category.0 %}
-                            <option data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                            <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
                         {% endfor %}
                     </optgroup>
                 {% endfor %}
@@ -46,6 +46,9 @@
     </div>
     <p class="d-none" id="employees">
         {{ employees }}
+    </p>
+    <p class="d-none" id="session_jobs">
+        {{ session_jobs }}
     </p>
 {% endblock content %}
 

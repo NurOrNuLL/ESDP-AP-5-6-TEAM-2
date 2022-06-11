@@ -12,12 +12,33 @@
         <br>
         <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
             {% csrf_token %}
-            <input type="hidden" name="jobs" id="resultServices">
+            <div class="col">
+                <label for="mileage" class="form-label">Пробег</label>
+                <input type="number" class="form-control" id="mileage" name="mileage" required>
+                <div class="form-text" style="color: red;">
+                    {% for err in register_form.errors.password %}{{ err }}{% endfor %}</div>
+            </div>
+            <div>
+                <label for="note" class="form-label">Примечание</label>
+                <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+                <div class="form-text" style="color: red;">
+                    {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
+            </div>
             <br>
-            <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
-            <button type="submit" class="btn btn-primary">Далее</button>
+            <div class="row">
+                <div class="col">
+                    <label for="password_confirm" class="form-label">Повторите пароль</label>
+                    <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
+                    <div class="form-text" style="color: red;">
+                        {% for err in register_form.errors.password_confirm %}{{ err }}{% endfor %}</div>
+                </div>
+            </div>
+            <br>
+            <a href="{% url 'order_create_stage2' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+            <button type="submit" class="btn btn-primary">Создать</button>
         </form>
     </div>
+
 {% endblock content %}
 
 {% block js_block %}

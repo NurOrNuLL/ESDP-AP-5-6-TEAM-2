@@ -29,7 +29,9 @@ JOBS_JSON_SCHEMA = {
                 }
             }
         },
-        'required': ['Название услуги', 'Цена услуги', 'Гарантия', 'Мастера']
+        'required': ['Название услуги', 'Цена услуги', 'Гарантия', 'Мастера'],
+        'additionalProperties': {'type': 'integer', 'minimum': 0, 'maximum': 10000},
+        'maxProperties': 5
     }
 }
 
@@ -50,9 +52,12 @@ class Order(models.Model):
                                        verbose_name="Дата завершения")
     status = models.CharField(max_length=100, null=False, blank=False,
                               choices=ORDER_STATUS_CHOICES, verbose_name='Статус')
-    price = models.IntegerField(
+    price_for_pay = models.IntegerField(
         null=False, blank=False,
-        validators=[MinValueValidator(0)], verbose_name='Общая сумма')
+        validators=[MinValueValidator(0)], verbose_name='Сумма с гарантиями')
+    full_price = models.IntegerField(
+        null=False, blank=False,
+        validators=[MinValueValidator(0)], verbose_name='Полная сумма')
     payment = models.ForeignKey(
         'payment.Payment', on_delete=models.PROTECT, null=False,
         blank=False, related_name='payment_orders', verbose_name='Оплата')
