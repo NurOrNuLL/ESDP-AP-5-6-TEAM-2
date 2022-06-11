@@ -13,11 +13,17 @@ class OwnCreate(TemplateView):
     template_name = 'own/own_create.html'
     form_class = OwnForm
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
+    def post(
+            self, request: HttpRequest,
+            *args: list, **kwargs: dict
+    ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            OwnServices.create_own(form.cleaned_data, contractor_id=self.kwargs.get('contrID'))
+            OwnServices.create_own(
+                form.cleaned_data,
+                contractor_id=self.kwargs.get('contrID')
+            )
             return redirect(
                 'contractor_detail', orgID=self.kwargs.get('orgID'),
                 contrID=self.kwargs.get('contrID'),

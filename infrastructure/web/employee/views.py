@@ -28,21 +28,27 @@ class EmployeeCreate(TemplateView):
         context['tpID'] = self.kwargs['tpID']
         return context
 
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
+    def get(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponseRedirect or HttpResponse:
         context = self.get_context_data(**kwargs)
         context['tradepoints'] = EmployeeServices.get_tradepoint()
 
         context['roles'] = self.initial_data
         return render(request, self.template_name, context)
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
+    def post(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             local_path = 'image/' + str(form.cleaned_data['image'])
             path = 'image/' + str(form.cleaned_data['image'])
             task = upload.apply_async(args=[local_path, path], ignore_result=True)
             EmployeeServices.create_employee(form.cleaned_data)
-            return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
+            return HttpResponse(
+                json.dumps({"task_id": task.id}),
+                content_type='application/json')
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = form
@@ -64,7 +70,6 @@ class EmployeeFilterApiView(generics.ListAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'surname', 'IIN', 'phone']
     pagination_class = MyPagination
-
 
     def get_queryset(self):
         return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))

@@ -1,5 +1,4 @@
 from models.payment.models import Payment
-from typing import List
 
 
 class PaymentService:
