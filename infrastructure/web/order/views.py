@@ -24,7 +24,9 @@ class HomePageView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
 
         return context
 
@@ -34,7 +36,9 @@ class HomePageView(LoginRequiredMixin, TemplateView):
 
 class HomeRedirectView(LoginRequiredMixin, View):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        return redirect('home', orgID=1, tpID=EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid))
+        return redirect('home', orgID=1, tpID=EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        ))
 
 
 class OrderCreateFromContractor(TemplateView):
@@ -46,7 +50,9 @@ class OrderCreateFromContractor(TemplateView):
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        context['contractor'] = ContractorService.get_contractor_by_id(
+            self.kwargs['contrID']
+        )
         context['own'] = OwnServices.get_own_by_id(self.kwargs)
         context['payment_statuses'] = PAYMENT_STATUS_CHOICES
         context['order_statuses'] = ORDER_STATUS_CHOICES
@@ -75,14 +81,16 @@ class OrderCreateFromContractor(TemplateView):
             payment = PaymentService.create_payment(payment_form.cleaned_data)
             order_form.cleaned_data['payment'] = payment
             order = OrderService.create_order(order_form.cleaned_data)
-            return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
-                            contrID=self.kwargs['contrID'], ownID=self.kwargs['ownID'], ordID=order.pk)
+            return redirect('order_detail', orgID=self.kwargs['orgID'],
+                            tpID=self.kwargs['tpID'],
+                            contrID=self.kwargs['contrID'],
+                            ownID=self.kwargs['ownID'],
+                            ordID=order.pk)
         else:
             context = self.get_context_data(**kwargs)
             context['order_form'] = order_form
             context['payment_form'] = payment_form
             return render(request, template_name=self.template_name, context=context)
-
 
 
 class OrderDetail(TemplateView):
@@ -92,7 +100,9 @@ class OrderDetail(TemplateView):
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        context['contractor'] = ContractorService.get_contractor_by_id(
+            self.kwargs['contrID']
+        )
         context['own'] = OwnServices.get_own_by_id(self.kwargs)
         context['order'] = OrderService.get_order_by_id(self.kwargs['ordID'])
         return context

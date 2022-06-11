@@ -1,7 +1,6 @@
 from django import forms
 from models.order.models import Order
 from models.payment.models import Payment
-from models.payment_method.models import PaymentMethod
 
 
 class OrderForm(forms.ModelForm):

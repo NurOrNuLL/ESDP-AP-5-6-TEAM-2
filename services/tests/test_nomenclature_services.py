@@ -9,10 +9,13 @@ class NomenclatureServicesTest(TestCase):
     def test_get_nomenclature_by_id(self):
         nomenclature = Mock(spec=Nomenclature, id=1)
 
-        with patch('models.nomenclature.models.Nomenclature.objects.get') as get_nomenclature:
+        with patch('models.nomenclature.models.Nomenclature.objects.get') as \
+                get_nomenclature:
             get_nomenclature.return_value = nomenclature
 
-            returned_nomenclature = NomenclatureService.get_nomenclature_by_id(nomenclature_id=nomenclature.id)
+            returned_nomenclature = NomenclatureService.get_nomenclature_by_id(
+                nomenclature_id=nomenclature.id
+            )
 
             self.assertEqual(returned_nomenclature, nomenclature)
             get_nomenclature.assert_called_once_with(id=nomenclature.id)
@@ -20,12 +23,12 @@ class NomenclatureServicesTest(TestCase):
     def test_create_nomenclature(self):
         organization = Mock(spec=Organization, id=1)
         queryset = [Mock(spec=Nomenclature)]
-        data = {
-                'name': 'СТО',
-        }
+        data = {'name': 'СТО'}
 
-        with patch('models.nomenclature.models.Nomenclature.objects.create') as create_nomenclature:
-            with patch('models.organization.models.Organization.objects.get') as get_organization:
+        with patch('models.nomenclature.models.Nomenclature.objects.create') as \
+                create_nomenclature:
+            with patch('models.organization.models.Organization.objects.get') as \
+                    get_organization:
                 create_nomenclature.return_value = Mock(
                     spec=Nomenclature,
                     name=data['name'],

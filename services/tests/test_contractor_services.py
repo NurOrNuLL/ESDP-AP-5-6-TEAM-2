@@ -12,7 +12,9 @@ class ContractorServicesTest(TestCase):
         with patch('models.contractor.models.Contractor.objects.get') as get_contrator:
             get_contrator.return_value = contractor
 
-            returned_contractor = ContractorService.get_contractor_by_id(contrID=contractor.id)
+            returned_contractor = ContractorService.get_contractor_by_id(
+                contrID=contractor.id
+            )
 
             self.assertEqual(returned_contractor, contractor)
             get_contrator.assert_called_once_with(id=contractor.id)
@@ -22,10 +24,13 @@ class ContractorServicesTest(TestCase):
 
         contractors = [Mock(spec=Contractor, id=1), Mock(spec=Contractor, id=2)]
 
-        with patch('models.contractor.models.Contractor.objects.filter') as filter_contractor:
+        with patch('models.contractor.models.Contractor.objects.filter') as \
+                filter_contractor:
             filter_contractor.return_value = contractors
 
-            returned_contractors = ContractorService.get_contractors({'orgID': organization.id})
+            returned_contractors = ContractorService.get_contractors(
+                {'orgID': organization.id}
+            )
 
             self.assertListEqual(returned_contractors, contractors)
             filter_contractor.assert_called_once_with(organization=organization.id)
@@ -47,15 +52,15 @@ class ContractorServicesTest(TestCase):
         )
 
         data = {
-                'name': 'Данилaaaaaaaaa',
-                'address': 'Новый адрес',
-                'IIN_or_BIN': 111111111111,
-                'IIC': contractor.IIC,
-                'bank_name': contractor.bank_name,
-                'BIC': contractor.BIC,
-                'phone': '87772755701',
-                'trust_person_name': 'чоо',
-                'trust_person_comment': 'йомайо'
+            'name': 'Данилaaaaaaaaa',  # noqa E126
+            'address': 'Новый адрес',
+            'IIN_or_BIN': 111111111111,
+            'IIC': contractor.IIC,
+            'bank_name': contractor.bank_name,
+            'BIC': contractor.BIC,
+            'phone': '87772755701',
+            'trust_person_name': 'чоо',
+            'trust_person_comment': 'йомайо'
         }
 
         with patch('models.contractor.models.Contractor.save') as save_contractor:
@@ -79,21 +84,23 @@ class ContractorServicesTest(TestCase):
         organization = Mock(spec=Organization, id=1)
         queryset = [Mock(spec=Contractor)]
         data = {
-                'name': 'Данилaaaaaaaaa',
-                'address': '',
-                'IIN_or_BIN': 111111111111,
-                'IIC': '',
-                'bank_name': '',
-                'BIC': '',
-                'phone': '88888888888',
-                'trust_person': {
-                    'name': 'чоо',
-                    'comment': 'йомайо'
-                },
+            'name': 'Данилaaaaaaaaa',
+            'address': '',
+            'IIN_or_BIN': 111111111111,
+            'IIC': '',
+            'bank_name': '',
+            'BIC': '',
+            'phone': '88888888888',
+            'trust_person': {
+                'name': 'чоо',
+                'comment': 'йомайо'
+            },
         }
 
-        with patch('models.contractor.models.Contractor.objects.create') as create_contractor:
-            with patch('models.organization.models.Organization.objects.get') as get_organization:
+        with patch('models.contractor.models.Contractor.objects.create') as \
+                create_contractor:
+            with patch('models.organization.models.Organization.objects.get') as \
+                    get_organization:
                 create_contractor.return_value = Mock(
                     spec=Contractor,
                     name=data['name'],

@@ -64,7 +64,9 @@ class Order(models.Model):
                             blank=True, verbose_name='Примечание')
     mileage = models.IntegerField(null=True, blank=True,
                                   validators=[MinValueValidator(0)], verbose_name='Пробег')
-    jobs = models.JSONField(verbose_name='Работы', validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
+    jobs = models.JSONField(
+        verbose_name='Работы',
+        validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
 
     def __str__(self):
         return f'{self.created_at, self.contractor, self.price, self.status}'

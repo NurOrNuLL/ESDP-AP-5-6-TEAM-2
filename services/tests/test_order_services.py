@@ -20,19 +20,19 @@ class OrderServicesTest(TestCase):
             self.assertEqual(returned_order, order)
             get_order.assert_called_once_with(id=order.id)
 
-
-    def test_get_orders_by_trade_point(self):
+    def test_get_orders_by_trade_point(self):  # noqa E303
         trade_point = Mock(spec=TradePoint, id=1)
         orders = [Mock(spec=Order, id=1), Mock(spec=Order, id=2)]
 
         with patch('models.order.models.Order.objects.filter') as filter_orders:
             filter_orders.return_value = orders
 
-            returned_orders = OrderService.get_orders_by_trade_point({'tpID': trade_point.id})
+            returned_orders = OrderService.get_orders_by_trade_point(
+                {'tpID': trade_point.id}
+            )
 
             self.assertListEqual(returned_orders, orders)
             filter_orders.assert_called_once_with(trade_point=trade_point.id)
-
 
     def test_create_order(self):
         trade_point = Mock(spec=TradePoint, id=1)
@@ -60,11 +60,10 @@ class OrderServicesTest(TestCase):
         }
 
         with patch('models.order.models.Order.objects.create') as create_order:
-            with patch('models.trade_point.models.TradePoint.objects.get') as get_trade_point:
-                with patch('models.contractor.models.Contractor.objects.get') as get_contractor:
-                    with patch('models.own.models.Own.objects.get') as get_own:
-                        with patch('models.payment.models.Payment.objects.get') as get_payment:
-
+            with patch('models.trade_point.models.TradePoint.objects.get') as get_trade_point:  # noqa E841
+                with patch('models.contractor.models.Contractor.objects.get') as get_contractor:  # noqa E841
+                    with patch('models.own.models.Own.objects.get') as get_own:  # noqa E841
+                        with patch('models.payment.models.Payment.objects.get') as get_payment:  # noqa E841
                             create_order.return_value = Mock(
                                 spec=Order,
                                 finished_at=data['finished_at'],

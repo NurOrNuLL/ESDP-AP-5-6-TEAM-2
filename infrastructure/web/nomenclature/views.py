@@ -2,7 +2,7 @@ import tablib
 from django.views.generic import TemplateView
 from services.employee_services import EmployeeServices
 from .forms import NomenclatureForm, NomenclatureImportForm
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from services.nomenclature_services import NomenclatureService
 from models.nomenclature.models import Nomenclature, SERVICE_JSON_FIELD_SCHEMA
 from rest_framework.generics import GenericAPIView
@@ -29,24 +29,37 @@ class NomenclatureImportView(TemplateView):
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['nomenclatures'] = NomenclatureService.get_all_nomenclatures()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
 
         return context
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
+    def post(
+            self, request: HttpRequest,
+            *args: list, **kwargs: dict
+    ) -> HttpResponse or HttpResponseRedirect:
         form = self.form_class(request.POST, request.FILES)
 
         if form.is_valid():
             file = form.cleaned_data['excel_file']
             nomenclature_id = form.cleaned_data['nomenclature_id']
             data = NomenclatureService.parse_excel_to_json(file)
-            validated_data = NomenclatureService.validate_json(data, SERVICE_JSON_FIELD_SCHEMA)
+            validated_data = NomenclatureService.validate_json(
+                data, SERVICE_JSON_FIELD_SCHEMA
+            )
             if validated_data:
                 task = import_exel_file.delay(file=validated_data, nom_id=nomenclature_id)
-                return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
+                return HttpResponse(json.dumps(
+                    {"task_id": task.id}), content_type='application/json'
+                )
             else:
-                context = self.get_context_data(error='Некорректный excel, проверте его содержимое и расширение')
-                return render(self.request, template_name=self.template_name, context=context)
+                context = self.get_context_data(
+                    error='Некорректный excel, проверте его содержимое и расширение'
+                )
+                return render(
+                    self.request, template_name=self.template_name, context=context
+                )
 
 
 class NomenclaturesServiceListView(TemplateView):
@@ -57,8 +70,17 @@ class NomenclaturesServiceListView(TemplateView):
         context['categories'] = CATEGORY_CHOICES
         context['marks'] = MARK_CHOICES
         context['nomenclatures'] = NomenclatureService.get_all_nomenclatures()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
         return context
+
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        if request.session.get('error'):
+            context['error'] = request.session['error']
+            del request.session['error']
+        return render(request, self.template_name, context)
 
 
 class NomenclatureItemsFilterApiView(GenericAPIView):
@@ -86,7 +108,9 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
         else:
             return Response(serializer.errors)
 
-    def get_paginated_data_page_number(self, data: List['Nomenclature'], page: int = 1, limit: int = None) -> dict:
+    def get_paginated_data_page_number(
+            self, data: List['Nomenclature'], page: int = 1, limit: int = None
+    ) -> dict:
 
         paginator = Paginator(data, limit)
         page_number = paginator.num_pages
@@ -102,7 +126,9 @@ class NomenclatureCreate(TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
     form_class = NomenclatureForm
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
+    def post(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponse or HttpResponseRedirect:
         form = self.form_class(request.POST)
 
         if form.is_valid():
@@ -118,14 +144,20 @@ class NomenclatureExportView(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
         return context
 
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
+    def get(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponse or HttpResponseRedirect:
         nomenclature_id = request.GET.get('nomenclature_id')
         extension = request.GET.get('extension')
         task = export_exel_file.delay(nomenclature_pk=nomenclature_id, extension=extension)
-        return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
+        return HttpResponse(json.dumps(
+            {"task_id": task.id}), content_type='application/json'
+        )
 
 
 class NomenclatureDownloadView(TemplateView):
@@ -135,21 +167,39 @@ class NomenclatureDownloadView(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
         return context
 
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
+    def get(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponse or HttpResponseRedirect:
         celery_result = AsyncResult(request.GET.get('task_id'))
         main_data = celery_result.result.get('main_data')
         extension = celery_result.result.get('extension')
-
-        if main_data == False:
-            context = self.get_context_data(error='Отсутсвуют прайсы или номенклатура')
-            return render(self.request, template_name=self.template_name, context=context)
+        nomenclature_pk = celery_result.result.get('nomenclature_pk')
+        if nomenclature_pk is not None:
+            picked_nomenclature = Nomenclature.objects.get(pk=int(nomenclature_pk))
         else:
-            self.services_file = NomenclatureService.download_a_exel_file_to_user(file_data=main_data,
-                                                                                  file_extension=extension)
-            return NomenclatureService.response_sender(data=self.services_file, file_extension=extension)
+            picked_nomenclature = ''
+
+        if main_data is False:
+            request.session['error'] = 'Отсутсвуют прайсы или номенклатура'
+            url = reverse('nomenclature_list', kwargs={'orgID': 1,
+                                                       'tpID': EmployeeServices.get_attached_tradepoint_id(  # noqa E501
+                                                           self.request, self.request.user.uuid)}  # noqa E501
+                          )
+            return HttpResponseRedirect(url)
+        else:
+            self.services_file = NomenclatureService.download_a_exel_file_to_user(
+                file_data=main_data,
+                file_extension=extension
+            )
+            return NomenclatureService.response_sender(
+                data=self.services_file, file_extension=extension,
+                name=str(picked_nomenclature)
+            )
 
 
 class NomenclatureFormForImpost(GenericAPIView):
@@ -157,7 +207,9 @@ class NomenclatureFormForImpost(GenericAPIView):
     template_name = 'nomenclature/list.html'
     exel_form = ''
 
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
+    def get(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponse or HttpResponseRedirect:
         extension = request.GET.get('extension')
         headers = ['Цена', 'Марка', 'Название', 'Категория', 'Примечание']
         data = tablib.Dataset(headers=headers)
@@ -173,12 +225,17 @@ class NomenclatureProgressView(TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         task_id = AsyncResult(request.GET.get('task_id'))
         if task_id:
             progress = Progress(task_id)
-            return HttpResponse(json.dumps(progress.get_info()), content_type='application/json')
+            return HttpResponse(
+                json.dumps(progress.get_info()),
+                content_type='application/json'
+            )
         raise Http404
