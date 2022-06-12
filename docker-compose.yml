@@ -11,7 +11,7 @@ services:
       - static_volume:/app/static
     env_file:
       - .env_prod
-    image: gservicegroup
+    image: esdp2/gservicegroup
     ports:
       - "8000:8000"
     depends_on:
@@ -35,6 +35,7 @@ services:
       POSTGRES_PASSWORD: ${PSQL_PASS}
 
   redis:
+    container_name: redis
     image: redis:latest
     restart: always
     ports:
@@ -43,6 +44,7 @@ services:
       - redis:/data
 
   celery:
+    container_name: redis
     image: celery
     restart: always
     build:
