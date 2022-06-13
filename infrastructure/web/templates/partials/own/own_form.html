@@ -3,17 +3,17 @@
     <div>
         <label for="own_name" class="form-label" id="own_name_label">Модель автомобиля:</label><br>
         <input type="text" class="form-control" id="own_name" name="name"><br>
-        <div class="form-text c-red">{{ form.name.errors }}</div>
+        <div class="form-text error-red">{{ form.name.errors }}</div>
     </div>
     <div style="display: none">
         <label for="own_is_part" class="form-label">Тип:</label><br>
         <input type="text" class="form-control" id="own_is_part" name="is_part" value="False"><br>
-        <div class="form-text c-red">{{ form.is_part.errors }}</div>
+        <div class="form-text error-red">{{ form.is_part.errors }}</div>
     </div><br>
     <div>
         <label for="own_number" class="form-label" id="own_number_label">Гос. номер:</label><br>
         <input type="text" class="form-control" id="own_number" name="number"><br>
-        <div class="form-text c-red">{{ form.number.errors }}</div>
+        <div class="form-text error-red">{{ form.number.errors }}</div>
     </div>
     <button type="submit" class="btn btn-primary">Создать</button>
 </form>

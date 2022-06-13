@@ -1,5 +1,7 @@
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
+
+from services.organization_services import OrganizationService
 from services.own_services import OwnServices
 from .forms import OwnForm
 from rest_framework.generics import GenericAPIView
@@ -12,6 +14,12 @@ from django.http.response import HttpResponse, HttpResponseRedirect, JsonRespons
 class OwnCreate(TemplateView):
     template_name = 'own/own_create.html'
     form_class = OwnForm
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
+        context['tpID'] = self.kwargs['tpID']
+        return context
 
     def post(
             self, request: HttpRequest,
@@ -30,7 +38,9 @@ class OwnCreate(TemplateView):
                 tpID=self.kwargs['tpID']
             )
 
-        return render(request, self.template_name, {'form': form})
+        context = self.get_context_data(**kwargs)
+        context['form'] = form
+        return render(request, template_name=self.template_name, context=context)
 
 
 class OwnDeleteView(GenericAPIView):
