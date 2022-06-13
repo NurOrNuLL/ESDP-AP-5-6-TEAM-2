@@ -8,23 +8,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href='{% static "css/bootstrap.css" %}'>
     <link rel="stylesheet" href="{% static 'css/sidebars.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-table.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-select.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <title>Document</title>
 </head>
 <body>
-    <div class="maindiv" style="min-height: 100vh">
-        <div class="p-3" style=" background-color: white">
-            {% include "partials/sidebar.html" %}
-        </div>
-        <div class="container-fluid p-3">
-            {% block content %}{% endblock content %}
-        </div>
+<div class="maindiv" style="min-height: 100vh">
+    <div class="p-3 sidebar_css" style=" background-color: white">
+        {% include "partials/sidebar.html" with trade_points=trade_points %}
     </div>
-    <script src='{% static "js/jquery.js" %}'></script>
-    <script src='{% static "js/sidebars.js" %}'></script>
-    <script src='{% static "js/bootstrap.js" %}'></script>
-    <script src='{% static "js/bootstrap-table.min.js" %}'></script>
-    {% block js_block %}{% endblock %}
+    <div class="container-fluid p-3 container_css">
+        {% block content %}{% endblock content %}
+    </div>
+</div>
+<script src='{% static "js/jquery.js" %}'></script>
+<script src="{% static 'js/jquery.cookie.js' %}"></script>
+<script src='{% static "js/sidebars.js" %}'></script>
+<script src='{% static "js/bootstrap.bundle.min.js" %}'></script>
+<script src='{% static "js/bootstrap-table.min.js" %}'></script>
+<script src="{% static 'js/bootstrap-select.min.js' %}"></script>
+<script>
+    let tradepointSelect = document.getElementById('tradepointChoices');
+
+    tradepointSelect.addEventListener('change', (e) => {
+        $.removeCookie('tradepointID', {path: '/'})
+        $.cookie('tradepointID', tradepointSelect.value, {path: '/'});
+
+        window.location.replace("{% url 'home_redirect' %}")
+    })
+</script>
+{% block js_block %}{% endblock %}
 </body>
 </html>

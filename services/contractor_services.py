@@ -1,23 +1,49 @@
 from models.contractor.models import Contractor
 from models.organization.models import Organization
-from django.shortcuts import get_object_or_404
+from typing import List
 
 
-def create_contractor(data):
-    return Contractor.objects.create(
-        name=data['name'],
-        address=data['address'],
-        IIN_or_BIN=data['IIN_or_BIN'],
-        bank_requisition=data['bank_requisition'],
-        phone=data['phone'],
-        trust_person=data['trust_person'],
-        organization=get_object_or_404(Organization, id=1),
-    )
+class ContractorService:
+    @staticmethod
+    def create_contractor(data: dict) -> Contractor:
+        return Contractor.objects.create(
+            name=data['name'],
+            address=data['address'],
+            IIN_or_BIN=data['IIN_or_BIN'],
+            IIC=data['IIC'],
+            bank_name=data['bank_name'],
+            BIC=data['BIC'],
+            phone=data['phone'],
+            trust_person=data['trust_person'],
+            organization=Organization.objects.get(id=1),
+        )
 
+    @staticmethod
+    def update_contractor(contractor: Contractor, data: dict) -> None:
+        contractor.name = data['name']
+        contractor.address = data['address']
+        contractor.IIN_or_BIN = data['IIN_or_BIN']
+        contractor.IIC = data['IIC']
+        contractor.bank_name = data['bank_name']
+        contractor.BIC = data['BIC']
+        contractor.phone = data['phone']
+        contractor.trust_person = {
+            'name': data['trust_person_name'],
+            'comment': data['trust_person_comment']
+        }
 
-def get_contractors(kwargs):
-    return Contractor.objects.filter(organization=kwargs['orgID'])
+        contractor.save()
 
+        return contractor
 
-def get_contractor_by_id(kwargs):
-    return get_object_or_404(Contractor, id=kwargs['contrID'])
+    @staticmethod
+    def get_contractors(kwargs: dict) -> List['Contractor']:
+        return Contractor.objects.filter(organization=kwargs['orgID'])
+
+    @staticmethod
+    def get_contractor_by_id(contrID: int) -> Contractor:
+        return Contractor.objects.get(id=contrID)
+
+    @staticmethod
+    def get_contractor_by_id_for_update(contrID: int) -> Contractor:
+        return Contractor.objects.select_for_update().get(id=contrID)

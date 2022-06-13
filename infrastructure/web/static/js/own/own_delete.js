@@ -22,10 +22,11 @@ ownDeleteForm.addEventListener('submit', (e) => {
 
 
     $.ajax({
-        url: `http://127.0.0.1:8000/org/${ownIdInput.dataset['orgId']}/contractor/${ownIdInput.dataset['contrId']}/own/${ownIdInput.value}/delete/`,
+        url: `http://127.0.0.1:8000/org/${ownIdInput.dataset['orgId']}/tp/${tpID}/contractor/${ownIdInput.dataset['contrId']}/own/${ownIdInput.value}/delete/`,
         method: 'post',
         dataType: 'json',
         contentType: 'application/json',
+        headers: {'X-CSRFToken': $.cookie('csrftoken')},
         data: JSON.stringify({
             own_id: ownIdInput.value
         }),
@@ -37,7 +38,9 @@ ownDeleteForm.addEventListener('submit', (e) => {
 
             var div = document.getElementById(`own_instance_${ownIdInput.value}`);
             div.remove();
+        },
+        error: (response) => {
+            console.log(response);
         }
     })
 })
-

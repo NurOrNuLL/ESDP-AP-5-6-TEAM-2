@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Создать заказ-наряд{% endblock %}
+
+{% block content %}
+    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+        <div class="card-body">
+            <h2 class="mb-4">Создать заказ-наряд</h2>
+            <br>
+{#            <form method="POST" action="{% url "order_create" organization.pk trade_point.pk contractor.pk own.pk %}">#}
+{#            <form method="POST">#}
+{#                {% csrf_token %}#}
+                {% include 'partials/order/order_form.html' with button_text="Создать" %}
+{#            </form>#}
+
+        </div>
+    </div>
+{% endblock content %}

@@ -1,16 +1,29 @@
 from models.own.models import Own
 from models.contractor.models import Contractor
-from django.shortcuts import get_object_or_404
+from typing import List
 
 
-def create_own(data: dict, contractor_id: int) -> Own:
-    return Own.objects.create(
-        name=data['name'],
-        number=data['number'],
-        contractor=get_object_or_404(Contractor, id=contractor_id)
-    )
+class OwnServices:
+    @staticmethod
+    def create_own(data: dict, contractor_id: int) -> Own:
+        return Own.objects.create(
+            name=data['name'],
+            number=data['number'],
+            is_part=data['is_part'],
+            contractor=Contractor.objects.get(id=contractor_id)
+        )
 
+    @staticmethod
+    def delete_own(own_id: int) -> None:
+        own = Own.objects.get(id=own_id)
+        own.delete()
 
-def delete_own(own_id: int) -> None:
-    own: Own = get_object_or_404(Own, id=own_id)
-    own.delete()
+    @staticmethod
+    def get_own_by_id(kwargs: dict) -> Own:
+        return Own.objects.get(id=kwargs['ownID'])
+
+    @staticmethod
+    def get_own_by_contr_id(contr_id: int) -> List[Own]:
+        contractor = Contractor.objects.get(id=contr_id)
+
+        return Own.objects.filter(contractor=contractor)

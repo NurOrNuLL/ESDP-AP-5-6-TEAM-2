@@ -1,0 +1,54 @@
+{% block content %}
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="importModalLabel">Загрузка excel файла</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" enctype="multipart/form-data"
+                      action="{% url 'nomenclature_import' orgID=1 tpID=tpID %}" id="importExel">
+                    <div class="modal-body">
+                        <div class="card" style="background-color: transparent !important; border: 0;">
+                            <div class="card-body">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <select name="nomenclature_id" class="form-select border-secondary bg-transparent">
+                                        {% for nomenclature in nomenclatures %}
+                                            <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <input type="file" class="form-control border-secondary bg-transparent"
+                                           accept=".xlsx, .xls"
+                                           name="excel_file" required>
+                                    <div class="form-text text-dark">Файл должен быть в расширении .xslx или .xls
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="import-progress-container" class="col-md-12">
+                            <div id="import-progress-message">Ожидание события . . .</div>
+                            <div class="progress">
+                                <div id="import-progress-bar"
+                                     class="progress-bar progress-bar-striped progress-bar-animated"
+                                     role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="error_text">
+                        </div>
+                        <div id="success_text">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Загрузить</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

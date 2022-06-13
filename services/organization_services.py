@@ -1,6 +1,7 @@
 from models.organization.models import Organization
-from django.shortcuts import get_object_or_404
 
 
-def get_organization_by_id(kwargs):
-    return get_object_or_404(Organization, id=kwargs['orgID'])
+class OrganizationService:
+    @staticmethod
+    def get_organization_by_id(kwargs: dict) -> Organization:
+        return Organization.objects.get(id=kwargs['orgID'])
