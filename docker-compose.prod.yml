@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 30 gservicegroup
+    command: --interval 300 gservicegroup
 
   web:
     container_name: gservicegroup
@@ -16,7 +16,7 @@ services:
       - static_volume:/app/static
     env_file:
       - .env_prod
-    image: esdp2/gservicegroup
+    image: esdp2/gservicegroup:latest
     ports:
       - "8000:8000"
     depends_on:
@@ -71,6 +71,7 @@ services:
       - "8084:80"
     depends_on:
       - web
+
 volumes:
   postgres:
   redis:
