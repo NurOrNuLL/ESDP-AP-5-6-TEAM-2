@@ -12,6 +12,7 @@ from services.organization_services import OrganizationService
 from services.trade_point_services import TradePointServices
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
+from django.db import transaction
 
 
 class ContractorCreate(TemplateView):
@@ -118,10 +119,11 @@ class ContractorUpdate(TemplateView):
 
         return render(request=request, template_name=self.template_name, context=context)
 
+    @transaction.atomic
     def post(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponse or HttpResponseRedirect:
-        contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        contractor = ContractorService.get_contractor_by_id_for_update(self.kwargs['contrID'])
         form = self.form_class(data=request.POST, instance=contractor)
 
         if form.is_valid():
