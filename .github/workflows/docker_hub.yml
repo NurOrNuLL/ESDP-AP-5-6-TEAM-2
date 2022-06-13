@@ -4,11 +4,9 @@ on:
   pull_request:
     branches:
       - 'master'
-    types: [ labeled ]
 
 jobs:
   docker:
-    if: ${{ github.event.label.name == 'pushHub' }}
     runs-on: ubuntu-latest
     steps:
       -
@@ -31,4 +29,4 @@ jobs:
           push: true
           context: .
           file: ./Dockerfile
-          tags: esdp2/gservicegroup:latest, esdp2/gservicegroup:${{ steps.date.outputs.date }
+          tags: esdp2/gservicegroup:latest, esdp2/gservicegroup:${{ steps.date.outputs.date }}
