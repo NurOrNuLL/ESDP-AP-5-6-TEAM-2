@@ -6,4 +6,3 @@ class ContractorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contractor
         fields = '__all__'
-

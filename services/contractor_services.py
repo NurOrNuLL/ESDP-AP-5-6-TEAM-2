@@ -43,3 +43,7 @@ class ContractorService:
     @staticmethod
     def get_contractor_by_id(contrID: int) -> Contractor:
         return Contractor.objects.get(id=contrID)
+
+    @staticmethod
+    def get_contractor_by_id_for_update(contrID: int) -> Contractor:
+        return Contractor.objects.select_for_update().get(id=contrID)

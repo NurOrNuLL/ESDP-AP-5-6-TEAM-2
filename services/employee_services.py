@@ -29,18 +29,17 @@ class EmployeeServices:
     @staticmethod
     def create_employee_with_uuid(uuid: str, data: dict) -> Employee:
         return Employee.objects.create(
-                uuid=uuid,
-                name=data['name'],
-                surname=data['surname'],
-                role=data['role'],
-                IIN=data['IIN'],
-                image=data['image'],
-                address=data['address'],
-                phone=data['phone'],
-                birthdate=data['birthdate'],
-                tradepoint=data['tradepoint']
-            )
-
+            uuid=uuid,  # noqa E126
+            name=data['name'],
+            surname=data['surname'],
+            role=data['role'],
+            IIN=data['IIN'],
+            image=data['image'],
+            address=data['address'],
+            phone=data['phone'],
+            birthdate=data['birthdate'],
+            tradepoint=data['tradepoint']
+        )
 
     @staticmethod
     def get_employee() -> List['Employee']:
@@ -55,9 +54,9 @@ class EmployeeServices:
         return TradePoint.objects.all()
 
     @staticmethod
-    def get_attached_tradepoint_id(request: HttpRequest, uuid: str) -> int:
+    def get_attached_tradepoint_id(request: HttpRequest, uuid: str) -> int:  # noqa C901
         try:
-            employee = Employee.objects.get(uuid=uuid)
+            employee = Employee.objects.get(uuid=uuid)  # noqa F841
         except ObjectDoesNotExist:
             tradepointID = request.COOKIES.get('tradepointID')
 

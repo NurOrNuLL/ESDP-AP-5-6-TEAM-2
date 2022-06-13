@@ -3,8 +3,12 @@ from .models import CustomUser
 
 
 class RegisterForm(forms.ModelForm):
-    password = forms.CharField(label="Пароль", strip=False, required=True, widget=forms.PasswordInput)
-    password_confirm = forms.CharField(label="Подтвердите пароль", required=True, widget=forms.PasswordInput, strip=False)
+    password = forms.CharField(
+        label="Пароль", strip=False, required=True, widget=forms.PasswordInput
+    )
+    password_confirm = forms.CharField(
+        label="Подтвердите пароль", required=True, widget=forms.PasswordInput, strip=False
+    )
 
     def clean(self):
         cleaned_data = super().clean()

@@ -140,6 +140,7 @@
                             progressBarMessageId = "export-progress-message",
                             isDownloadFile = true
                         )
+
                     },
                     error: function (err) {
                         console.log(err);
@@ -157,7 +158,12 @@
                 }
 
                 function onExportUserSuccess(progressBarElement, progressBarMessageElement, result) {
-                    alert("Загрузка выполнено на 100%")
+                    let resp = {'success': 'Загрузка выполнено на 100%'}
+                    $('#success_text').html(`<p style="color: green">${resp.success}</p>`)
+                    setTimeout(function () {
+                        window.location.replace(`{% url 'nomenclature_list' orgID=1 tpID=tpID %}`)
+                    }, 1200)
+
                     progressBarMessageElement.innerHTML = " . . ."
                     progressBarElement.setAttribute("style", "width: 0%")
                     progressBarElement.setAttribute("aria-valuenow", 0)

@@ -22,7 +22,9 @@ class TradePointCreate(ResetOrderCreateFormDataMixin, TemplateView):
 
         return super().get(request, *args, **kwargs)
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
+    def post(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST)
         if form.is_valid():
             TradePointServices.create_trade_point(form.cleaned_data)

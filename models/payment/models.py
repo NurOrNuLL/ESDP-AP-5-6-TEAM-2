@@ -1,7 +1,6 @@
 from django.db import models
 from .validators import JSONSchemaValidator
 
-
 PAYMENT_STATUS_CHOICES = [('Не оплачено', 'Не оплачено'), ('Оплачено', 'Оплачено')]
 
 PAYMENT_JSON_FIELD_SCHEMA = {
@@ -38,15 +37,15 @@ PAYMENT_JSON_FIELD_SCHEMA = {
 class Payment(models.Model):
     """Оплата"""
     payment_status = models.CharField(max_length=100, null=False, blank=False,
-                              choices=PAYMENT_STATUS_CHOICES, verbose_name='Статус оплаты'
-    )
+                                      choices=PAYMENT_STATUS_CHOICES,
+                                      verbose_name='Статус оплаты'
+                                      )
     method = models.ForeignKey(
         'payment_method.PaymentMethod', on_delete=models.PROTECT, null=True, blank=True,
         related_name='payments', verbose_name='Способ оплаты'
     )
     details = models.JSONField(null=True, blank=True, default=dict,
-        validators=[JSONSchemaValidator(limit_value=PAYMENT_JSON_FIELD_SCHEMA)]
-    )
+                               validators=[JSONSchemaValidator(limit_value=PAYMENT_JSON_FIELD_SCHEMA)])  # noqa E501
 
     def __str__(self):
         return f'{self.id, self.payment_status, self.method, self.details}'
