@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <h2>Создание заказ-наряда</h2>
+    <div class="w-50">
+        <div class="progress" style="height: 20px; background-color: white;">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">2\3</div>
+        </div>
+        <br>
+        <div>
+            <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
+            <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Выберите услуги" data-selected-text-format="count" required>
+                {% for category in categories %}
+                    <optgroup label="{{ category.0 }}">
+                        {% for service in services|get_item:category.0 %}
+                            <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                        {% endfor %}
+                    </optgroup>
+                {% endfor %}
+            </select>
+        </div>
+        <br>
+        <h5>Выбранные услуги:</h5>
+        <table class="table table-hover mb-2">
+            <thead>
+                <tr>
+                    <th scope="col">Название услуги</th>
+                    <th scope="col">Мастера</th>
+                    <th scope="col">Гарантия</th>
+                    <th scope="col">Цена</th>
+                </tr>
+            </thead>
+            <tbody id="selectedServicesTable"></tbody>
+        </table>
+        <h6 class="text-center" id="nothingSelected">Ничего не выбрано!</h6>
+        <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="jobs" id="resultServices">
+            <br>
+            <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+            <button type="submit" class="btn btn-primary">Далее</button>
+        </form>
+    </div>
+    <p class="d-none" id="employees">
+        {{ employees }}
+    </p>
+    <p class="d-none" id="session_jobs">
+        {{ session_jobs }}
+    </p>
+{% endblock content %}
+
+{% block js_block %}
+
+    <script>
+        var errors = "{{ form.errors|slugify }}"
+    </script>
+    <script src="{% static 'js/order/order_create_stage2.js' %}"></script>
+
+{% endblock js_block %}

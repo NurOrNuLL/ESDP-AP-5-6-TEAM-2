@@ -28,7 +28,8 @@ SERVICE_JSON_FIELD_SCHEMA = {
                 "minimum": 1
             }
         },
-        'required': ['Категория', 'Название', 'Марка', 'Цена']
+        'required': ['Категория', 'Название', 'Марка', 'Цена'],
+        'additionalProperties': False
     }
 }
 
@@ -54,4 +55,4 @@ class Nomenclature(models.Model):
     class Meta:
         verbose_name = "Номенклатура"
         verbose_name_plural = "Номенклатуры"
-        ordering = ('id', )
+        ordering = ('id',)

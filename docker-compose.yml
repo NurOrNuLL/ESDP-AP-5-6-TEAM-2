@@ -1,17 +1,37 @@
 version: '3'
 
 services:
+  web:
+    container_name: gservicegroup
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - static_volume:/app/static
+    env_file:
+      - .env_prod
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
 
   postgres:
     container_name: postgres
     image: postgres:latest
     restart: always
     ports:
-      - 5432:5432
+      - "5435:5432"
     volumes:
       - postgres:/var/lib/postgresql/data
     env_file:
-      - ./variables.env
+      - .env_prod
+    environment:
+      POSTGRES_HOST: ${PSQL_HOST}
+      POSTGRES_PORT: ${PSQL_PORT}
+      POSTGRES_USER: ${PSQL_USER}
+      POSTGRES_PASSWORD: ${PSQL_PASS}
 
   redis:
     container_name: redis
@@ -22,8 +42,35 @@ services:
     volumes:
       - redis:/data
 
+  celery:
+    container_name: celery
+    image: celery
+    restart: always
+    build:
+      context: .
+      dockerfile: ./Dockerfile_celery
+    volumes:
+      - .:/app
+    env_file:
+      - .env_prod
+    links:
+      - redis
+    depends_on:
+      - redis
+      - web
+
+  nginx:
+    build: ./nginx
+    image: nginx:latest
+    restart: always
+    container_name: nginx
+    volumes:
+      - static_volume:/app/static
+    ports:
+      - "8084:80"
+    depends_on:
+      - web
 volumes:
   postgres:
   redis:
-
-
+  static_volume:

@@ -1,7 +1,7 @@
 <form method="post">
     {% csrf_token %}
     <label for="nomenclature" class="form-label">Номенклатура</label><br>
-    <select class="form-control" name="nomenclature" id="nomenclature">
+    <select class="form-select" name="nomenclature" id="nomenclature">
         {% for nom in nomenclature %}
             <option value="{{ nom.pk }}">{{ nom.name }}</option>
         {% endfor %}

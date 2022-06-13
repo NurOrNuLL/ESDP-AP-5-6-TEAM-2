@@ -15,6 +15,7 @@ class Own(models.Model):
         max_length=100, null=True, blank=True,
         verbose_name='Номер'
     )
+    is_part = models.BooleanField(default=False, verbose_name="Зап.часть")
 
     def __str__(self: object) -> str:
         return f'{self.name}'

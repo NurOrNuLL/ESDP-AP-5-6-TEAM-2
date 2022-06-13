@@ -3,39 +3,53 @@
     <div>
         <label for="contractor_name" class="form-label">Наименование</label><br>
         <input type="text" class="form-control" id="contractor_name" name="name" value="{{ form.name.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.name }}</div>
+        <div class="form-text error-red">{{ form.errors.name }}</div>
     </div>
     <div>
         <label for="contractor_address" class="form-label">Адрес</label><br>
         <input type="text" class="form-control" id="contractor_address" name="address" value="{{ form.address.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.address }}</div>
+        <div class="form-text error-red">{{ form.errors.address }}</div>
     </div>
     <div>
         <label for="contractor_IIN_or_BIN" class="form-label">ИИН / БИН</label><br>
         <input type="number" class="form-control" id="contractor_IIN_or_BIN" name="IIN_or_BIN" value="{{ form.IIN_or_BIN.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.IIN_or_BIN }}</div>
+        <div class="form-text error-red">{{ form.errors.IIN_or_BIN }}</div>
     </div>
-    <div>
-        <label for="contractor_bank_requisition" class="form-label">Реквизиты</label><br>
-        <input type="text" class="form-control" id="contractor_bank_requisition" name="bank_requisition" value="{{ form.bank_requisition.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.bank_requisition }}</div>
+
+    <div id="contractor_banking_details">
+        <div>
+            <label for="contractor_bank_requisition" class="form-label">ИИК</label><br>
+            <input type="text" class="form-control" id="contractor_IIC" name="IIC" value="{{ form.IIC.value|default:'' }}"><br>
+            <div class="form-text error-red">{{ form.errors.IIC }}</div>
+        </div>
+        <div>
+            <label for="contractor_bank_requisition" class="form-label">Наименование банка</label><br>
+            <input type="text" class="form-control" id="contractor_bank_name" name="bank_name" value="{{ form.bank_name.value|default:'' }}"><br>
+            <div class="form-text error-red">{{ form.errors.bank_name }}</div>
+        </div>
+        <div>
+            <label for="contractor_bank_requisition" class="form-label">БИК</label><br>
+            <input type="text" class="form-control" id="contractor_BIC" name="BIC" value="{{ form.BIC.value|default:'' }}"><br>
+            <div class="form-text error-red">{{ form.errors.BIC }}</div>
+        </div>
     </div>
+
     <div>
         <label for="contractor_phone" class="form-label">Контакты</label><br>
         <input type="number" class="form-control" id="contractor_phone" name="phone" value="{{ form.phone.value|default:'' }}"><br>
-        <div class="form-text c-red">{{ form.errors.phone }}</div>
+        <div class="form-text error-red">{{ form.errors.phone }}</div>
     </div>
     <div class="row">
         <label for="contractor_trust_person" class="form-label">Доверенное лицо</label><br>
         <div class="col-md-6">
             <label for="contractor_trust_person_name" class="form-label">ФИО</label><br>
-            <input type="text" class="form-control" id="contractor_trust_person_name" name='trust_person_name' value="{{ form.trust_person.name.value|default:'' }}"><br>
+            <input type="text" class="form-control" id="contractor_trust_person_name" name='trust_person_name' value="{{ trust_person|get_item:'name'|default:'' }}"><br>
         </div>
         <div class="col-md-6">
             <label for="contractor_trust_person_comment" class="form-label">Комментарий</label><br>
-            <input type="text" class="form-control" id="contractor_trust_person_comment" name='trust_person_comment' value="{{ form.trust_person.comment.value|default:'' }}"><br>
+            <input type="text" class="form-control" id="contractor_trust_person_comment" name='trust_person_comment' value="{{ trust_person|get_item:'comment'|default:'' }}"><br>
         </div>
-        <div class="form-text c-red">{{ form.errors.trust_person }}</div>
+        <div class="form-text error-red">{{ form.errors.trust_person }}</div>
     </div>
     <button type="submit" class="btn btn-primary">{{ button_text }}</button>
 </form>

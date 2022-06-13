@@ -1,0 +1,53 @@
+{% block content %}
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="importModalLabel">Скачаивание excel файла</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="get" enctype="multipart/form-data"
+                      action="{% url 'nomenclature_export' orgID=1 tpID=tpID %}" id="exportData">
+                    <div class="modal-body">
+                        <div class="card" style="background-color: transparent !important; border: 0;">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <select id="nomenclature_id" name="nomenclature_id"
+                                            class="form-select border-secondary bg-transparent">
+                                        {% for nomenclature in nomenclatures %}
+                                            <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <h6>Выберите расширение</h6>
+                                    <select class="form-select" aria-label="Default select example" name="extension"
+                                            id="extension">
+                                        <option value="xlsx">xlsx</option>
+                                        <option value="xls">xls</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="export-progress-container" class="col-md-12">
+                            <div id="export-progress-message">Ожидание события . . .</div>
+                            <div class="progress">
+                                <div id="export-progress-bar"
+                                     class="progress-bar progress-bar-striped progress-bar-animated"
+                                     role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+                        <div id="success_text">
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="submit">Скачать</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

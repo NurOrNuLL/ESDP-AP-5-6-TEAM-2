@@ -31,3 +31,15 @@ sidebarLinks.forEach((element) => {
     })
   }
 })
+
+// let button = document.getElementById('tradepointChoices');
+// let choiceItem = document.getElementById('tradepointItem');
+//
+// button.addEventListener('click', (data) => {
+//           console.log(data);
+//           data.forEach(function (item) {
+//             console.log(item);
+//             choiceItem.value = item.value.name;
+//             choiceItem.href = item.value.id;
+//           })
+// })

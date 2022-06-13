@@ -21,4 +21,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           level: warning
           fail_on_error: true
-
