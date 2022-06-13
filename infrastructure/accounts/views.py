@@ -11,7 +11,6 @@ from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
 from services.trade_point_services import TradePointServices
-from models.employee.models import Employee
 from infrastructure.web.employee.tasks import upload
 
 
@@ -24,7 +23,9 @@ class RegisterView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['roles'] = [('Управляющий', 'Управляющий'), ('Менеджер', 'Менеджер')]
         context['tradepoints'] = TradePointServices.get_trade_points(self.kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
 
         return context
 
@@ -43,19 +44,26 @@ class RegisterView(TemplateView):
         employee_form = self.employee_form_class(employee_data, request.FILES)
 
         if register_form.is_valid() and employee_form.is_valid():
-            local_path = '/home/asparukh/Desktop/super_sto/ESDP-AP-5-6-TEAM-2/image/' + str(employee_form.cleaned_data['image'])
+            local_path = '/home/asparukh/Desktop/super_sto/ESDP-AP-5-6-TEAM-2/image/' + \
+                         str(employee_form.cleaned_data['image'])
             path = 'image/' + str(employee_form.cleaned_data['image'])
             user = register_form.save()
             task = upload.apply_async(args=[local_path, path], ignore_result=True)
-            EmployeeServices.create_employee_with_uuid(user.uuid, employee_form.cleaned_data)
+            EmployeeServices.create_employee_with_uuid(
+                user.uuid, employee_form.cleaned_data
+            )
 
-            return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
+            return HttpResponse(json.dumps(
+                {"task_id": task.id}), content_type='application/json'
+            )
         else:
             context = self.get_context_data()
             context['register_form'] = register_form
             context['employee_form'] = employee_form
 
-            return render(request=request, template_name=self.template_name, context=context)
+            return render(
+                request=request, template_name=self.template_name, context=context
+            )
 
 
 class LoginView(View):

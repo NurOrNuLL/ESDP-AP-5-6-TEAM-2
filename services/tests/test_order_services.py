@@ -20,15 +20,16 @@ class OrderServicesTest(TestCase):
             self.assertEqual(returned_order, order)
             get_order.assert_called_once_with(id=order.id)
 
-
-    def test_get_orders_by_trade_point(self):
+    def test_get_orders_by_trade_point(self):  # noqa E303
         trade_point = Mock(spec=TradePoint, id=1)
         orders = [Mock(spec=Order, id=1), Mock(spec=Order, id=2)]
 
         with patch('models.order.models.Order.objects.filter') as filter_orders:
             filter_orders.return_value = orders
 
-            returned_orders = OrderService.get_orders_by_trade_point({'tpID': trade_point.id})
+            returned_orders = OrderService.get_orders_by_trade_point(
+                {'tpID': trade_point.id}
+            )
 
             self.assertListEqual(returned_orders, orders)
             filter_orders.assert_called_once_with(trade_point=trade_point.id)

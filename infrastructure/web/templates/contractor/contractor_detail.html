@@ -72,7 +72,7 @@
                     {% if own.is_part is False %}
                         <tr id="own_instance_{{ own.id }}">
                             <th scope="col">{{ own.name }}</th>
-                            <th>{{ own.number }}</th>
+                                <th>{% if own.number %}{{ own.number }}{% else %}Не указан{% endif %}</th>
                             <th class="d-flex justify-content-end" scope="col"><a
                                     class="btn btn-outline-danger buttonDelete" data-bs-toggle="modal"
                                     data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"

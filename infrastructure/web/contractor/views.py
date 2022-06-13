@@ -13,6 +13,7 @@ from services.trade_point_services import TradePointServices
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from django.db import transaction
 
 
 class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
@@ -41,7 +42,8 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
             form.cleaned_data['trust_person'] = trust_person
             contractor = ContractorService.create_contractor(form.cleaned_data)
             return redirect('contractor_detail',
-                            orgID=self.kwargs['orgID'], contrID=contractor.pk, tpID=self.kwargs['tpID'])
+                            orgID=self.kwargs['orgID'],
+                            contrID=contractor.pk, tpID=self.kwargs['tpID'])
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = form
@@ -85,7 +87,9 @@ class ContractorDetail(ResetOrderCreateFormDataMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        context['contractor'] = ContractorService.get_contractor_by_id(
+            self.kwargs['contrID']
+        )
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -116,17 +120,25 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
         self.delete_order_data_from_session(request)
 
         contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
-        form = self.form_class(initial=self.get_inital(contr_id=self.kwargs['contrID']), instance=contractor)
+        form = self.form_class(
+            initial=self.get_inital(contr_id=self.kwargs['contrID']),
+            instance=contractor)
 
         context = self.get_context_data()
         context['form'] = form
-        context['trust_person'] = contractor.trust_person if contractor.trust_person else dict()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['trust_person'] = contractor.trust_person if \
+            contractor.trust_person else dict()
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
 
         return render(request=request, template_name=self.template_name, context=context)
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse or HttpResponseRedirect:
-        contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+    @transaction.atomic
+    def post(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponse or HttpResponseRedirect:
+        contractor = ContractorService.get_contractor_by_id_for_update(self.kwargs['contrID'])
         form = self.form_class(data=request.POST, instance=contractor)
 
         if form.is_valid():
@@ -144,7 +156,9 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
 
             ContractorService.update_contractor(contractor, data)
 
-            return redirect('contractor_detail', orgID=1, contrID=self.kwargs['contrID'], tpID=self.kwargs['tpID'])
+            return redirect('contractor_detail', orgID=1,
+                            contrID=self.kwargs['contrID'],
+                            tpID=self.kwargs['tpID'])
         else:
             context = self.get_context_data()
             context['form'] = form

@@ -1,6 +1,7 @@
 from models.payment.models import PAYMENT_STATUS_CHOICES, Payment
 from models.payment_method.models import PaymentMethod
 from typing import List
+from models.payment.models import Payment
 
 
 class PaymentService:
