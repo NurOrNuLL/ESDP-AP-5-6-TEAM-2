@@ -28,6 +28,10 @@ class OwnCreate(TemplateView):
         form = self.form_class(request.POST)
 
         if form.is_valid():
+            if form.cleaned_data['number']:
+                if ' ' in form.cleaned_data['number']:
+                    clean_number_string = form.cleaned_data['number'].replace(' ', '')
+                    form.cleaned_data['number'] = clean_number_string
             OwnServices.create_own(
                 form.cleaned_data,
                 contractor_id=self.kwargs.get('contrID')

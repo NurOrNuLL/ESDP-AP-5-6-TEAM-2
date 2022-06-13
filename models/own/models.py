@@ -12,8 +12,12 @@ class Own(models.Model):
         on_delete=models.PROTECT, null=False, blank=False
     )
     number = models.CharField(
-        max_length=100, null=True, blank=True,
+        max_length=50, null=True, blank=True, unique=True,
         verbose_name='Номер'
+    )
+    comment = models.CharField(
+        max_length=300, null=True, blank=True,
+        verbose_name='Комментарий'
     )
     is_part = models.BooleanField(default=False, verbose_name="Зап.часть")
 
