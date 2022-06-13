@@ -1,7 +1,9 @@
 from django.urls import path
 from .order.views import (
     HomePageView, OrderCreateFromContractor,
-    OrderDetail
+    OrderDetail, OrderCreateViewStage1,
+    OrderCreateViewStage2, OrderCreateViewStage3,
+    OrderCreateViewStage4
 )
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
@@ -12,7 +14,7 @@ from .nomenclature.views import (
     NomenclatureDownloadView,
     NomenclatureProgressView
 )
-from .own.views import OwnDeleteView, OwnCreate
+from .own.views import OwnDeleteView, OwnCreate, OwnList
 from .contractor.views import (
     ContractorCreate, ContractorList,
     ContractorDetail, ContractorUpdate, ContractorFilterApiView
@@ -77,7 +79,8 @@ own_urls = [
     path(
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
         OwnDeleteView.as_view(), name="own_delete"
-    )
+    ),
+    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list")
 ]
 
 employee_urls = [
@@ -94,6 +97,10 @@ order_urls = [
          OrderCreateFromContractor.as_view(), name="order_create"),
     path('contractor/<int:contrID>/own/<int:ownID>/order/<int:ordID>/',
          OrderDetail.as_view(), name="order_detail"),
+    path('order/create/stage/1/', OrderCreateViewStage1.as_view(), name='order_create_stage1'),
+    path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2'),
+    path('order/create/stage/3/', OrderCreateViewStage3.as_view(), name='order_create_stage3'),
+    path('order/create/stage/4/', OrderCreateViewStage4.as_view(), name='order_create_stage4')
 ]
 
 urlpatterns = [

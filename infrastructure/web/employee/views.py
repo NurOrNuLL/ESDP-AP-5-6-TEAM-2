@@ -14,9 +14,10 @@ from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
 from .serializers import EmployeeSerializer
 from .tasks import upload
+from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 
 
-class EmployeeCreate(TemplateView):
+class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employee_create.html'
     form_class = EmployeeForm
     initial_data = {
@@ -31,6 +32,7 @@ class EmployeeCreate(TemplateView):
     def get(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
+        self.delete_order_data_from_session(request)
         context = self.get_context_data(**kwargs)
         context['tradepoints'] = EmployeeServices.get_tradepoint()
 
@@ -57,8 +59,13 @@ class EmployeeCreate(TemplateView):
             return render(request, self.template_name, context)
 
 
-class EmployeeList(TemplateView):
+class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employees.html'
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)
 
 
 class MyPagination(PageNumberPagination):
@@ -75,7 +82,7 @@ class EmployeeFilterApiView(generics.ListAPIView):
         return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))
 
 
-class EmployeeDetail(TemplateView):
+class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employee_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -84,3 +91,8 @@ class EmployeeDetail(TemplateView):
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['employee'] = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)

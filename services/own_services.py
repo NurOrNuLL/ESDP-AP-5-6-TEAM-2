@@ -1,5 +1,6 @@
 from models.own.models import Own
 from models.contractor.models import Contractor
+from typing import List
 
 
 class OwnServices:
@@ -20,3 +21,9 @@ class OwnServices:
     @staticmethod
     def get_own_by_id(kwargs: dict) -> Own:
         return Own.objects.get(id=kwargs['ownID'])
+
+    @staticmethod
+    def get_own_by_contr_id(contr_id: int) -> List[Own]:
+        contractor = Contractor.objects.get(id=contr_id)
+
+        return Own.objects.filter(contractor=contractor)

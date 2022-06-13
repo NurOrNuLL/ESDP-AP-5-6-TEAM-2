@@ -19,9 +19,10 @@ from celery.result import AsyncResult
 from celery_progress.backend import Progress
 from ..nomenclature.tasks.import_exel import import_exel_file
 from ..nomenclature.tasks.export_exel import export_exel_file
+from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 
 
-class NomenclatureImportView(TemplateView):
+class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
     """Импорт прайса для выбранной номенклатуры"""
     template_name = 'nomenclature/list.html'
     form_class = NomenclatureImportForm
@@ -34,6 +35,11 @@ class NomenclatureImportView(TemplateView):
         )
 
         return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)
 
     def post(
             self, request: HttpRequest,
@@ -62,7 +68,7 @@ class NomenclatureImportView(TemplateView):
                 )
 
 
-class NomenclaturesServiceListView(TemplateView):
+class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'nomenclature/list.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -75,7 +81,9 @@ class NomenclaturesServiceListView(TemplateView):
         )
         return context
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+      
         context = self.get_context_data()
         if request.session.get('error'):
             context['error'] = request.session['error']
@@ -122,9 +130,14 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
         }
 
 
-class NomenclatureCreate(TemplateView):
+class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
     form_class = NomenclatureForm
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)
 
     def post(
             self, request: HttpRequest, *args: list, **kwargs: dict
@@ -138,7 +151,7 @@ class NomenclatureCreate(TemplateView):
         return render(request, self.template_name, {'form': form})
 
 
-class NomenclatureExportView(TemplateView):
+class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
 
@@ -152,6 +165,8 @@ class NomenclatureExportView(TemplateView):
     def get(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponse or HttpResponseRedirect:
+        self.delete_order_data_from_session(request)
+      
         nomenclature_id = request.GET.get('nomenclature_id')
         extension = request.GET.get('extension')
         task = export_exel_file.delay(nomenclature_pk=nomenclature_id, extension=extension)
@@ -160,7 +175,7 @@ class NomenclatureExportView(TemplateView):
         )
 
 
-class NomenclatureDownloadView(TemplateView):
+class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, TemplateView):
     """При удачном выполнении задачи выдает загруженный файл"""
     template_name = 'nomenclature/list.html'
     services_file = ''
@@ -175,6 +190,8 @@ class NomenclatureDownloadView(TemplateView):
     def get(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponse or HttpResponseRedirect:
+        self.delete_order_data_from_session(request)  
+      
         celery_result = AsyncResult(request.GET.get('task_id'))
         main_data = celery_result.result.get('main_data')
         extension = celery_result.result.get('extension')
@@ -219,7 +236,7 @@ class NomenclatureFormForImpost(GenericAPIView):
         )
 
 
-class NomenclatureProgressView(TemplateView):
+class NomenclatureProgressView(ResetOrderCreateFormDataMixin, TemplateView):
     """Для получения данных о 100% загрузке"""
     template_name = 'nomenclature/list.html'
 
@@ -231,6 +248,8 @@ class NomenclatureProgressView(TemplateView):
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
         task_id = AsyncResult(request.GET.get('task_id'))
         if task_id:
             progress = Progress(task_id)
