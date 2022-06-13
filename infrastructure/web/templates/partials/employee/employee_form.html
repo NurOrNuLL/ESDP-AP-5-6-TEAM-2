@@ -29,7 +29,10 @@
     </div>
     <div>
         <label for="employee_image" class="form-label">Фотография удостоверения</label><br>
-        <input type="file" class="form-control" id="employee_image" name="image"
+        <input type="button" id="loadFileImage" value="Выберите фото"
+               onclick="document.getElementById('employee_image').click();"/>
+        <label for="loadFileImage" id="file-name">фото не выбран</label>
+        <input type="file" style="display: none" class="form-control" id="employee_image" name="image"
                value="{{ form.image.value|default:'' }}" accept="image/*" required><br>
         <div class="form-text c-red">{{ form.errors.image }}</div>
     </div>
