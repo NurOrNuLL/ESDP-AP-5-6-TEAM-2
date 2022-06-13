@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.validators import RegexValidator
 from .validators import JSONSchemaValidator
 
 
@@ -9,22 +8,30 @@ PAYMENT_JSON_FIELD_SCHEMA = {
     'schema': 'http://json-schema.org/draft-07/schema#',
     'type': 'object',
     'properties': {
-        'cash': {'type': 'string', 'maxLength': 100},
-        'cashless': {'type': ['object'],
-                     'properties': {
-                         'consignment': {'type': 'string', 'maxLength': 100},
-                         'invoice': {'type': 'string', 'maxLength': 100},
-                         }
-                     },
-        'kaspi': {'type': ['object'],
-                  'properties': {
-                      'qr': {'type': 'string', 'maxLength': 100},
-                      'red': {'type': 'string', 'maxLength': 100},
-                      'transfer': {'type': 'string', 'maxLength': 100},
-                      }
-                  },
+        'cash': {
+            'type': 'string',
+            'maxLength': 100
+        },
+        'cashless': {
+            'type': 'object',
+            'properties': {
+                'consignment': {
+                    'type': 'string',
+                    'maxLength': 100
+                },
+                'invoice': {
+                    'type': 'string',
+                    'maxLength': 100
+                }
+            }
+        },
+        'kaspi': {
+            'type': 'string'
+        }
     },
-    'required': []
+    'required': [],
+    'additionalProperties': False,
+    'maxProperties': 1
 }
 
 

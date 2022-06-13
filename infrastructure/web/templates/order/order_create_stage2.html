@@ -11,8 +11,8 @@
         </div>
         <br>
         <div>
-            <label for="service" class="form-label">Услуги</label>
-            <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Выберите услуги" data-selected-text-format="count">
+            <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
+            <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Выберите услуги" data-selected-text-format="count" required>
                 {% for category in categories %}
                     <optgroup label="{{ category.0 }}">
                         {% for service in services|get_item:category.0 %}
@@ -54,6 +54,9 @@
 
 {% block js_block %}
 
+    <script>
+        var errors = "{{ form.errors|slugify }}"
+    </script>
     <script src="{% static 'js/order/order_create_stage2.js' %}"></script>
 
 {% endblock js_block %}

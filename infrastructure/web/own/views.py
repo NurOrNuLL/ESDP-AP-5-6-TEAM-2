@@ -8,11 +8,17 @@ from .serializer import OwnSerializer, OwnIdSerializer
 from rest_framework.response import Response
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
+from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 
 
-class OwnCreate(TemplateView):
+class OwnCreate(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'own/own_create.html'
     form_class = OwnForm
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST)

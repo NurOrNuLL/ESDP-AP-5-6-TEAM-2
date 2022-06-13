@@ -13,8 +13,8 @@
         <form method="POST" id="emp_reg" enctype="multipart/form-data">
             {% csrf_token %}
             <div>
-                <label for="contractor" class="form-label">Контрагент</label>
-                <select class="form-control selectpicker" id="contractor" name="contractor" data-live-search="true">
+                <label for="contractor" class="form-label">Контрагент <span style="color: red;">*</span></label>
+                <select class="form-control selectpicker" id="contractor" name="contractor" data-live-search="true" required>
                     <option value="">-</option>
                     <optgroup label="Контрагенты">
                         {% for contractor in contractors %}
@@ -31,9 +31,9 @@
             </div>
             <br>
             <div class="col">
-                <label for="own" class="form-label">Собственность</label>
+                <label for="own" class="form-label">Собственность <span style="color: red;">*</span></label>
                 {% if session_own %}
-                    <select name="own" class="form-select" id="own">
+                    <select name="own" class="form-select" id="own" required>
                         {% for own in owns %}
                             {% if own.id == session_own.id %}
                                 <option value="{{ own.id }}" selected>{{ own.name }}</option>
@@ -43,7 +43,7 @@
                         {% endfor %}
                     </select>
                 {% else %}
-                    <select name="own" class="form-select" disabled id="own">
+                    <select name="own" class="form-select" disabled id="own" required>
                         <option value="">-</option>
                     </select>
                 {% endif %}

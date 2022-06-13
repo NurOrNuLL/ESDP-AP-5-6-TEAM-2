@@ -23,9 +23,10 @@ from infrastructure.web.trade_point.context_processor import trade_point_context
 from typing import Dict, Any, List
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 
 
-class HomePageView(LoginRequiredMixin, TemplateView):
+class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'home.html'
     trade_points = trade_point_context(request)
 
@@ -36,11 +37,15 @@ class HomePageView(LoginRequiredMixin, TemplateView):
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
         return render(request, self.template_name, self.get_context_data())
 
 
-class HomeRedirectView(LoginRequiredMixin, View):
+class HomeRedirectView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, View):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
         return redirect('home', orgID=1, tpID=EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid))
 
 
@@ -58,15 +63,13 @@ class OrderCreateViewStage1(TemplateView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
 
-        session_contractor_id = request.session.get('contractor')
-        session_own_id = request.session.get('own')
+        contractor_id = request.session.get('contractor')
+        own_id = request.session.get('own')
 
-        print(request.session.items())
-
-        if session_contractor_id and session_own_id:
-            context['session_contractor'] = ContractorService.get_contractor_by_id(session_contractor_id)
-            context['session_own'] = OwnServices.get_own_by_id({'ownID': session_own_id})
-            context['owns'] = OwnServices.get_own_by_contr_id(session_contractor_id)
+        if contractor_id and own_id:
+            context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
+            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
 
         return render(request, self.template_name, context)
 
@@ -115,10 +118,10 @@ class OrderCreateViewStage2(TemplateView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
 
-        session_jobs = request.session.get('jobs')
+        jobs = request.session.get('jobs')
 
-        if session_jobs:
-            context['session_jobs'] = json.dumps(session_jobs)
+        if jobs:
+            context['session_jobs'] = json.dumps(jobs)
 
         return render(request, self.template_name, context)
 
@@ -143,19 +146,107 @@ class OrderCreateViewStage3(TemplateView):
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['payment_methods'] = PaymentService.get_payment_methods()
 
         return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        own = OwnServices.get_own_by_id({'ownID': request.session['own']})
+
+        context = self.get_context_data()
+
+        mileage = request.session.get('mileage')
+        note = request.session.get('note')
+
+        if own.is_part:
+            if note:
+                context['note'] = note
+        else:
+            if mileage and not note:
+                context['session_mileage'] = mileage
+            elif not mileage and note:
+                context['session_note'] = note
+            else:
+                context['session_mileage'] = mileage
+                context['session_note'] = note
+
+        context['own'] = own
+
+        return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            pass
+            request.session['mileage'] = form.cleaned_data['mileage']
+            request.session['note'] = form.cleaned_data['note']
+
+            return redirect('order_create_stage4', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
         else:
             context = self.get_context_data()
             context['form'] = form
 
             return render(request, self.template_name, context)
+
+
+class OrderCreateViewStage4(TemplateView):
+    template_name = 'order/order_create_stage4.html'
+
+    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+
+        return context
+
+    def get_prices(self, jobs: List[Dict[Any, Any]]) -> List[int]:
+        price_for_pay = 0
+        full_price = 0
+
+        for job in jobs:
+            if job['Гарантия']:
+                full_price += job['Цена услуги']
+            else:
+                price_for_pay += job['Цена услуги']
+                full_price += job['Цена услуги']
+
+        return [price_for_pay, full_price]
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        context = self.get_context_data()
+        context['contractor'] = ContractorService.get_contractor_by_id(request.session['contractor'])
+        context['own'] = OwnServices.get_own_by_id({'ownID': request.session['own']})
+        context['jobs'] = request.session['jobs']
+        context['mileage'] = request.session['mileage']
+        context['note'] = request.session['note']
+        context['price_for_pay'], context['full_price'] = self.get_prices(request.session['jobs'])
+
+        return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        prices = self.get_prices(request.session['jobs'])
+
+        data = {
+            'trade_point': TradePointServices.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
+            'contractor': ContractorService.get_contractor_by_id(request.session['contractor']),
+            'own': OwnServices.get_own_by_id({'ownID': request.session['own']}),
+            'status': ORDER_STATUS_CHOICES[0][0],
+            'price_for_pay': prices[0],
+            'full_price': prices[1],
+            'payment': PaymentService.create_unpaid_payment(),
+            'note': request.session.get('note'),
+            'mileage': request.session.get('mileage'),
+            'jobs': request.session['jobs']
+        }
+
+        OrderService.create_order(data)
+
+        del request.session['contractor']
+        del request.session['own']
+        del request.session['jobs']
+        if request.session.get('note'): del request.session['note']
+        if request.session.get('mileage'): del request.session['mileage']
+
+        return redirect('home', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
 
 
 class OrderCreateFromContractor(TemplateView):
@@ -206,7 +297,7 @@ class OrderCreateFromContractor(TemplateView):
 
 
 
-class OrderDetail(TemplateView):
+class OrderDetail(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'order/order_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -217,3 +308,8 @@ class OrderDetail(TemplateView):
         context['own'] = OwnServices.get_own_by_id(self.kwargs)
         context['order'] = OrderService.get_order_by_id(self.kwargs['ordID'])
         return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)

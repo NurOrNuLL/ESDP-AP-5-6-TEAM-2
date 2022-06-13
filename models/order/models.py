@@ -68,7 +68,7 @@ class Order(models.Model):
     jobs = models.JSONField(verbose_name='Работы', validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
 
     def __str__(self):
-        return f'{self.created_at, self.contractor, self.price, self.status}'
+        return f'{self.created_at, self.contractor, self.status}'
 
     class Meta:
         verbose_name = "Заказ-наряд"

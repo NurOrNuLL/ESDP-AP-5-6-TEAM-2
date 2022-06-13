@@ -28,8 +28,7 @@ class OrderCreateFormStage2(forms.Form):
 
 
 class OrderCreateFormStage3(forms.Form):
-    payment = forms.ChoiceField(required=True)
-    mileage = forms.CharField(required=True)
+    mileage = forms.CharField()
     note = forms.Textarea()
 
 

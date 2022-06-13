@@ -12,37 +12,28 @@
         <br>
         <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="col">
-                <label for="mileage" class="form-label">Пробег</label>
-                <input type="number" class="form-control" id="mileage" name="mileage" required>
-                <div class="form-text" style="color: red;">
-                    {% for err in register_form.errors.password %}{{ err }}{% endfor %}</div>
-            </div>
+            {% if not session_own.is_part %}
+                <div class="col">
+                    <label for="mileage" class="form-label">Пробег</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" value="{{ session_mileage }}" id="mileage" name="mileage">
+                        <span class="input-group-text" id="basic-addon2">km</span>
+                    </div>
+                    <div class="form-text" style="color: red;">
+                        {% for err in order_form.errors.mileage %}{{ err }}{% endfor %}</div>
+                </div>
+                <br>
+            {% endif %}
             <div>
                 <label for="note" class="form-label">Примечание</label>
-                <textarea class="form-control" id="note" name="note" rows="3"></textarea>
+                <textarea class="form-control" id="note" name="note" rows="3">{{ session_note|default:'' }}</textarea>
                 <div class="form-text" style="color: red;">
                     {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
             </div>
             <br>
-            <div class="row">
-                <div class="col">
-                    <label for="password_confirm" class="form-label">Повторите пароль</label>
-                    <input type="password" class="form-control" id="password_confirm" name="password_confirm" required>
-                    <div class="form-text" style="color: red;">
-                        {% for err in register_form.errors.password_confirm %}{{ err }}{% endfor %}</div>
-                </div>
-            </div>
-            <br>
             <a href="{% url 'order_create_stage2' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
-            <button type="submit" class="btn btn-primary">Создать</button>
+            <button type="submit" class="btn btn-primary">Далее</button>
         </form>
     </div>
 
 {% endblock content %}
-
-{% block js_block %}
-
-    <script src="{% static 'js/order/order_create_stage3.js' %}"></script>
-
-{% endblock js_block %}

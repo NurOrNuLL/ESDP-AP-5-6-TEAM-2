@@ -31,7 +31,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
         tableBody.innerHTML += `<tr class="service-row" data-service-index="${sessionJobs[i]['Индекс']}" data-service-name="${sessionJobs[i]['Название услуги']}" data-service-employees="${sessionJobs[i]['Мастера']}" data-service-garanty="${sessionJobs[i]['Гарантия']}" data-service-price="${sessionJobs[i]['Цена услуги']}">
                                     <td>${sessionJobs[i]['Название услуги']}</td>
                                     <td>
-                                        <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выберите мастеров" data-max-options="5" data-selected-text-format="count"></select>
+                                        <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выберите мастеров" data-max-options="5" data-selected-text-format="count" required></select>
                                     </td>
                                     <td>
                                         <div class="form-check form-switch">
@@ -78,7 +78,7 @@ service.addEventListener('change', e => {
                     tableBody.innerHTML += `<tr class="service-row" data-service-index="${j}" data-service-name="${service.selectedOptions[i].dataset['serviceName']}" data-service-employees="${serviceOptions[j].dataset['serviceEmployees']}" data-service-garanty="${serviceOptions[j].dataset['serviceGaranty']}" data-service-price="${service.selectedOptions[i].dataset['servicePrice']}">
                                                 <td>${service.selectedOptions[i].dataset['serviceName']}</td>
                                                 <td>
-                                                    <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выберите мастеров" data-max-options="5" data-selected-text-format="count"></select>
+                                                    <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выберите мастеров" data-max-options="5" data-selected-text-format="count" required></select>
                                                 </td>
                                                 <td>
                                                     <div class="form-check form-switch">
@@ -178,3 +178,8 @@ serviceEmployeeForm.addEventListener('submit', e => {
 
     serviceEmployeeForm.submit();
 })
+
+
+if (errors != "") {
+    alert('Вы не заполнили услуги или мастеров для услуг! Попробуйте еще раз.')
+}
