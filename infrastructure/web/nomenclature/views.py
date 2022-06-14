@@ -83,7 +83,7 @@ class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, TemplateView):
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
-      
+
         context = self.get_context_data()
         if request.session.get('error'):
             context['error'] = request.session['error']
@@ -166,7 +166,7 @@ class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponse or HttpResponseRedirect:
         self.delete_order_data_from_session(request)
-      
+
         nomenclature_id = request.GET.get('nomenclature_id')
         extension = request.GET.get('extension')
         task = export_exel_file.delay(nomenclature_pk=nomenclature_id, extension=extension)
@@ -190,8 +190,8 @@ class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, TemplateView):
     def get(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponse or HttpResponseRedirect:
-        self.delete_order_data_from_session(request)  
-      
+        self.delete_order_data_from_session(request)
+
         celery_result = AsyncResult(request.GET.get('task_id'))
         main_data = celery_result.result.get('main_data')
         extension = celery_result.result.get('extension')
