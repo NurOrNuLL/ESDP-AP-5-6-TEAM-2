@@ -94,3 +94,4 @@ class EmployeeServices:
                     'ACL': acl
                 }
             )
+            os.remove(local_path)

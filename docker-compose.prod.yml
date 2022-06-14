@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 gservicegroup
+    command: --interval 300 gservicegroup celery
 
   web:
     container_name: gservicegroup
@@ -45,11 +45,8 @@ services:
 
   celery:
     container_name: celery
-    image: celery
+    image: esdp2/celery:latest
     restart: always
-    build:
-      context: .
-      dockerfile: ./Dockerfile_celery
     volumes:
       - .:/app
     env_file:

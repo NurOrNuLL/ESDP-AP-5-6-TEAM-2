@@ -155,4 +155,3 @@ search.addEventListener('input', (e) => {
         }
         })
 })
-

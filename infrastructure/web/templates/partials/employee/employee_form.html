@@ -23,13 +23,16 @@
     </div>
     <div>
         <label for="employee_IIN" class="form-label">ИИН</label><br>
-        <input type="number" class="form-control" id="employee_IIN" name="IIN"
-               value="{{ form.IIN.value|default:'' }}" required><br>
+        <input type="text" class="form-control" id="employee_IIN" name="IIN" maxlength="12"
+               value="{{ form.IIN.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.IIN }}</div>
     </div>
     <div>
         <label for="employee_image" class="form-label">Фотография удостоверения</label><br>
-        <input type="file" class="form-control" id="employee_image" name="image"
+        <input type="button" id="loadFileImage" value="Выберите фото"
+               onclick="document.getElementById('employee_image').click();"/>
+        <label for="loadFileImage" id="file-name">фото не выбран</label>
+        <input type="file" style="display: none" class="form-control" id="employee_image" name="image"
                value="{{ form.image.value|default:'' }}" accept="image/*" required><br>
         <div class="form-text c-red">{{ form.errors.image }}</div>
     </div>
@@ -41,7 +44,7 @@
     </div>
     <div>
         <label for="employee_phone" class="form-label">Телефон</label><br>
-        <input type="number" class="form-control" id="employee_phone" name="phone"
+        <input type="number" class="form-control" id="employee_phone" name="phone" maxlength="11"
                value="{{ form.phone.value|default:'' }}" required><br>
         <div class="form-text c-red">{{ form.errors.phone }}</div>
     </div>
