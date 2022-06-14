@@ -22,7 +22,8 @@ class OwnServicesTest(TestCase):
         data = {
             'name': 'Gaz',
             'number': 'HHH777J',
-            'is_part': 'False'
+            'is_part': 'False',
+            'comment': ''
         }
         with patch('models.own.models.Own.objects.create') as create_own:
             with patch(
@@ -32,7 +33,8 @@ class OwnServicesTest(TestCase):
                     spec=Own,
                     name=data['name'],
                     number=data['number'],
-                    is_part=data['is_part']
+                    is_part=data['is_part'],
+                    comment=data['comment']
                 )
 
                 get_contractor.return_value = contractor
@@ -45,6 +47,7 @@ class OwnServicesTest(TestCase):
                     name=data['name'],
                     number=data['number'],
                     is_part=data['is_part'],
+                    comment=data['comment'],
                     contractor=contractor
                 )
 
