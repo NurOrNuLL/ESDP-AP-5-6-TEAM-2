@@ -13,9 +13,10 @@ from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
 from .serializers import EmployeeSerializer
 from .tasks import upload
+from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 
 
-class EmployeeCreate(TemplateView):
+class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employee_create.html'
     form_class = EmployeeForm
     initial_data = {
@@ -27,21 +28,28 @@ class EmployeeCreate(TemplateView):
         context['tpID'] = self.kwargs['tpID']
         return context
 
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
+    def get(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponseRedirect or HttpResponse:
+        self.delete_order_data_from_session(request)
         context = self.get_context_data(**kwargs)
         context['tradepoints'] = EmployeeServices.get_tradepoint()
 
         context['roles'] = self.initial_data
         return render(request, self.template_name, context)
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponseRedirect or HttpResponse:
+    def post(
+            self, request: HttpRequest, *args: list, **kwargs: dict
+    ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             local_path = 'image/' + str(form.cleaned_data['image'])
             path = 'image/' + str(form.cleaned_data['image'])
             task = upload.apply_async(args=[local_path, path], ignore_result=True)
             EmployeeServices.create_employee(form.cleaned_data)
-            return HttpResponse(json.dumps({"task_id": task.id}), content_type='application/json')
+            return HttpResponse(
+                json.dumps({"task_id": task.id}),
+                content_type='application/json')
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = form
@@ -50,8 +58,13 @@ class EmployeeCreate(TemplateView):
             return render(request, self.template_name, context)
 
 
-class EmployeeList(TemplateView):
+class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employees.html'
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)
 
 
 class MyPagination(PageNumberPagination):
@@ -64,12 +77,11 @@ class EmployeeFilterApiView(generics.ListAPIView):
     search_fields = ['name', 'surname', 'IIN', 'phone']
     pagination_class = MyPagination
 
-
     def get_queryset(self):
         return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))
 
 
-class EmployeeDetail(TemplateView):
+class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employee_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -78,3 +90,8 @@ class EmployeeDetail(TemplateView):
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['employee'] = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        return super().get(request, *args, **kwargs)

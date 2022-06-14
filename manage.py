@@ -6,7 +6,7 @@ import sys
 import dotenv
 
 
-def main():
+def main():  # noqa C901
     """Run administrative tasks."""
     DOT_ENV_PATH = pathlib.Path() / '.env'
     if DOT_ENV_PATH.exists():

@@ -20,9 +20,25 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="file" class="form-control border-secondary bg-transparent"
+                                    <input type="button" style="background-color: #929799" id="loadFileXlsx" value="Выберите файл"
+                                           onclick="document.getElementById('file').click();"/>
+                                    <label for="loadFileXlsx" id="file-name">файл не выбран</label>
+                                    <input type="file" style="display: none" id="file"
+                                           class="form-control border-secondary bg-transparent"
                                            accept=".xlsx, .xls"
                                            name="excel_file" required>
+                                    <script>
+                                        inputElement = document.getElementById('file')
+                                        labelElement = document.getElementById('file-name')
+                                        inputElement.onchange = function (event) {
+                                            var path = inputElement.value;
+                                            if (path) {
+                                                labelElement.innerHTML = path.split(/(\\|\/)/g).pop()
+                                            } else {
+                                                labelElement.innerHTML = 'файл не выбран'
+                                            }
+                                        }
+                                    </script>
                                     <div class="form-text text-dark">Файл должен быть в расширении .xslx или .xls
                                     </div>
                                 </div>
@@ -38,6 +54,8 @@
                             </div>
                         </div>
                         <div id="error_text">
+                        </div>
+                        <div id="success_text">
                         </div>
                     </div>
 

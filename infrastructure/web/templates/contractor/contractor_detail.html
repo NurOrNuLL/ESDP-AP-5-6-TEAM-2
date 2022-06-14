@@ -69,19 +69,21 @@
             <table class="table table-striped">
                 <tbody>
                 {% for own in contractor.owns.all %}
-                    <tr id="own_instance_{{ own.id }}">
-                        <th scope="col">{{ own.name }}</th>
-                        <th>{{ own.number }}</th>
-                        <th class="d-flex justify-content-end" scope="col"><a
-                                class="btn btn-outline-danger buttonDelete" data-bs-toggle="modal"
-                                data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"
-                                data-org_id="{{ organization.id }}"
-                                data-bs-target="#own_modal">Удалить</a><br>
-                                <a class="btn btn-primary" style="margin-left: 15px"
-                                    href="{% url 'order_create' orgID tpID contrID own.pk %}">Заказ-наряд</a>
-                        </th>
-                    </tr>
+                    {% if own.is_part is False %}
+                        <tr id="own_instance_{{ own.id }}">
+                            <th scope="col">{{ own.name }}</th>
+                                <th>{% if own.number %}{{ own.number }}{% else %}Не указан{% endif %}</th>
+                            <th class="d-flex justify-content-end" scope="col"><a
+                                    class="btn btn-outline-danger buttonDelete" data-bs-toggle="modal"
+                                    data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"
+                                    data-org_id="{{ organization.id }}"
+                                    data-bs-target="#own_modal">Удалить</a><br>
+                                    <a class="btn btn-primary" style="margin-left: 15px"
+                                        href="{% url 'order_create' orgID tpID contrID own.pk %}">Заказ-наряд</a>
+                            </th>
+                        </tr>
                     {% include 'own/own_delete_modal.html' %}
+                    {% endif %}
                 {% endfor %}
                 </tbody>
             </table>

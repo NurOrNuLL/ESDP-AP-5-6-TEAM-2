@@ -2,7 +2,7 @@ version: '3'
 
 services:
   web:
-    container_name: sto
+    container_name: gservicegroup
     restart: always
     build:
       context: .
@@ -11,7 +11,6 @@ services:
       - static_volume:/app/static
     env_file:
       - .env_prod
-    image: sto
     ports:
       - "8000:8000"
     depends_on:
@@ -35,6 +34,7 @@ services:
       POSTGRES_PASSWORD: ${PSQL_PASS}
 
   redis:
+    container_name: redis
     image: redis:latest
     restart: always
     ports:
@@ -43,6 +43,7 @@ services:
       - redis:/data
 
   celery:
+    container_name: celery
     image: celery
     restart: always
     build:

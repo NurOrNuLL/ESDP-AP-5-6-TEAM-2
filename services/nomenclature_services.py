@@ -6,6 +6,8 @@ import pandas
 from typing import List
 import jsonschema
 import json
+from urllib.parse import quote
+import datetime
 
 File = str
 JSON = dict
@@ -47,20 +49,27 @@ class NomenclatureService:
 
     @staticmethod
     def import_services(data: JSON, nomenclature_id: int) -> None:
-        nomenclature = NomenclatureService.get_nomenclature_by_id(nomenclature_id=nomenclature_id)
+        nomenclature = NomenclatureService.get_nomenclature_by_id(
+            nomenclature_id=nomenclature_id
+        )
         nomenclature.services = json.loads(data)
         nomenclature.save()
 
     @staticmethod
-    def get_filtered_services(nomenclature_id: int, search: str = '', category: str = '', mark: str = '') -> List[
-        'Nomenclature']:
-        services = NomenclatureService.get_nomenclature_by_id(nomenclature_id=nomenclature_id).services
+    def get_filtered_services(
+            nomenclature_id: int,
+            search: str = '',
+            category: str = '',
+            mark: str = '') -> List['Nomenclature']:
+        services = NomenclatureService.get_nomenclature_by_id(
+            nomenclature_id=nomenclature_id
+        ).services
         filtered_services = []
 
         for service in services:
             if (
                     (
-                            search.lower() in service['Название'].lower()
+                            search.lower() in service['Название'].lower()  # noqa E126
                             or search.lower() in service['Категория'].lower()
                             or search.lower() in service['Марка'].lower()
                     )
@@ -72,9 +81,18 @@ class NomenclatureService:
         return filtered_services
 
     @staticmethod
-    def response_sender(data: str, file_extension: str) -> HttpResponse or HttpResponseRedirect:
+    def response_sender(
+            data: str,
+            file_extension: str,
+            name: str) -> HttpResponse or HttpResponseRedirect:
         response = HttpResponse(data)
-        response['Content-Disposition'] = f'attachment; filename="price.{file_extension}"'
+        file_name = "price_" + name + '_' + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M"))
+        try:
+            file_name.encode('ascii')
+            file_expr = 'filename="{}{}.{}"'.format(file_name, file_extension)
+        except UnicodeEncodeError:
+            file_expr = "filename*=utf-8''{}.{}".format(quote(file_name), file_extension)
+        response['Content-Disposition'] = 'attachment; {}'.format(file_expr)
         return response
 
     @staticmethod

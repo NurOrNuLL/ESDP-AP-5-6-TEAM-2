@@ -11,7 +11,9 @@ class TradePointServicesTest(TestCase):
         with patch('models.trade_point.models.TradePoint.objects.get') as get_trade_point:
             get_trade_point.return_value = trade_point
 
-            returned_trade_point = TradePointServices.get_trade_point_by_id(kwargs={"tpID": trade_point.id})
+            returned_trade_point = TradePointServices.get_trade_point_by_id(
+                kwargs={"tpID": trade_point.id}
+            )
 
             self.assertEqual(returned_trade_point, trade_point)
             get_trade_point.assert_called_once_with(id=trade_point.id)
