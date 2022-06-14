@@ -113,7 +113,9 @@
             <br>
             <div>
                 <label for="employee_image" class="form-label">Фотография удостоверения</label>
-                <input type="file" class="form-control" id="employee_image" name="image"
+                <input type="button" id="loadFileImage" value="Выберите фото"
+                       onclick="document.getElementById('employee_image').click();"/>
+                <input type="file" style="display: none" class="form-control" id="employee_image" name="image"
                        value="{{ employee_form.image.value|default:'' }}" accept="image/*" required>
                 <div class="form-text" style="color: red;">
                     {% for err in employee_form.errors.image %}{{ err }}{% endfor %}</div>
@@ -145,7 +147,7 @@
                     success: function (res) {
                         var taskId = res.task_id
                         console.log(taskId)
-                        if (taskId){
+                        if (taskId) {
                             alert('Загрузка выполнено на 100%')
                             window.location.replace('{% url 'home_redirect' %}')
                         }

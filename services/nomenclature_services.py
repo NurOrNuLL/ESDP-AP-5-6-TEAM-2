@@ -7,6 +7,7 @@ from typing import List
 import jsonschema
 import json
 from urllib.parse import quote
+import datetime
 
 File = str
 JSON = dict
@@ -85,10 +86,10 @@ class NomenclatureService:
             file_extension: str,
             name: str) -> HttpResponse or HttpResponseRedirect:
         response = HttpResponse(data)
-        file_name = "price_" + name
+        file_name = "price_" + name + '_' + str(datetime.datetime.now().strftime("%Y-%m-%d_%H-%M"))
         try:
             file_name.encode('ascii')
-            file_expr = 'filename="{}.{}"'.format(file_name, file_extension)
+            file_expr = 'filename="{}{}.{}"'.format(file_name, file_extension)
         except UnicodeEncodeError:
             file_expr = "filename*=utf-8''{}.{}".format(quote(file_name), file_extension)
         response['Content-Disposition'] = 'attachment; {}'.format(file_expr)
