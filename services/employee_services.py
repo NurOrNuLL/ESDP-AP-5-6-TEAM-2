@@ -73,7 +73,7 @@ class EmployeeServices:
         return Employee.objects.filter()
 
     @staticmethod
-    def upload_image(local_path, path, dirt, bucket_name='test.aspa', acl='public-read'):
+    def upload_image(local_path, path, bucket_name='test.aspa', acl='public-read'):
         s3_client = boto3.client(
             's3',
             endpoint_url='https://s3.us-east-2.amazonaws.com/',
