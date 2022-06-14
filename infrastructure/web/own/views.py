@@ -22,7 +22,7 @@ class OwnCreate(ResetOrderCreateFormDataMixin, TemplateView):
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['tpID'] = self.kwargs['tpID']
         return context
-      
+
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
 
