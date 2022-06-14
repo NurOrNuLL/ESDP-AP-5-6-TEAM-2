@@ -23,8 +23,8 @@
     </div>
     <div>
         <label for="employee_IIN" class="form-label">ИИН</label><br>
-        <input type="number" class="form-control" id="employee_IIN" name="IIN"
-               value="{{ form.IIN.value|default:'' }}" required><br>
+        <input type="text" class="form-control" id="employee_IIN" name="IIN" maxlength="12"
+               value="{{ form.IIN.value|default:'' }}"><br>
         <div class="form-text c-red">{{ form.errors.IIN }}</div>
     </div>
     <div>
@@ -44,7 +44,7 @@
     </div>
     <div>
         <label for="employee_phone" class="form-label">Телефон</label><br>
-        <input type="number" class="form-control" id="employee_phone" name="phone"
+        <input type="number" class="form-control" id="employee_phone" name="phone" maxlength="11"
                value="{{ form.phone.value|default:'' }}" required><br>
         <div class="form-text c-red">{{ form.errors.phone }}</div>
     </div>

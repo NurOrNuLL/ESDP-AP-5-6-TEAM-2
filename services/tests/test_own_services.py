@@ -22,6 +22,7 @@ class OwnServicesTest(TestCase):
         data = {
             'name': 'Gaz',
             'number': 'HHH777J',
+            'comment': 'some comment',
             'is_part': 'False'
         }
         with patch('models.own.models.Own.objects.create') as create_own:
@@ -32,6 +33,7 @@ class OwnServicesTest(TestCase):
                     spec=Own,
                     name=data['name'],
                     number=data['number'],
+                    comment=data['comment'],
                     is_part=data['is_part']
                 )
 
@@ -44,6 +46,7 @@ class OwnServicesTest(TestCase):
                 create_own.assert_called_once_with(
                     name=data['name'],
                     number=data['number'],
+                    comment=data['comment'],
                     is_part=data['is_part'],
                     contractor=contractor
                 )

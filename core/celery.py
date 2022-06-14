@@ -4,7 +4,7 @@ import dotenv
 from celery import Celery
 
 env_file = os.path.join(os.path.dirname(os.path.dirname(
-    os.path.realpath(__file__))), '.env_prod'
+    os.path.realpath(__file__))), '.env'
 )
 dotenv.read_dotenv(env_file)
 
