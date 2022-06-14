@@ -42,6 +42,12 @@
                     },
                 })
             })
-        })
+        });
+        $('#employee_IIN').on('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+        $('#employee_phone').on('input', function () {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
     </script>
 {% endblock content %}
