@@ -2,7 +2,7 @@
     {% csrf_token %}
     <div>
         <label for="own_name" class="form-label" id="own_name_label">Модель автомобиля:</label><br>
-        <input type="text" class="form-control" id="own_name" name="name"><br>
+        <input type="text" class="form-control" id="own_name" name="name" value="{{ form.name.value|default:'' }}"><br>
         <div class="form-text error-red">{{ form.name.errors }}</div>
     </div>
     <div style="display: none">
@@ -10,10 +10,15 @@
         <input type="text" class="form-control" id="own_is_part" name="is_part" value="False"><br>
         <div class="form-text error-red">{{ form.is_part.errors }}</div>
     </div><br>
-    <div>
+    <div id="number_field">
         <label for="own_number" class="form-label" id="own_number_label">Гос. номер:</label><br>
-        <input type="text" class="form-control" id="own_number" name="number"><br>
+        <input type="text" class="form-control" id="own_number" name="number" value="{{ form.number.value|default:'' }}"><br>
         <div class="form-text error-red">{{ form.number.errors }}</div>
+    </div>
+    <div>
+        <label for="own_comment" class="form-label" id="own_number_label">Дополнительная информация:</label><br>
+        <textarea class="form-control" id="own_comment" name="comment" rows="3">{{ form.comment.value|default:'' }}</textarea>
+        <div class="form-text error-red">{{ form.comment.errors }}</div>
     </div>
     <button type="submit" class="btn btn-primary">Создать</button>
 </form>

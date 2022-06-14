@@ -16,7 +16,8 @@ MY_JSON_FIELD_SCHEMA = {
             'maxLength': 150
         }
     },
-    'required': ['name']
+    'required': ['name'],
+    'additionalProperties': False
 }
 
 
