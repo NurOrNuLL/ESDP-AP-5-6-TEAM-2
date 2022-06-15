@@ -4,14 +4,25 @@
 {% block title %}Детали контрагента{% endblock %}
 
 {% block content %}
-    <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk tpID %}">К списку</a><br><br>
+    <h1>Контрактор</h1>
+    <hr>
     <div class="d-flex mb-4">
-        <h3>{{ contractor.name }} </h3>
-        <a class="ms-2 edit-link" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}"><img width=35
-                                                                                                          src="{% static 'pics/edit.png' %}"></a><br>
+        <a class="btn btn-outline-secondary " href="{% url 'contractors' organization.pk tpID %}">Вернуться к
+            списку</a><br><br>
+        <a class="btn btn-outline-secondary" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}">Редактировать
+            контрагента</a><br><br>
+        <a class="btn btn-outline-secondary" href="{% url 'own_create' orgID tpID contrID %}">Добавить собственность</a><br><br>
     </div>
     <div class="card mb-3">
         <div class="card-header bg-transparent">
+            <div  class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование: </span>
+                    <span>{{ contractor.name }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">ИИН/БИН: </span>
@@ -23,11 +34,12 @@
                 </div>
             </div>
         </div>
+        <hr style="color: #6c757d">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Адрес:</span>
-                    <p class="card-text">{% if contractor.address %}{{ contractor.address }}{% endif %}</p>
+                    <p class="card-text">{% if contractor.address %}{{ contractor.address }}{% else %}Не указано{% endif %}</p>
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Банковские детали:</span><br>
@@ -38,6 +50,8 @@
                         <span style="padding-left: 5px" class="card-text">{% if contractor.bank_name %}{{ contractor.bank_name }}{% endif %}</span><br>
                         <span class="text"><b>БИК:</b></span>
                         <span style="padding-left: 9px" class="card-text">{{ contractor.BIC }}</span>
+                    {% else %}
+                        Не указано
                     {% endif %}
                 </div>
             </div>
@@ -46,11 +60,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Доверенное лицо: </span>
-                    <span style="padding-left: 5px">{{ contractor.trust_person.name }}</span>
+                    <span style="padding-left: 5px">{% if contractor.trust_person.name %}{{ contractor.trust_person.name }}{% else %}Не указано{% endif %}</span>
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Комментарий: </span>
-                    <span style="padding-left: 5px">{{ contractor.trust_person.comment }}</span>
+                    <span style="padding-left: 5px">{% if contractor.trust_person.comment %}{{ contractor.trust_person.comment }}{% else %}Не указано{% endif %}</span>
                 </div>
             </div>
         </div>
@@ -60,14 +74,11 @@
                 <div>
                     <h5>Список собственности:</h5>
                 </div>
-                <div>
-                    <a class="btn btn-outline-secondary" href="{% url 'own_create' orgID tpID contrID %}">Добавить
-                        в список</a><br>
-                </div>
             </div>
             <br>
             <table class="table table-striped">
-                <tbody>
+                <tbody id="w">
+                {% if contractor.owns.all %}
                 {% for own in contractor.owns.all %}
                     {% if own.is_part is False %}
                         <tr id="own_instance_{{ own.id }}">
@@ -83,8 +94,13 @@
                             </th>
                         </tr>
                     {% include 'own/own_delete_modal.html' %}
+                    {% else %}
+                        У контрактора есть запчать
                     {% endif %}
                 {% endfor %}
+                {% else %}
+                    У этого котрактора пока нет собственности
+                {% endif %}
                 </tbody>
             </table>
         </div>
