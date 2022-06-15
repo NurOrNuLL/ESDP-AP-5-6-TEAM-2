@@ -22,8 +22,6 @@ services:
     depends_on:
       - postgres
       - redis
-    networks:
-      - djangonetwork
 
   postgres:
     container_name: postgres
@@ -39,8 +37,6 @@ services:
       - POSTGRES_DB=${PSQL_NAME}
       - POSTGRES_USER=${PSQL_USER}
       - POSTGRES_PASSWORD=${PSQL_PASS}
-    networks:
-      - djangonetwork
 
   redis:
     container_name: redis
@@ -82,7 +78,3 @@ volumes:
   redis:
   static_volume:
   watchtower:
-
-networks:
-  djangonetwork:
-    driver: bridge
