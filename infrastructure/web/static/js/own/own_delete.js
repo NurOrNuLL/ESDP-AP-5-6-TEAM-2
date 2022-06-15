@@ -38,6 +38,9 @@ ownDeleteForm.addEventListener('submit', (e) => {
 
             var div = document.getElementById(`own_instance_${ownIdInput.value}`);
             div.remove();
+            const element = document.createElement("div");
+            element.appendChild(document.createTextNode('У этого котрактора пока нет собственности'));
+            document.getElementById('w').appendChild(element);
         },
         error: (response) => {
             console.log(response);
