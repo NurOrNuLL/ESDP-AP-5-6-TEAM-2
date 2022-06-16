@@ -52,12 +52,6 @@ body {
     transform: translate(-50%, -50%)
 }
 
-.btn-outline-secondary {
-    border-color: #6c757d !important;
-    font-size: 20px;
-    margin-left: 20px;
-}
-
 .error-red {
     color: red;
 }
