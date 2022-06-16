@@ -4,27 +4,25 @@
 
 {% block content %}
 
-    <h2>Создание заказ-наряда</h2>
-    <div class="w-50">
-        <div class="progress" style="height: 20px; background-color: white;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 100%;" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Завершение</div>
-        </div>
-        <br>
-        <div class="card mb-3">
-            <div class="card-header bg-transparent">
-                <div class="row">
-                    <div class="col-md-6">
-                        <span class="text" style="font-weight: bold">Контрагент: </span>
-                        <span>{{ contractor.name }} {{ contractor.surname }} | {{ contractor.IIN_or_BIN }}</span>
-                    </div>
-                    <div class="col-md-6">
-                        <span class="text" style="font-weight: bold">Собственность: </span>
-                        <span style="padding-left: 5px">{{ own.name }} <sub>{{ own.number|default:'' }}</sub></span>
-                    </div>
+    <h1>Создание заказ-наряда</h1>
+    <hr>
+    <h3>Шаг 4/4</h3>
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Контрагент: </span>
+                    <span>{{ contractor.name }} {{ contractor.surname }} | {{ contractor.IIN_or_BIN }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Собственность: </span>
+                    <span style="padding-left: 5px">{{ own.name }} <sub>{{ own.number|default:'' }}</sub></span>
                 </div>
             </div>
-            <div class="card-body">
-                <div class="row">
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% if not own.is_part %}
                     <div class="col-md-6">
                         <span class="text" style="font-weight: bold">Пробег: </span>
                         <br>
@@ -34,33 +32,51 @@
                             <span class="card-text">Не указано</span>
                         {% endif %}
                     </div>
-                    <div class="col-md-6">
-                        <span class="text" style="font-weight: bold">Примечание: </span>
-                        <br>
-                        <span class="card-text">{{ note|default:'Не указано' }}</span>
-                    </div>
-                </div>
-            </div>
-            <div class="card-footer bg-transparent">
-                <div class="row">
-                    <div class="col-md-6">
-                        <span class="text" style="font-weight: bold">Сумма к оплате (с гарантиями):</span>
-                        <br>
-                        <span style="padding-left: 5px">{{ price_for_pay }} &#8376;</span>
-                    </div>
-                    <div class="col-md-6">
-                        <span class="text" style="font-weight: bold">Скидка по гарантии: </span>
-                        <br>
-                        <span style="padding-left: 5px">{{ full_price|subtract:price_for_pay }} &#8376;</span>
-                    </div>
+                {% endif %}
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Примечание: </span>
+                    <br>
+                    <span class="card-text">{{ note|default:'Не указано' }}</span>
                 </div>
             </div>
         </div>
-        <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
-            {% csrf_token %}
-            <a href="{% url 'order_create_stage3' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
-            <button type="submit" class="btn btn-primary">Создать</button>
-        </form>
+        <div class="card-footer bg-transparent">
+            <div class="text-center"><strong>Работы по заказ наряду:</strong></div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <table class="table mb-2">
+                <thead>
+                    <tr>
+                        <th scope="col">Название услуги</th>
+                        <th scope="col">Катагория</th>
+                        <th scope="col">Марка</th>
+                        <th scope="col">Мастера</th>
+                        <th scope="col">Гарантия</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedServicesTable">
+                    {% for job in jobs %}
+                        <tr>
+                            <td>{{ job|get_item:'Название услуги' }}</td>
+                            <td>{{ job|get_item:'Категория услуги' }}</td>
+                            <td>{{ job|get_item:'Марка услуги' }}</td>
+                            <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
+                            <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
+                            {% if job|get_item:'Гарантия' %}<th><span style="text-decoration: line-through;">{{ job|get_item:'Цена услуги' }}</span> &#8376;</th>{% else %}<th>{{ job|get_item:'Цена услуги' }} &#8376;</th>{% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span style="font-weight: bold;">{{ price_for_pay }} &#8376;</span></div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <a href="{% url 'order_create_stage3' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+                <button type="submit" class="btn btn-primary">Создать</button>
+            </form>
+        </div>
     </div>
 
 {% endblock content %}
