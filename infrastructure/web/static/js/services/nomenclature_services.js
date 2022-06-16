@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 let select = document.getElementById('nomenclature');
 let beforeTableBlock = document.getElementById('beforeTable');
 
@@ -100,6 +101,8 @@ select.addEventListener('change', function () {
     render(value, search.value, category.value, mark.value, page.value, limit.value)
 })
 =======
+=======
+>>>>>>> 15e051ffea7d6ce6ffd8c25feaa5df706a3c2ee9
 let select = document.getElementById('nomenclature');
 let beforeTableBlock = document.getElementById('beforeTable');
 
@@ -200,4 +203,7 @@ select.addEventListener('change', function () {
     }
     render(value, search.value, category.value, mark.value, page.value, limit.value)
 })
+<<<<<<< HEAD
 >>>>>>> c03427a43273ec5855ae9b5deac9c7f71bf9608b
+=======
+>>>>>>> 15e051ffea7d6ce6ffd8c25feaa5df706a3c2ee9

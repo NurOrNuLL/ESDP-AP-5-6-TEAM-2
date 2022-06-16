@@ -14,6 +14,14 @@ JOBS_JSON_SCHEMA = {
                 'type': 'string',
                 'maxLength': 500
             },
+            'Категория услуги': {
+                'type': 'string',
+                'maxLength': 500
+            },
+            'Марка услуги': {
+                'type': 'string',
+                'maxLength': 500
+            },
             'Цена услуги': {
                 'type': 'integer',
                 'minimum': 1
@@ -25,13 +33,24 @@ JOBS_JSON_SCHEMA = {
             'Мастера': {
                 'type': 'array',
                 'items': {
-                    'type': 'number'
+                    'type': 'object',
+                    'properties': {
+                        'Наименование': {
+                            'type': 'string',
+                            'maxLength': 500
+                        },
+                        'ИИН': {
+                            'type': 'integer',
+                        }
+                    },
+                    'required': ['Наименование', 'ИИН'],
+                    'additionalProperties': False
                 }
             }
         },
-        'required': ['Название услуги', 'Цена услуги', 'Гарантия', 'Мастера'],
+        'required': ['Название услуги', 'Категория услуги', 'Марка услуги', 'Цена услуги', 'Гарантия', 'Мастера'],
         'additionalProperties': {'type': 'integer', 'minimum': 0, 'maximum': 10000},
-        'maxProperties': 5
+        'maxProperties': 7
     }
 }
 

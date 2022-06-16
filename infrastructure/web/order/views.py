@@ -123,6 +123,7 @@ class OrderCreateViewStage2(TemplateView):
         context = self.get_context_data()
 
         jobs = request.session.get('jobs')
+        print(jobs)
 
         if jobs:
             context['session_jobs'] = json.dumps(jobs)
