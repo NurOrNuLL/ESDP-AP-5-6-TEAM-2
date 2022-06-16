@@ -4,36 +4,59 @@
 
 {% block content %}
 
-    <h2>Создание заказ-наряда</h2>
-    <div class="w-50">
-        <div class="progress" style="height: 20px; background-color: white;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 99%;" aria-valuenow="99" aria-valuemin="0" aria-valuemax="100">3\3</div>
-        </div>
-        <br>
-        <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
-            {% csrf_token %}
-            {% if not session_own.is_part %}
-                <div class="col">
-                    <label for="mileage" class="form-label">Пробег</label>
-                    <div class="input-group">
-                        <input type="number" class="form-control" value="{{ session_mileage }}" id="mileage" name="mileage">
-                        <span class="input-group-text" id="basic-addon2">km</span>
+    <h1>Создание заказ-наряда</h1>
+    <hr>
+    <h3>Шаг 3/4</h3>
+    <div class="row m-0">
+        <div class="card border-secondary col me-2">
+            <div class="card-body">
+                <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% if not own.is_part %}
+                        <div class="col">
+                            <label for="mileage" class="form-label">Пробег</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" value="{{ session_mileage }}" id="mileage" name="mileage">
+                                <span class="input-group-text" id="basic-addon2">km</span>
+                            </div>
+                            <div class="form-text" style="color: red;">
+                                {% for err in order_form.errors.mileage %}{{ err }}{% endfor %}</div>
+                        </div>
+                        <br>
+                    {% endif %}
+                    <div>
+                        <label for="note" class="form-label">Примечание</label>
+                        <textarea class="form-control" id="note" name="note" rows="3">{{ session_note|default:'' }}</textarea>
+                        <div class="form-text" style="color: red;">
+                            {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
                     </div>
-                    <div class="form-text" style="color: red;">
-                        {% for err in order_form.errors.mileage %}{{ err }}{% endfor %}</div>
-                </div>
-                <br>
-            {% endif %}
-            <div>
-                <label for="note" class="form-label">Примечание</label>
-                <textarea class="form-control" id="note" name="note" rows="3">{{ session_note|default:'' }}</textarea>
-                <div class="form-text" style="color: red;">
-                    {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
+                    <br>
+                    <a href="{% url 'order_create_stage2' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+                    <button type="submit" class="btn btn-primary">Далее</button>
+                </form>
             </div>
-            <br>
-            <a href="{% url 'order_create_stage2' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
-            <button type="submit" class="btn btn-primary">Далее</button>
-        </form>
+        </div>
+        <div class="card border-secondary col-4 ms-2 d-flex flex-column justify-content-center">
+            <div class="card-header bg-transparent">
+                <strong>Выбранная собственность</strong>
+            </div>
+            <div class="card-body" style="flex: 0 0">
+                <div class="d-flex">
+                    <div class="me-5" style="width: 250px;">
+                        <div><strong>Наименование:</strong></div>
+                        <div><strong>Тип:</strong></div>
+                        {% if not own.is_part %}<div><strong>Номер:</strong></div>{% endif %}
+                        <div><strong>Доп. информация:</strong></div>
+                    </div>
+                    <div>
+                        <div>{{ own.name }}</div>
+                        <div>{% if not own.is_part %}Автомобиль{% else %}Запчасть{% endif %}</div>
+                        {% if not own.is_part %}<div>{{ own.number }}</div>{% endif %}
+                        <div>{{ own.comment|default:'Не указано' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock content %}
