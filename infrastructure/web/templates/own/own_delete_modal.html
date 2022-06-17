@@ -8,11 +8,11 @@
           <div class="modal-body" id="ownModalQuestion">
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Нет, закрыть</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Нет, закрыть</button>
               <form method="post" id="ownDeleteForm">
                   {% csrf_token %}
                   <input type="hidden" id="own_id">
-                  <button type="submit" class="btn btn-outline-danger">Да, удалить</button>
+                  <button type="submit" class="btn btn-danger">Да, удалить</button>
               </form>
           </div>
         </div>

@@ -6,21 +6,19 @@
 {% block title %}Добавить контрагента{% endblock %}
 
 {% block content %}
-    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+    <h1 class="mb-4">Добавить контрагента</h1>
+    <hr>
+    <div class="card border-secondary">
         <div class="card-body">
-            <h2 class="mb-4">Добавить контрагента</h2>
+            <div class="row m-0">
+                <input value="False" type="radio" class="btn-check" name="is_part" id="individualBtn" autocomplete="off" checked>
+                <label class="btn btn-outline-secondary col me-3" for="individualBtn">Физическое лицо</label>
 
-            <div class="row">
-                <div class="col-md-5">
-                    <button type="submit" id="individual_form" class="btn btn-light"><span id="indiv_text">Физ. лицо</span></button>
-                </div>
-                <div class="col-md-5">
-                    <button type="submit" id="entity_form" class="btn btn-light"><span id="entity_text">Юр. лицо</span></button>
-                </div>
+                <input value="True" type="radio" class="btn-check" name="is_part" id="entityBtn" autocomplete="off">
+                <label class="btn btn-outline-secondary col ms-3" for="entityBtn">Юридическое лицо</label>
             </div>
-
-            <br><br>
-                {% include 'partials/contractor/contractor_form.html' with button_text="Создать" %}
+            <br>
+            {% include 'partials/contractor/contractor_form.html' with button_text="Создать" %}
         </div>
     </div>
 {% endblock content %}

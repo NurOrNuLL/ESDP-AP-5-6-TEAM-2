@@ -56,10 +56,9 @@
         <div class="card-footer bg-transparent">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Доверенное лицо: </span>
-                    <span style="padding-left: 5px">{% if contractor.trust_person.name %}{{ contractor.trust_person.name }}{% else %}Не указано{% endif %}</span>
-                </div>
-                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Доверенное лицо:</span><br>
+                    <span class="text" style="font-weight: bold">ФИО: </span>
+                    <span style="padding-left: 5px">{% if contractor.trust_person.name %}{{ contractor.trust_person.name }}{% else %}Не указано{% endif %}</span><br>
                     <span class="text" style="font-weight: bold">Комментарий: </span>
                     <span style="padding-left: 5px">{% if contractor.trust_person.comment %}{{ contractor.trust_person.comment }}{% else %}Не указано{% endif %}</span>
                 </div>
@@ -67,7 +66,7 @@
         </div>
         <div class="card-footer bg-transparent">
             <div class="text-center">
-                <strong>Список собственностей:</strong>
+                <strong>Список собственностей</strong>
             </div>
         </div>
         <div class="card-footer bg-transparent">

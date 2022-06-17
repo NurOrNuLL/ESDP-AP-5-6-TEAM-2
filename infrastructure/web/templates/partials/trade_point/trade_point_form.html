@@ -1,16 +1,22 @@
 <form method="post">
     {% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <label for="trade_point_name" class="form-label">Название филиала</label><br>
+            <input type="text" class="form-control border-secondary" id="trade_point_name" name="name" value="{{ form.name.value|default:'' }}">
+            <div class="form-text text-danger">{% for err in form.errors.name %}{{ err }}{% endfor %}</div><br>
+        </div>
+        <div class="col">
+            <label for="trade_point_address" class="form-label">Адрес филиала</label><br>
+            <input type="text" class="form-control border-secondary" id="trade_point_address" name="address" value="{{ form.address.value|default:'' }}"><br>
+        </div>
+    </div>
     <label for="nomenclature" class="form-label">Номенклатура</label><br>
-    <select class="form-select" name="nomenclature" id="nomenclature">
+    <select class="form-select border-secondary" name="nomenclature" id="nomenclature">
         {% for nom in nomenclature %}
             <option value="{{ nom.pk }}">{{ nom.name }}</option>
         {% endfor %}
-    </select>
-    <div class="form-text c-red">{{ form.errors.nomenclature }}</div>
-    <label for="trade_point_name" class="form-label">Название филиала</label><br>
-    <input type="text" class="form-control" id="trade_point_name" name="name" value="{{ form.name.value|default:'' }}"><br>
-    <div class="form-text c-red">{{ form.errors.name }}</div>
-    <label for="trade_point_address" class="form-label">Адрес филиала</label><br>
-    <input type="text" class="form-control" id="trade_point_address" name="address" value="{{ form.address.value|default:'' }}"><br>
+    </select><br>
+    <div class="form-text text-danger">{% for err in form.errors.nomenclature %}{{ err }}{% endfor %}</div>
     <button type="submit" class="btn btn-primary">Создать</button>
 </form>

@@ -55,3 +55,7 @@ body {
 .error-red {
     color: red;
 }
+
+.form-label {
+    font-weight: bold;
+}

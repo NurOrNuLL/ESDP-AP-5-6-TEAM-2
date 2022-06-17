@@ -164,5 +164,6 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
             context['form'] = form
             context['trust_person'] = dict(name=request.POST['trust_person_name'],
                                            comment=request.POST['trust_person_comment'])
+            context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
 
             return render(request, template_name=self.template_name, context=context)

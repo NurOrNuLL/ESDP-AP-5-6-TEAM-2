@@ -2,7 +2,10 @@
 {% load static %}
 
 {% block content %}
-    <div class="row p-2">
+
+    <h1 class="mb-4">Список услуг</h1>
+    <hr>
+    <div class="row mt-0 me-0 ms-0 mb-3">
         <select name="nomenclature" class="form-select col border-secondary bg-transparent me-2" id="nomenclature">
             {% for nomenclature in nomenclatures %}
                 <option id="option" value="{{ nomenclature.pk }}">{{ nomenclature }}</option>
@@ -31,7 +34,7 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
                 Загрузить excel
             </button>
-            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exportModal">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
                 Скачать excel
             </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formimportModal">
@@ -62,7 +65,7 @@
             </div>
         </div>
     </div>
-    <table id="table" class="table table-striped mt-3">
+    <table id="table" class="table mt-3">
         <thead>
         <tr>
             <th scope="col">Название</th>
