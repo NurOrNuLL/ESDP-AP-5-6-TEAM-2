@@ -4,10 +4,11 @@
 {% block title %}Добавить сотрудника{% endblock %}
 
 {% block content %}
-    <div class="card w-50" style="background-color: transparent !important; border: 0;">
+    <h1 class="mb-4">Добавить сотрудника</h1>
+    <hr>
+    <div class="card border-secondary">
         <div class="card-body">
-            <h2 class="mb-4">Добавить сотрудника</h2>
-                {% include 'partials/employee/employee_form.html' with button_text="Создать" %}
+            {% include 'partials/employee/employee_form.html' with button_text="Создать" %}
         </div>
     </div>
     <script>
@@ -44,9 +45,6 @@
             })
         });
         $('#employee_IIN').on('input', function () {
-            this.value = this.value.replace(/[^0-9]/g, '');
-        });
-        $('#employee_phone').on('input', function () {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
     </script>

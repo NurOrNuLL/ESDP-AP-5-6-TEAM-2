@@ -1,59 +1,43 @@
-var btnPartForm = document.getElementById('part_form');
-var btnAutoForm = document.getElementById('auto_form');
-var labelOwnName = document.getElementById('own_name_label');
-var inputOwnType = document.getElementById('own_is_part');
-var FieldOwnNumber = document.getElementById('number_field');
+let partBtn = document.getElementById('part_btn');
+let autoBtn = document.getElementById('auto_btn');
+let labelOwnName = document.getElementById('own_name_label');
+let fieldOwnNumber = document.getElementById('number_field');
+let ownNameErr = document.getElementById('ownNameErr');
+let ownNumberErr = document.getElementById('ownNumberErr');
+let ownCommentErr = document.getElementById('ownCommentErr');
 
 
-btnPartForm.addEventListener('click', (e) => {
-    e.preventDefault();
-    if (
-        btnPartForm.classList.contains('btn-light')
-    ) {
-        btnPartForm.classList.remove('btn-light');
-        btnPartForm.classList.add('btn-secondary');
-        btnAutoForm.classList.remove('btn-secondary');
-        btnAutoForm.classList.add('btn-light');
-        labelOwnName.innerText = 'Наименование детали:';
-        FieldOwnNumber.style.display = "none";
-        inputOwnType.value = 'True';
-        localStorage.setItem('picked_part', 'btn-secondary');
-        localStorage.removeItem('picked_auto');
-          }
-})
-
-btnAutoForm.addEventListener('click', (e) => {
-    e.preventDefault();
-        if (
-        btnAutoForm.classList.contains('btn-light')
-    ) {
-        btnAutoForm.classList.remove('btn-light');
-        btnAutoForm.classList.add('btn-secondary');
-        btnPartForm.classList.remove('btn-secondary');
-        btnPartForm.classList.add('btn-light');
-        labelOwnName.innerText = 'Модель автомобиля:';
-        FieldOwnNumber.style.display = "block";
-        inputOwnType.value = 'False';
-        localStorage.setItem('picked_auto', 'btn-secondary');
-        localStorage.removeItem('picked_part');
-    }
-})
-
-function onLoad() {
-    if (localStorage.getItem('picked_auto')) {
-        FieldOwnNumber.style.display = "block";
-    }
-    else {
-        FieldOwnNumber.style.display = "none";
-    }
-    if(localStorage.getItem('picked_part') === 'btn-secondary') {
-            btnPartForm.classList.remove('btn-light');
-            btnPartForm.classList.add('btn-secondary');
-        }
-    else if(localStorage.getItem('picked_auto') === 'btn-secondary') {
-        btnAutoForm.classList.remove('btn-light');
-        btnAutoForm.classList.add('btn-secondary');
-    }
+if (partBtn.checked === true) {
+    labelOwnName.innerText = 'Название запчасти'
+    fieldOwnNumber.classList.add('d-none');
+}
+else {
+    labelOwnName.innerText = 'Модель автомобиля'
+    fieldOwnNumber.classList.remove('d-none');
 }
 
-window.addEventListener('load', onLoad);
+
+partBtn.addEventListener('click', (e) => {
+    partBtn.checked = true;
+    autoBtn.checked = false;
+
+    labelOwnName.innerText = 'Название запчасти'
+    fieldOwnNumber.classList.add('d-none');
+
+    ownNameErr.innerText = "";
+    ownNumberErr.innerText = "";
+    ownCommentErr.innerText = "";
+})
+
+
+autoBtn.addEventListener('click', (e) => {
+    autoBtn.checked = true;
+    partBtn.checked = false;
+
+    labelOwnName.innerText = 'Модель автомобиля'
+    fieldOwnNumber.classList.remove('d-none');
+
+    ownNameErr.innerText = "";
+    ownNumberErr.innerText = "";
+    ownCommentErr.innerText = "";
+})

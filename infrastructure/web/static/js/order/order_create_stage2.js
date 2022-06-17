@@ -42,7 +42,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                     <td>${service.selectedOptions[i].dataset['tokens']}</td>
                                     <td>${service.selectedOptions[i].dataset['subtext']}</td>
                                     <td>
-                                        <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="static" required></select>
+                                        <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                     </td>
                                     <td class="checkedEmployees">
                                         Мастера не выбранны!
@@ -155,7 +155,7 @@ service.addEventListener('change', e => {
                                                 <td>${service.selectedOptions[i].dataset['tokens']}</td>
                                                 <td>${service.selectedOptions[i].dataset['subtext']}</td>
                                                 <td>
-                                                    <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="static" required></select>
+                                                    <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                                 </td>
                                                 <td class="checkedEmployees">
                                                     Мастера не выбранны!

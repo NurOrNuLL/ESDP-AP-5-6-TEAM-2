@@ -4,30 +4,30 @@
 {% block title %}Список контрагентов{% endblock %}
 
 {% block content %}
-  <div class="d-flex p-2">
-    <input id="contractorSearch" class="form-control border-secondary bg-transparent me-2" type="search"
-           placeholder="Поиск"
-           aria-label="Search">
+    <h1 class="mb-4">Список контрагентов</h1>
+    <hr>
     <div class="d-flex">
-      <button class="btn btn-secondary" id="back">&#8592;</button>
-        <input type="number" class="form-control bg-transparent border-secondary" style="width: 50px" id="page" value="1" disabled>
-      <button class="btn btn-secondary" id="next">&#8594;</button>
+        <input id="contractorSearch" class="form-control border-secondary bg-transparent me-2" type="search"
+            placeholder="Поиск"
+            aria-label="Search">
+        <div class="d-flex">
+            <button button class="btn btn-secondary me-2" id="back">&#8592;</button>
+            <input type="number" class="form-control bg-transparent border-secondary" style="width: 50px" id="page" value="1" disabled>
+            <button class="btn btn-secondary ms-2" id="next">&#8594;</button>
+        </div>
     </div>
-  </div>
-  <h2 class="mb-4">Список контрагентов</h2>
-  <table class="table table-hover">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Наименование</th>
-        <th scope="col">ИИН/БИН</th>
-        <th scope="col">Телефон</th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody id="body"></tbody>
-  </table>
-<div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">ИИН/БИН</th>
+            <th scope="col">Телефон</th>
+        </tr>
+        </thead>
+        <tbody id="body"></tbody>
+    </table>
+    <div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
 <script>
     var tpID = {{ tpID }}
 </script>

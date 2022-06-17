@@ -4,16 +4,14 @@
 {% block title %}Детали контрагента{% endblock %}
 
 {% block content %}
-    <h1>Контрактор</h1>
+    <h1>Контрагент</h1>
     <hr>
     <div class="d-flex mb-4">
-        <a class="btn btn-outline-secondary " href="{% url 'contractors' organization.pk tpID %}">Вернуться к
-            списку</a>
-        <a class="btn btn-outline-secondary" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}">Редактировать
-            контрагента</a>
-        <a class="btn btn-outline-secondary" href="{% url 'own_create' orgID tpID contrID %}">Добавить собственность</a>
+        <a class="btn btn-secondary me-2" href="{% url 'contractors' organization.pk tpID %}">Вернуться к списку</a>
+        <a class="btn btn-secondary me-2" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}">Редактировать контрагента</a>
+        <a class="btn btn-secondary" href="{% url 'own_create' orgID tpID contrID %}">Добавить собственность</a>
     </div>
-    <div class="card mb-3">
+    <div class="card mb-3 border-secondary">
         <div class="card-header bg-transparent">
             <div  class="row">
                 <div class="col-md-6">
@@ -34,8 +32,7 @@
                 </div>
             </div>
         </div>
-        <hr style="color: #6c757d">
-        <div class="card-body">
+        <div class="card-footer bg-transparent">
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Адрес:</span>
@@ -59,43 +56,42 @@
         <div class="card-footer bg-transparent">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Доверенное лицо: </span>
-                    <span style="padding-left: 5px">{% if contractor.trust_person.name %}{{ contractor.trust_person.name }}{% else %}Не указано{% endif %}</span>
-                </div>
-                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Доверенное лицо:</span><br>
+                    <span class="text" style="font-weight: bold">ФИО: </span>
+                    <span style="padding-left: 5px">{% if contractor.trust_person.name %}{{ contractor.trust_person.name }}{% else %}Не указано{% endif %}</span><br>
                     <span class="text" style="font-weight: bold">Комментарий: </span>
                     <span style="padding-left: 5px">{% if contractor.trust_person.comment %}{{ contractor.trust_person.comment }}{% else %}Не указано{% endif %}</span>
                 </div>
             </div>
         </div>
         <div class="card-footer bg-transparent">
-            <br>
-            <div class="d-flex justify-content-between">
-                <div>
-                    <h5>Список собственности:</h5>
-                </div>
+            <div class="text-center">
+                <strong>Список собственностей</strong>
             </div>
-            <br>
-            <table class="table table-striped">
+        </div>
+        <div class="card-footer bg-transparent">
+            <table class="table">
+                <thead>
+                    <th>Наименование</th>
+                    <th>Номер</th>
+                </thead>
                 <tbody id="w">
                 {% if contractor.owns.all %}
                 {% for own in contractor.owns.all %}
                     {% if own.is_part is False %}
                         <tr id="own_instance_{{ own.id }}">
-                            <th scope="col">{{ own.name }}</th>
-                                <th>{% if own.number %}{{ own.number }}{% else %}Не указан{% endif %}</th>
-                            <th class="d-flex justify-content-end" scope="col"><a
-                                    class="btn btn-outline-danger buttonDelete" data-bs-toggle="modal"
+                            <td scope="col">{{ own.name }}</td>
+                                <td>{% if own.number %}{{ own.number }}{% else %}Не указан{% endif %}</td>
+                            <td class="d-flex justify-content-end" scope="col"><a
+                                    class="btn btn-danger buttonDelete" data-bs-toggle="modal"
                                     data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"
                                     data-org_id="{{ organization.id }}"
                                     data-bs-target="#own_modal">Удалить</a><br>
-                                    <a class="btn btn-primary" style="margin-left: 15px"
+                                    <a class="btn btn-secondary" style="margin-left: 15px"
                                         href="{% url 'order_create' orgID tpID contrID own.pk %}">Заказ-наряд</a>
-                            </th>
+                            </td>
                         </tr>
                     {% include 'own/own_delete_modal.html' %}
-                    {% else %}
-                        У контрактора есть запчать
                     {% endif %}
                 {% endfor %}
                 {% else %}

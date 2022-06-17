@@ -1,24 +1,42 @@
 <form method="post">
     {% csrf_token %}
-    <div>
-        <label for="own_name" class="form-label" id="own_name_label">Модель автомобиля:</label><br>
-        <input type="text" class="form-control" id="own_name" name="name" value="{{ form.name.value|default:'' }}"><br>
-        <div class="form-text error-red">{{ form.name.errors }}</div>
-    </div>
-    <div style="display: none">
-        <label for="own_is_part" class="form-label">Тип:</label><br>
-        <input type="text" class="form-control" id="own_is_part" name="is_part" value="False"><br>
-        <div class="form-text error-red">{{ form.is_part.errors }}</div>
-    </div><br>
-    <div id="number_field">
-        <label for="own_number" class="form-label" id="own_number_label">Гос. номер:</label><br>
-        <input type="text" class="form-control" id="own_number" name="number" value="{{ form.number.value|default:'' }}"><br>
-        <div class="form-text error-red">{{ form.number.errors }}</div>
+    {% if form.is_part.value %}
+
+        <div class="row m-0">
+            <input value="False" type="radio" class="btn-check" name="is_part" id="auto_btn" autocomplete="off">
+            <label class="btn btn-outline-secondary col me-3" for="auto_btn">Автомобиль</label>
+
+            <input value="True" type="radio" class="btn-check" name="is_part" id="part_btn" autocomplete="off" checked>
+            <label class="btn btn-outline-secondary col ms-3" for="part_btn">Запчасть</label>
+        </div><br>
+
+        {% else %}
+
+        <div class="row m-0">
+            <input value="False" type="radio" class="btn-check border-secondary" name="is_part" id="auto_btn" autocomplete="off" checked>
+            <label class="btn btn-outline-secondary col me-3" for="auto_btn">Автомобиль</label>
+
+            <input value="True" type="radio" class="btn-check border-secondary" name="is_part" id="part_btn" autocomplete="off">
+            <label class="btn btn-outline-secondary col ms-3" for="part_btn">Запчасть</label>
+        </div><br>
+
+    {% endif %}
+    <div class="row">
+        <div class="col">
+            <label for="own_name" class="form-label" id="own_name_label">Модель автомобиля:</label><br>
+            <input type="text" class="form-control border-secondary" id="own_name" name="name" value="{{ form.name.value|default:'' }}">
+            <div class="form-text error-red" id="ownNameErr">{% for err in form.name.errors %}{{ err }}{% endfor %}</div><br>
+        </div>
+        <div id="number_field" class="col">
+            <label for="own_number" class="form-label" id="own_number_label">Гос. номер:</label><br>
+            <input type="text" class="form-control border-secondary" id="own_number" name="number" value="{{ form.number.value|default:'' }}">
+            <div class="form-text error-red" id="ownNumberErr">{% for err in form.number.errors %}{{ err }}{% endfor %}</div><br>
+        </div>
     </div>
     <div>
         <label for="own_comment" class="form-label" id="own_number_label">Дополнительная информация:</label><br>
-        <textarea class="form-control" id="own_comment" name="comment" rows="3">{{ form.comment.value|default:'' }}</textarea>
-        <div class="form-text error-red">{{ form.comment.errors }}</div>
+        <textarea class="form-control border-secondary" id="own_comment" name="comment" rows="3">{{ form.comment.value|default:'' }}</textarea>
+        <div class="form-text error-red" id="ownCommentErr">{% for err in form.comment.errors %}{{ err }}{% endfor %}</div><br>
     </div>
     <button type="submit" class="btn btn-primary">Создать</button>
 </form>
