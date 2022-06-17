@@ -63,7 +63,8 @@ services:
     volumes:
       - static_volume:/app/static
     ports:
-      - "1337:80"
+      - "80:80"
+      - "443:443"
     depends_on:
       - web
 
