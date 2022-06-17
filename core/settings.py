@@ -78,7 +78,8 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
-    'http://195.201.135.12'
+    'http://195.201.135.12',
+    'https://gservicegroup.top'
 ]
 
 ROOT_URLCONF = 'core.urls'

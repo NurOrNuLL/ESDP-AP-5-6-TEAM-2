@@ -20,9 +20,11 @@
                                     </select>
                                 </div>
                                 <div class="mb-3">
-                                    <input type="button" style="background-color: #929799" id="loadFileXlsx" value="Выберите файл"
-                                           onclick="document.getElementById('file').click();"/>
-                                    <label for="loadFileXlsx" id="file-name">файл не выбран</label>
+                                    <div class="input-group">
+                                        <input type="button" class="btn btn-secondary" id="loadFileXlsx" value="Выберите файл"
+                                            onclick="document.getElementById('file').click();"/>
+                                        <label for="loadFileXlsx" id="file-name" class="input-group-text bg-transparent border-secondary" style="width: 68%;">файл не выбран</label>
+                                    </div>
                                     <input type="file" style="display: none" id="file"
                                            class="form-control border-secondary bg-transparent"
                                            accept=".xlsx, .xls"

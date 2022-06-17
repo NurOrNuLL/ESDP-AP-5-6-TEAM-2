@@ -148,7 +148,13 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
             NomenclatureService.create_nomenclature(form.cleaned_data)
             return redirect('home_redirect')
 
-        return render(request, self.template_name, {'form': form})
+        context = self.get_context_data()
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
+            self.request, self.request.user.uuid
+        )
+        context['form'] = form
+
+        return render(request, self.template_name, context)
 
 
 class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):

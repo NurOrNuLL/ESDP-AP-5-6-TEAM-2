@@ -6,9 +6,11 @@
 
     <h1>Создание заказ-наряда</h1>
     <hr>
-    <h3>Шаг 1/4</h3>
     <div class="row m-0" style="height: 410px;">
         <div class="card border-secondary col me-2">
+            <div class="card-header bg-transparent">
+                <h3 class="my-2">Шаг 1/4</h3>
+            </div>
             <div class="card-body d-flex align-items-center">
                 <form method="POST" id="emp_reg" enctype="multipart/form-data" class="w-100">
                     {% csrf_token %}
