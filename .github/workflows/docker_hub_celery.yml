@@ -29,5 +29,5 @@ jobs:
         with:
           push: true
           context: .
-          file: ./Dockerfile
-          tags: esdp2/gservicegroup:latest, esdp2/gservicegroup:${{ steps.date.outputs.date }}
+          file: ./Dockerfile_celery
+          tags: esdp2/celery:latest, esdp2/celery:${{ steps.date.outputs.date }}
