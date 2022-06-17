@@ -76,7 +76,7 @@ CORS_ALLOWED_ORIGINS = [
     'http://195.201.135.12'
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8084',
+    'http://localhost:1337',
     'http://localhost:8085',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
@@ -115,11 +115,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('PSQL_NAME'),
-        'USER': os.environ.get('PSQL_USER'),
-        'PASSWORD': os.environ.get('PSQL_PASS'),
-        'HOST': os.environ.get('PSQL_HOST'),
-        'PORT': os.environ.get('PSQL_PORT'),
+        'NAME': os.environ.get('SQL_DATABASE'),
+        'USER': os.environ.get('SQL_USER'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD'),
+        'HOST': os.environ.get('SQL_HOST'),
+        'PORT': os.environ.get('SQL_PORT'),
     }
 }
 
