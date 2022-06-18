@@ -4,13 +4,20 @@ from celery_progress.backend import ProgressRecorder
 from core import celery_app
 from .base import BaseTask
 from services.nomenclature_services import NomenclatureService
+from django.core.cache import cache
+from django.http.response import JsonResponse
 
 
 class ExportExcelTask(BaseTask):
     name = "ExportExcelTask"
 
-    def run(self, nomenclature_pk, extension, *args, **kwargs):  # noqa C901
-        nomenclatures = NomenclatureService.get_all_nomenclatures()
+    def run(
+            self, nomenclature_pk: int, extension: str
+    ) -> JsonResponse:  # noqa C901
+        nomenclatures = cache.get('nomenclatures')
+        if not nomenclatures:
+            nomenclatures = NomenclatureService.get_all_nomenclatures()
+            cache.set('nomenclatures', nomenclatures, 60 * 1440)
         if nomenclatures:
             for i, nomenclature in enumerate(list(nomenclatures)):
                 if int(nomenclature_pk) == nomenclature.id:
