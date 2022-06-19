@@ -31,8 +31,8 @@ class ContractorService:
             'name': data['trust_person']['name'],
             'comment': data['trust_person']['comment']
         }
-
         contractor.save()
+        return contractor
 
     @staticmethod
     def get_contractors(kwargs: dict) -> List['Contractor']:
