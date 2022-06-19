@@ -4,45 +4,51 @@
 
 {% block content %}
 
-    <h2>Создание заказ-наряда</h2>
-    <div class="w-50">
-        <div class="progress" style="height: 20px; background-color: white;">
-            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 66%;" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100">2\3</div>
+    <h1>Создание заказ-наряда</h1>
+    <hr>
+    <div class="card border-secondary">
+        <div class="card-header bg-transparent">
+            <h3 class="my-2">Шаг 2/4</h3>
         </div>
-        <br>
-        <div>
-            <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
-            <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Выберите услуги" data-selected-text-format="count" required>
-                {% for category in categories %}
-                    <optgroup label="{{ category.0 }}">
-                        {% for service in services|get_item:category.0 %}
-                            <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
-                        {% endfor %}
-                    </optgroup>
-                {% endfor %}
-            </select>
-        </div>
-        <br>
-        <h5>Выбранные услуги:</h5>
-        <table class="table table-hover mb-2">
-            <thead>
-                <tr>
-                    <th scope="col">Название услуги</th>
-                    <th scope="col">Мастера</th>
-                    <th scope="col">Гарантия</th>
-                    <th scope="col">Цена</th>
-                </tr>
-            </thead>
-            <tbody id="selectedServicesTable"></tbody>
-        </table>
-        <h6 class="text-center" id="nothingSelected">Ничего не выбрано!</h6>
-        <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
-            {% csrf_token %}
-            <input type="hidden" name="jobs" id="resultServices">
+        <div class="card-body">
+            <div>
+                <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
+                <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Нажмите для выбора услуги" data-selected-text-format="static" required>
+                    {% for category in categories %}
+                        <optgroup label="{{ category.0 }}">
+                            {% for service in services|get_item:category.0 %}
+                                <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
             <br>
-            <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
-            <button type="submit" class="btn btn-primary">Далее</button>
-        </form>
+            <h5>Выбранные услуги:</h5>
+            <table class="table mb-2">
+                <thead>
+                    <tr>
+                        <th scope="col">Название услуги</th>
+                        <th scope="col">Катагория</th>
+                        <th scope="col">Марка</th>
+                        <th scope="col">Выбор мастеров</th>
+                        <th scope="col">Выбранные мастера</th>
+                        <th scope="col">Гарантия</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedServicesTable"></tbody>
+            </table>
+            <h6 class="text-center" id="nothingSelected">Ничего не выбрано!</h6>
+            <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span id="totalPrice" style="font-weight: bold;">0 &#8376;</span></div>
+            <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="jobs" id="resultServices">
+                <br>
+                <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+                <button type="submit" class="btn btn-primary">Далее</button>
+            </form>
+        </div>
     </div>
     <p class="d-none" id="employees">
         {{ employees }}

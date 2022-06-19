@@ -69,18 +69,17 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:8084',
-    'http://localhost:8085',
+    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12'
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:8084',
-    'http://localhost:8085',
+    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
-    'http://195.201.135.12'
+    'http://195.201.135.12',
+    'https://gservicegroup.top'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -115,15 +114,25 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('PSQL_NAME'),
-        'USER': os.environ.get('PSQL_USER'),
-        'PASSWORD': os.environ.get('PSQL_PASS'),
-        'HOST': os.environ.get('PSQL_HOST'),
-        'PORT': os.environ.get('PSQL_PORT'),
+        'NAME': os.environ.get('SQL_DATABASE'),
+        'USER': os.environ.get('SQL_USER'),
+        'PASSWORD': os.environ.get('SQL_PASSWORD'),
+        'HOST': os.environ.get('SQL_HOST'),
+        'PORT': os.environ.get('SQL_PORT'),
     }
 }
 
-
+if os.environ.get('GITHUB_WORKFLOW'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'github_actions',
+            'USER': 'postgres',
+            'PASSWORD': 'postgres',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -193,18 +202,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if os.environ.get('GITHUB_WORKFLOW'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'github_actions',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-        }
-    }
-
 REDIS_HOST = 'redis'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
@@ -218,3 +215,14 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_IGNORE_RESULT = True
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}

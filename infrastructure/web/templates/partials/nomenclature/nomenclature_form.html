@@ -1,7 +1,7 @@
 <form method="post">
     {% csrf_token %}
-    <label for="nomenclature" class="form-label">Название номенклатуры</label><br>
-    <div class="form-text c-red">{{ form.errors }}</div>
-    <input type="text" class="form-control" id="nomenclature" name="name"><br>
+    <label for="nomenclature" class="form-label">Название номенклатуры <span class="text-danger">*</span></label><br>
+    <input type="text" class="form-control border-secondary" id="nomenclature" name="name">
+    <div class="form-text text-danger">{% for err in form.errors.name %}{{ err }}{% endfor %}</div><br>
     <button type="submit" class="btn btn-primary">Создать</button>
 </form>

@@ -32,6 +32,7 @@ django-crispy-forms==1.14.0
 django-dotenv==1.4.2
 django-filter==21.1
 django-import-export==2.8.0
+django-redis==5.2.0
 django-storages==1.12.3
 djangorestframework==3.13.1
 et-xmlfile==1.1.0
@@ -80,6 +81,7 @@ pyrsistent==0.18.1
 pytest==7.1.2
 pytest-django==4.5.2
 python-dateutil==2.8.2
+python-mimeparse==1.6.0
 pytz==2022.1
 PyYAML==6.0
 questionary==1.10.0

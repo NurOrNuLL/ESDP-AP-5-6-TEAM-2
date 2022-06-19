@@ -10,15 +10,16 @@ services:
     command: --interval 300 gservicegroup celery
 
   web:
+    image: esdp2/gservicegroup:latest
     container_name: gservicegroup
     restart: always
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8000 --workers 3
     volumes:
       - static_volume:/app/static
+    expose:
+      - 8000
     env_file:
-      - .env_prod
-    image: esdp2/gservicegroup:latest
-    ports:
-      - "8000:8000"
+      - ./.env_prod
     depends_on:
       - postgres
       - redis
@@ -27,12 +28,10 @@ services:
     container_name: postgres
     image: postgres:latest
     restart: always
-    ports:
-      - "5435:5432"
     volumes:
-      - postgres:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .env_prod
+      - ./.env_prod.db
 
   redis:
     container_name: redis
@@ -59,18 +58,18 @@ services:
 
   nginx:
     build: ./nginx
-    image: nginx:latest
-    restart: always
     container_name: nginx
+    restart: always
     volumes:
       - static_volume:/app/static
     ports:
-      - "8084:80"
+      - "80:80"
+      - "443:443"
     depends_on:
       - web
 
 volumes:
-  postgres:
+  postgres_data:
   redis:
   static_volume:
   watchtower:

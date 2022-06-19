@@ -28,7 +28,7 @@ $.ajax({
 
         data.results.forEach(function (item) {
             body.innerHTML += '<tr><td>' + item.id + '</td><td>' + item.name + '</td><td>'
-                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.id + '/">Детали</a></td></tr>'
+                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.id + '/">Детали</a></td></tr>'
         })
     },
     error: (response) => {

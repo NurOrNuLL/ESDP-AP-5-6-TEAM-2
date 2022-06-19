@@ -36,8 +36,8 @@
             </button>
             <div class="collapse sidebar-ul" id="order-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                     <li><a href="#" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                 </ul>
             </div>
         </li>
@@ -49,8 +49,7 @@
             <div class="collapse sidebar-ul" id="contragent-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="{% url 'contractors' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
-                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
-                        контрагента</a></li>
+                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                 </ul>
             </div>
         </li>
@@ -62,10 +61,8 @@
             </button>
             <div class="collapse sidebar-ul" id="price-list-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'nomenclature_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
-                        номенклатуру</a></li>
-                    <li><a href="{% url 'nomenclature_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список
-                        услуг</a></li>
+                    <li><a href="{% url 'nomenclature_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'nomenclature_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                 </ul>
             </div>
         </li>
@@ -76,10 +73,8 @@
             </button>
             <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'trade_point_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
-                        филиал</a></li>
-                    <li><a href="{% url 'trade_point_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a>
-                    </li>
+                    <li><a href="{% url 'trade_point_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'trade_point_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                 </ul>
             </div>
         </li>
@@ -90,17 +85,17 @@
             </button>
             <div class="collapse sidebar-ul" id="employee-collapse" style="">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'employees' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список сотрудников</a></li>
-                    <li><a href="{% url 'employee_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
+                    <li><a href="{% url 'employees' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'employee_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать
                         мастера</a></li>
-                    <li><a href="{% url 'register' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Добавить
-                        пользователя</a></li>
+                    <li><a href="{% url 'register' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать
+                        аккаунт</a></li>
                 </ul>
             </div>
         </li>
         <li class="border-top my-3"></li>
         {% if request.user.is_authenticated %}
-            <a class="btn btn-outline-secondary fw-bold align-items-center" aria-current="page" href="{% url 'logout' %}">Выйти</a>
+            <a class="btn btn-outline-secondary align-items-center w-100" aria-current="page" href="{% url 'logout' %}">Выйти</a>
         {% endif %}
     </ul>
 </div>

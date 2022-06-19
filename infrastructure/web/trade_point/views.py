@@ -1,5 +1,7 @@
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
+
+from services.employee_services import EmployeeServices
 from .forms import TradePointForm
 from services.trade_point_services import TradePointServices
 from models.nomenclature.models import Nomenclature
@@ -32,7 +34,8 @@ class TradePointCreate(ResetOrderCreateFormDataMixin, TemplateView):
 
         return render(request, self.template_name, {
             'form': form,
-            'nomenclature': Nomenclature.objects.all()
+            'nomenclature': Nomenclature.objects.all(),
+            'tpID': EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
         })
 
 
