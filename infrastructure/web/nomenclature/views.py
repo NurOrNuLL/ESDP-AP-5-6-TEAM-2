@@ -20,6 +20,7 @@ from celery_progress.backend import Progress
 from ..nomenclature.tasks.import_exel import import_exel_file
 from ..nomenclature.tasks.export_exel import export_exel_file
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from django.core.cache import cache
 
 
 class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
@@ -146,6 +147,7 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
 
         if form.is_valid():
             NomenclatureService.create_nomenclature(form.cleaned_data)
+            cache.delete('nomenclatures')
             return redirect('home_redirect')
 
         context = self.get_context_data()
@@ -208,7 +210,7 @@ class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, TemplateView):
             picked_nomenclature = ''
 
         if main_data is False:
-            request.session['error'] = 'Отсутсвуют прайсы или номенклатура'
+            request.session['error'] = 'Проверьте наличие прайсов у номенклатуры, или наличие номенклатуры'
             url = reverse('nomenclature_list', kwargs={'orgID': 1,
                                                        'tpID': EmployeeServices.get_attached_tradepoint_id(  # noqa E501
                                                            self.request, self.request.user.uuid)}  # noqa E501
@@ -221,7 +223,7 @@ class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, TemplateView):
             )
             return NomenclatureService.response_sender(
                 data=self.services_file, file_extension=extension,
-                name=str(picked_nomenclature)
+                nom_name=str(picked_nomenclature)
             )
 
 
@@ -238,7 +240,7 @@ class NomenclatureFormForImpost(GenericAPIView):
         data = tablib.Dataset(headers=headers)
         self.exel_form = data.export(extension)
         return NomenclatureService.response_sender(
-            data=self.exel_form, file_extension=extension
+            data=self.exel_form, file_extension=extension, nom_name=''
         )
 
 
