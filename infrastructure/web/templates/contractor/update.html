@@ -3,12 +3,12 @@
 {% load custom_tags %}
 
 {% block content %}
-
     <div class="card w-50" style="background-color: transparent !important; border: 0;">
         <div class="card-body">
             <h2 class="mb-4">Редактировать контрагента</h2>
             <form method="POST">
                 {% csrf_token %}
+                <input type="hidden" class="d-none" name="version" value="{{ form.version.value }}"><br>
                 <div>
                     <label for="contractor_name" class="form-label">Наименование</label><br>
                     <input type="text" class="form-control" id="contractor_name" name="name" value="{{ form.name.value|default:'' }}"><br>

@@ -28,13 +28,11 @@ class ContractorService:
         contractor.BIC = data['BIC']
         contractor.phone = data['phone']
         contractor.trust_person = {
-            'name': data['trust_person_name'],
-            'comment': data['trust_person_comment']
+            'name': data['trust_person']['name'],
+            'comment': data['trust_person']['comment']
         }
 
         contractor.save()
-
-        return contractor
 
     @staticmethod
     def get_contractors(kwargs: dict) -> List['Contractor']:
