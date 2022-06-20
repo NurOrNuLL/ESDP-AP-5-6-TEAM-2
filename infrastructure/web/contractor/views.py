@@ -74,8 +74,9 @@ class MyPagination(PageNumberPagination):
 
 class ContractorFilterApiView(generics.ListAPIView):
     serializer_class = ContractorSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'IIN_or_BIN', 'phone']
+    ordering_fields = ['name']
     pagination_class = MyPagination
     queryset = Contractor.objects.all()
 

@@ -37,7 +37,7 @@ SERVICE_JSON_FIELD_SCHEMA = {
 class Nomenclature(models.Model):
     """Номенклатура"""
     name = models.CharField(
-        max_length=100, null=False, blank=False,
+        max_length=100, null=False, blank=False, unique=True,
         verbose_name='Наименование номенклатуры'
     )
     organization = models.ForeignKey(
