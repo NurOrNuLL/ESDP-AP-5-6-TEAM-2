@@ -3,6 +3,7 @@ argcomplete==1.12.3
 asgiref==3.5.2
 astroid==2.11.5
 async-timeout==4.0.2
+atomicwrites==1.4.0
 attrs==21.4.0
 backports.zoneinfo==0.2.1
 billiard==3.6.4.0
@@ -39,6 +40,7 @@ et-xmlfile==1.1.0
 excel2json-3==0.1.6
 exceptiongroup==1.0.0rc7
 export==0.2.0
+Faker==13.13.0
 flake8==4.0.1
 flower==1.0.0
 future==0.18.2
