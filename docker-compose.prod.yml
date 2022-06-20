@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 --no-restart gservicegroup celery
+    command: --interval 300 gservicegroup celery
 
   web:
     image: esdp2/gservicegroup:latest
@@ -62,6 +62,7 @@ services:
     restart: always
     volumes:
       - static_volume:/app/static
+      - certbot:/etc/certbot
     ports:
       - "80:80"
       - "443:443"
@@ -72,4 +73,5 @@ volumes:
   postgres_data:
   redis:
   static_volume:
+  certbot:
   watchtower:
