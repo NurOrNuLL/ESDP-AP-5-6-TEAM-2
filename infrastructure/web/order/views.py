@@ -8,6 +8,7 @@ from .forms import (
     OrderCreateFormStage1, OrderCreateFormStage2,
     OrderCreateFormStage3
 )
+from datetime import datetime
 from django.shortcuts import render, redirect
 from models.order.models import ORDER_STATUS_CHOICES
 from models.payment.models import PAYMENT_STATUS_CHOICES
@@ -24,6 +25,11 @@ from typing import Dict, Any, List
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from rest_framework import generics, filters
+from models.order.models import Order
+from infrastructure.web.order.serializers import OrderSerializer
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateView):
@@ -35,13 +41,57 @@ class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateVi
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
             self.request, self.request.user.uuid
         )
-
+        context['payment_statuses'] = PAYMENT_STATUS_CHOICES
+        context['order_statuses'] = ORDER_STATUS_CHOICES
+        context['order_dates'] = Order.objects.filter(trade_point_id=self.kwargs.get('tpID'))
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
 
         return render(request, self.template_name, self.get_context_data())
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'limit'
+
+
+class OrderFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request: HttpRequest, queryset: List[Order], view: View) -> List[Order]:
+        try:
+            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+        except ValueError:
+            return [order for order in queryset \
+                    if request.GET.get('payment_status') in order.payment.payment_status
+                    and (
+                            request.GET.get('search').lower() in order.contractor.name.lower()
+                            or request.GET.get('search').lower() in order.own.number.lower()
+                    )]
+        else:
+            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+
+            return [order for order in queryset \
+                    if request.GET.get('payment_status') in order.payment.payment_status
+                    and (
+                            request.GET.get('search').lower() in order.contractor.name.lower()
+                            or request.GET.get('search').lower() in order.own.number.lower()
+                    )
+                    and request_date.day == order.created_at.day
+                    and request_date.month == order.created_at.month
+                    and request_date.year == order.created_at.year
+                    ]
+
+
+class OrderListApiView(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    pagination_class = MyPagination
+    filter_backends = [DjangoFilterBackend, OrderFilterBackend]
+    filter_fields = ['status']
+
+    def get_queryset(self):
+        trade_point_id = self.kwargs.get('tpID')
+        return Order.objects.filter(trade_point_id=trade_point_id).order_by('-created_at')
 
 
 class HomeRedirectView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, View):

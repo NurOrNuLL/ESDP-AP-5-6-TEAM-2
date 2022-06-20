@@ -3,7 +3,7 @@ from .order.views import (
     HomePageView, OrderCreateFromContractor,
     OrderDetail, OrderCreateViewStage1,
     OrderCreateViewStage2, OrderCreateViewStage3,
-    OrderCreateViewStage4
+    OrderCreateViewStage4, OrderListApiView
 )
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
@@ -100,7 +100,8 @@ order_urls = [
     path('order/create/stage/1/', OrderCreateViewStage1.as_view(), name='order_create_stage1'),
     path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2'),
     path('order/create/stage/3/', OrderCreateViewStage3.as_view(), name='order_create_stage3'),
-    path('order/create/stage/4/', OrderCreateViewStage4.as_view(), name='order_create_stage4')
+    path('order/create/stage/4/', OrderCreateViewStage4.as_view(), name='order_create_stage4'),
+    path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
 urlpatterns = [
