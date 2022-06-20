@@ -16,10 +16,9 @@ from .nomenclature.views import (
     NomenclatureProgressView
 )
 from .own.views import OwnDeleteView, OwnCreate, OwnList
-from .contractor.views import (
-    ContractorCreate, ContractorList,
-    ContractorDetail, ContractorUpdate, ContractorFilterApiView
-)
+from .contractor.views import (ContractorCreate, ContractorList, ContractorDetail,
+                               ContractorUpdate, ContractorFilterApiView,
+                               ContractorUpdateConcurrecnyView)
 from .trade_point.views import TradePointCreate, TradePointList
 from .employee.views import (EmployeeCreate,
                              EmployeeFilterApiView, EmployeeList, EmployeeDetail)
@@ -64,15 +63,11 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path(
-        'contractor/<int:contrID>/',
-        ContractorDetail.as_view(), name="contractor_detail"
-    ),
+    path('contractor/<int:contrID>/',ContractorDetail.as_view(), name="contractor_detail"),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
-    path(
-        'contractor/<int:contrID>/update/',
-        ContractorUpdate.as_view(), name="contractor_update"
-    )
+    path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
+    path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
+         name="contractor_update_concurrency")
 ]
 
 own_urls = [

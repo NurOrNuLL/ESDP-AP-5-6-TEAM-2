@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from .validators import JSONSchemaValidator
+from concurrency.fields import AutoIncVersionField
 
 
 MY_JSON_FIELD_SCHEMA = {
@@ -23,6 +24,7 @@ MY_JSON_FIELD_SCHEMA = {
 
 class Contractor(models.Model):
     """Контрагент"""
+    version = AutoIncVersionField()
     name = models.CharField(
         max_length=150, null=False, blank=False,
         unique=True, verbose_name='Наименование'
