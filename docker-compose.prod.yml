@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 gservicegroup celery
+    command: --interval 300 --no-restart gservicegroup celery
 
   web:
     image: esdp2/gservicegroup:latest
