@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'import_export',
     'infrastructure',
     'infrastructure.accounts',
+    'infrastructure.web',
     'models.contractor',
     'models.nomenclature',
     'models.organization',

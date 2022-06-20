@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from .validators import JSONSchemaValidator
+from concurrency.fields import AutoIncVersionField
 
 ORDER_STATUS_CHOICES = [('В работе', 'В работе'), ('Завершен', 'Завершен')]
 
@@ -57,6 +58,7 @@ JOBS_JSON_SCHEMA = {
 
 class Order(models.Model):
     """Заказ-наряд"""
+    version = AutoIncVersionField()
     trade_point = models.ForeignKey(
         'trade_point.TradePoint', on_delete=models.PROTECT, null=False, blank=False,
         related_name='branch_orders', verbose_name='Филиал')
