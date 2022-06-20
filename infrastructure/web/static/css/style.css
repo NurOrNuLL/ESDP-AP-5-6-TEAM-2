@@ -59,3 +59,20 @@ body {
 .form-label {
     font-weight: bold;
 }
+
+.text-bg-primary {
+    background-color: #0b5ed7 !important;
+}
+
+.text-bg-success {
+    background-color: green !important;
+}
+
+.text-bg-danger {
+    background-color: red !important;
+}
+
+.text-bg-warning {
+    color: black !important;
+    background-color: yellow !important;
+}
