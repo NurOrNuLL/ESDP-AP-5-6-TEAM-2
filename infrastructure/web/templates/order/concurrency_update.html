@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали контрагента{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Данные были изменены другим пользователем!</h1>
+    <hr>
+    <h3 class="my-3">Вы хотите повторно изменить данные?</h3>
+    <form action="{% url 'order_update_concurrency' orgID=1 tpID=tpID ordID=ordID %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="jobs" value="{{ new_data.jobs }}">
+        <input type="hidden" name="note" value="{{ new_data.note|default:'' }}">
+        {% if new_data.mileage %}
+            <input type="number" name="mileage" class="d-none" value="{{ new_data.mileage }}">
+        {% endif %}
+        <input type="number" class="d-none" name="full_price" value="{{ new_data.full_price }}">
+        <input type="number" class="d-none" name="price_for_pay" value="{{ new_data.price_for_pay }}">
+        <a href="{% url 'order_detail' orgID=1 tpID=tpID ordID=ordID %}" class="btn btn-secondary" style="width: 15%">Нет</a>
+        <button type="submit" class="btn btn-primary" style="width: 15%">Да</button>
+    </form><br>
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <h3 class="text">Измененные данные</h3>
+        </div>
+        <div class="col">
+            <div class="card-footer bg-transparent">
+                <div class="text-center"><strong>Работы по заказ наряду</strong></div>
+            </div>
+            <div class="card-footer bg-transparent">
+                {% if current_data.jobs != new_data.jobs %}
+                    <table class="table mb-2">
+                        <thead>
+                            <tr>
+                                <th scope="col">Название услуги</th>
+                                <th scope="col">Катагория</th>
+                                <th scope="col">Марка</th>
+                                <th scope="col">Мастера</th>
+                                <th scope="col">Гарантия</th>
+                                <th scope="col">Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selectedServicesTable">
+                            {% for job in current_data.jobs %}
+                                <tr>
+                                    <td class="text-danger">{{ job|get_item:'Название услуги' }}</td>
+                                    <td class="text-danger">{{ job|get_item:'Категория услуги' }}</td>
+                                    <td class="text-danger">{{ job|get_item:'Марка услуги' }}</td>
+                                    <td class="text-danger">{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
+                                    <td class="text-danger">{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
+                                    <th class="text-danger">{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <table class="table mb-2">
+                        <thead>
+                            <tr>
+                                <th scope="col">Название услуги</th>
+                                <th scope="col">Катагория</th>
+                                <th scope="col">Марка</th>
+                                <th scope="col">Мастера</th>
+                                <th scope="col">Гарантия</th>
+                                <th scope="col">Цена</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selectedServicesTable">
+                            {% for job in current_data.jobs %}
+                                <tr>
+                                    <td>{{ job|get_item:'Название услуги' }}</td>
+                                    <td>{{ job|get_item:'Категория услуги' }}</td>
+                                    <td>{{ job|get_item:'Марка услуги' }}</td>
+                                    <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
+                                    <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
+                                    <th>{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                <div class="row">
+                    {% if current_data.note != new_data.note %}
+                        <div class="col">
+                            <span class="text" style="font-weight: bold">Примечание:</span>
+                            <span class="card-text text-danger">{% if current_data.note %}{{ current_data.note }}{% else %}
+                                Не указано{% endif %}</span>
+                        </div>
+                    {% else %}
+                        <div class="col">
+                            <span class="text" style="font-weight: bold">Примечание:</span>
+                            <span class="card-text">{% if current_data.note %}{{ current_data.note }}{% else %}
+                                Не указано{% endif %}</span>
+                        </div>
+                    {% endif %}
+                    {% if current_data.mileage != new_data.mileage %}
+                        <div class="col">
+                            <span class="text" style="font-weight: bold">Пробег: </span>
+                            <span class="card-text text-danger">{% if current_data.mileage %}
+                                {{ current_data.mileage }}{% else %}Не указан{% endif %}</span>
+                        </div>
+                    {% else %}
+                        <div class="col">
+                            <span class="text" style="font-weight: bold">Пробег: </span>
+                            <span class="card-text">{% if current_data.mileage %}
+                                {{ current_data.mileage }}{% else %}Не указан{% endif %}</span>
+                        </div>
+                    {% endif %}
+                    {% if current_data.price_for_pay != new_data.price_for_pay %}
+                        <div class="col d-flex justify-content-end"><span class="me-2"><strong>Общая сумма:</strong></span><span class="text-danger" style="font-weight: bold;">{{ current_data.price_for_pay }} &#8376;</span></div>
+                    {% else %}
+                        <div class="col d-flex justify-content-end"><span class="me-2"><strong>Общая сумма:</strong></span><span style="font-weight: bold;">{{ current_data.price_for_pay }} &#8376;</span></div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <h3 class="text mt-5">Ваши данные</h3>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="text-center"><strong>Работы по заказ наряду</strong></div>
+        </div>
+        <div class="card-footer bg-transparent">
+            {% if current_data.jobs != new_data.jobs %}
+                <table class="table mb-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">Название услуги</th>
+                            <th scope="col">Катагория</th>
+                            <th scope="col">Марка</th>
+                            <th scope="col">Мастера</th>
+                            <th scope="col">Гарантия</th>
+                            <th scope="col">Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody id="selectedServicesTable">
+                        {% for job in new_data.jobs %}
+                            <tr>
+                                <td class="text-success">{{ job|get_item:'Название услуги' }}</td>
+                                <td class="text-success">{{ job|get_item:'Категория услуги' }}</td>
+                                <td class="text-success">{{ job|get_item:'Марка услуги' }}</td>
+                                <td class="text-success">{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
+                                <td class="text-success">{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
+                                <th class="text-success">{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <table class="table mb-2">
+                    <thead>
+                        <tr>
+                            <th scope="col">Название услуги</th>
+                            <th scope="col">Катагория</th>
+                            <th scope="col">Марка</th>
+                            <th scope="col">Мастера</th>
+                            <th scope="col">Гарантия</th>
+                            <th scope="col">Цена</th>
+                        </tr>
+                    </thead>
+                    <tbody id="selectedServicesTable">
+                        {% for job in new_data.jobs %}
+                            <tr>
+                                <td>{{ job|get_item:'Название услуги' }}</td>
+                                <td>{{ job|get_item:'Категория услуги' }}</td>
+                                <td>{{ job|get_item:'Марка услуги' }}</td>
+                                <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
+                                <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
+                                <th>{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+            <div class="row">
+                {% if current_data.note != new_data.note %}
+                    <div class="col">
+                        <span class="text" style="font-weight: bold">Примечание:</span>
+                        <span class="card-text text-success">{% if new_data.note %}{{ new_data.note }}{% else %}
+                            Не указано{% endif %}</span>
+                    </div>
+                {% else %}
+                    <div class="col">
+                        <span class="text" style="font-weight: bold">Примечание:</span>
+                        <span class="card-text">{% if new_data.note %}{{ new_data.note }}{% else %}
+                            Не указано{% endif %}</span>
+                    </div>
+                {% endif %}
+                {% if current_data.mileage != new_data.mileage %}
+                    <div class="col">
+                        <span class="text" style="font-weight: bold">Пробег: </span>
+                        <span class="card-text text-success">{% if new_data.mileage %}
+                            {{ new_data.mileage }}{% else %}Не указан{% endif %}</span>
+                    </div>
+                {% else %}
+                    <div class="col">
+                        <span class="text" style="font-weight: bold">Пробег: </span>
+                        <span class="card-text">{% if new_data.mileage %}
+                            {{ new_data.mileage }}{% else %}Не указан{% endif %}</span>
+                    </div>
+                {% endif %}
+                {% if current_data.price_for_pay != new_data.price_for_pay %}
+                    <div class="col d-flex justify-content-end"><span class="me-2"><strong>Общая сумма:</strong></span><span class="text-success" style="font-weight: bold;">{{ new_data.price_for_pay }} &#8376;</span></div>
+                {% else %}
+                    <div class="col d-flex justify-content-end"><span class="me-2"><strong>Общая сумма:</strong></span><span style="font-weight: bold;">{{ new_data.price_for_pay }} &#8376;</span></div>
+                {% endif %}
+            </div><br>
+        </div>
+    </div>
+
+{% endblock %}
