@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <h1 class="mb-4">Редактирование заказ-наряда</h1>
+    <hr>
+    <div class="card border-secondary">
+        <div class="card-body">
+            <div>
+                <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
+                <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Нажмите для выбора услуги" data-selected-text-format="static" required>
+                    {% for category in categories %}
+                        <optgroup label="{{ category.0 }}">
+                            {% for service in services|get_item:category.0 %}
+                                <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                            {% endfor %}
+                        </optgroup>
+                    {% endfor %}
+                </select>
+            </div>
+            <br>
+            <h5>Выбранные услуги:</h5>
+            <table class="table mb-2">
+                <thead>
+                    <tr>
+                        <th scope="col">Название услуги</th>
+                        <th scope="col">Катагория</th>
+                        <th scope="col">Марка</th>
+                        <th scope="col">Выбор мастеров</th>
+                        <th scope="col">Выбранные мастера</th>
+                        <th scope="col">Гарантия</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedServicesTable"></tbody>
+            </table>
+            <h6 class="text-center" id="nothingSelected">Ничего не выбрано!</h6>
+            <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span id="totalPrice" style="font-weight: bold;">0 &#8376;</span></div>
+            <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="jobs" id="resultServices">
+                <input type="hidden" name="version" value="{{ form.version.value }}">
+                <input type="number" class="d-none" name="full_price" id="fullPrice">
+                <input type="number" class="d-none" name="price_for_pay" id="priceForPay">
+                <br>
+                <div class="row">
+                    <div class="col-6">
+                        <label for="note" class="form-label">Примечание</label>
+                        <textarea class="form-control" id="note" name="note" rows="3">{{ form.note.value|default:'' }}</textarea>
+                        <div class="form-text" style="color: red;">
+                            {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
+                    </div>
+                    {% if not own.is_part %}
+                        <div class="col-2">
+                            <label for="mileage" class="form-label">Пробег</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" value="{{ form.mileage.value|default:'' }}" id="mileage" name="mileage">
+                                <span class="input-group-text" id="basic-addon2">km</span>
+                            </div>
+                            <div class="form-text" style="color: red;">
+                                {% for err in order_form.errors.mileage %}{{ err }}{% endfor %}</div>
+                        </div>
+                        <br>
+                    {% endif %}
+                </div><br>
+                <a href="{% url 'order_detail' orgID=1 tpID=tpID ordID=ordID %}" class="btn btn-secondary">Назад</a>
+                <button type="submit" class="btn btn-primary">Далее</button>
+            </form>
+        </div>
+    </div>
+
+    <p class="d-none" id="employees">
+        {{ employees }}
+    </p>
+    <p class="d-none" id="initialJobs">
+        {{ form.jobs.value }}
+    </p>
+
+{% endblock content %}
+
+{% block js_block %}
+
+    <script>
+        var errors = "{{ form.errors|slugify }}"
+    </script>
+    <script src="{% static 'js/order/order_update.js' %}"></script>
+
+{% endblock js_block %}

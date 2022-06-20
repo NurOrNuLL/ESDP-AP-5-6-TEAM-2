@@ -3,7 +3,8 @@ from .order.views import (
     HomePageView, OrderCreateFromContractor,
     OrderDetail, OrderCreateViewStage1,
     OrderCreateViewStage2, OrderCreateViewStage3,
-    OrderCreateViewStage4, OrderListApiView
+    OrderCreateViewStage4, OrderUpdateView,
+    OrderUpdateConcurrencyView, OrderListApiView
 )
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
@@ -95,8 +96,9 @@ employee_urls = [
 order_urls = [
     path('contractor/<int:contrID>/own/<int:ownID>/order/create/',
          OrderCreateFromContractor.as_view(), name="order_create"),
-    path('contractor/<int:contrID>/own/<int:ownID>/order/<int:ordID>/',
-         OrderDetail.as_view(), name="order_detail"),
+    path('order/<int:ordID>/', OrderDetail.as_view(), name="order_detail"),
+    path('order/<int:ordID>/update', OrderUpdateView.as_view(), name="order_update"),
+    path('order/<int:ordID>/update/concurrency', OrderUpdateConcurrencyView.as_view(), name="order_update_concurrency"),
     path('order/create/stage/1/', OrderCreateViewStage1.as_view(), name='order_create_stage1'),
     path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2'),
     path('order/create/stage/3/', OrderCreateViewStage3.as_view(), name='order_create_stage3'),

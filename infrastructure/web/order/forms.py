@@ -36,3 +36,9 @@ class OrderCreateFormStage3(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['mileage', 'note']
+
+
+class OrderUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['version', 'jobs', 'mileage', 'note', 'price_for_pay', 'full_price']
