@@ -157,7 +157,7 @@ service.addEventListener('change', e => {
                                                 <td>
                                                     <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                                 </td>
-                                                <td class="checkedEmployees">
+                                                <td class="checkedEmployees" style="width: 100px">
                                                     Мастера не выбранны!
                                                 </td>
                                                 <td>
@@ -183,15 +183,15 @@ service.addEventListener('change', e => {
 
 
                     if (employeesIIN.indexOf(emp.IIN) != -1) {
-                        empSelect.innerHTML += `<option value="${emp.IIN}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                        empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                         checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML += `<div>${emp.name} ${emp.surname}</div>`
                     }
                     else {
-                        empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                        empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                     }
                 }
                 else {
-                    empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                    empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                     checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML = 'Мастера не выбранны!';
                 }
             })
@@ -212,7 +212,7 @@ service.addEventListener('change', e => {
 
                 for (let i = 0; i < empSelect.selectedOptions.length; i++) {
                     selectedValues.push(empSelect.selectedOptions[i].value);
-                    checkedEmployees[j].innerHTML += `<div>${empSelect.selectedOptions[i].innerText}</div>`
+                    checkedEmployees[j].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${empSelect.selectedOptions[i].dataset['empName'].toUpperCase()} ${empSelect.selectedOptions[i].dataset['empSurname']}</span>`
                 }
 
 
