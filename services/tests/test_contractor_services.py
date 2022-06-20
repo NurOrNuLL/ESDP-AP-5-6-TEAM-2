@@ -59,8 +59,7 @@ class ContractorServicesTest(TestCase):
             'bank_name': contractor.bank_name,
             'BIC': contractor.BIC,
             'phone': '87772755701',
-            'trust_person_name': 'чоо',
-            'trust_person_comment': 'йомайо'
+            'trust_person': {'name': 'чоо', 'comment': 'ыва'}
         }
 
         with patch('models.contractor.models.Contractor.save') as save_contractor:
@@ -76,8 +75,7 @@ class ContractorServicesTest(TestCase):
                 'bank_name': returned_contractor.bank_name,
                 'BIC': returned_contractor.BIC,
                 'phone': returned_contractor.phone,
-                'trust_person_name': returned_contractor.trust_person['name'],
-                'trust_person_comment': returned_contractor.trust_person['comment'],
+                'trust_person': returned_contractor.trust_person,
             })
 
     def test_create_contractor(self):
