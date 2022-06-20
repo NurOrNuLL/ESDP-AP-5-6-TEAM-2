@@ -1,4 +1,6 @@
-from django.views.generic import TemplateView
+import ast
+from concurrency.exceptions import RecordModifiedError
+from django.views.generic import TemplateView, View
 from rest_framework import filters
 from models.contractor.models import Contractor
 from services.employee_services import EmployeeServices
@@ -13,7 +15,7 @@ from services.trade_point_services import TradePointServices
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
-from django.db import transaction
+from concurrency.api import disable_concurrency
 
 
 class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
@@ -74,8 +76,9 @@ class MyPagination(PageNumberPagination):
 
 class ContractorFilterApiView(generics.ListAPIView):
     serializer_class = ContractorSerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'IIN_or_BIN', 'phone']
+    ordering_fields = ['name']
     pagination_class = MyPagination
     queryset = Contractor.objects.all()
 
@@ -102,9 +105,18 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'contractor/update.html'
     form_class = ContractorForm
 
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['contractors'] = ContractorService.get_contractors(self.kwargs)
+        context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        context['tpID'] = self.kwargs['tpID']
+        context['orgID'] = self.kwargs['orgID']
+        return context
+
     def get_inital(self, contr_id: int) -> dict:
         contractor = ContractorService.get_contractor_by_id(contr_id)
         initial = {
+            'version': contractor.version,
             'name': contractor.name,
             'address': contractor.address,
             'IIN_or_BIN': contractor.IIN_or_BIN,
@@ -113,57 +125,60 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
             'BIC': contractor.BIC,
             'phone': contractor.phone,
         }
-
         return initial
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
-
         contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
-        form = self.form_class(
-            initial=self.get_inital(contr_id=self.kwargs['contrID']),
-            instance=contractor)
+        form = self.form_class(initial=self.get_inital(contr_id=self.kwargs['contrID']))
 
         context = self.get_context_data()
         context['form'] = form
-        context['trust_person'] = contractor.trust_person if \
-            contractor.trust_person else dict()
+        context['trust_person'] = contractor.trust_person if contractor.trust_person else dict()
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
             self.request, self.request.user.uuid
         )
-
         return render(request=request, template_name=self.template_name, context=context)
 
-    @transaction.atomic
-    def post(
-            self, request: HttpRequest, *args: list, **kwargs: dict
-    ) -> HttpResponse or HttpResponseRedirect:
-        contractor = ContractorService.get_contractor_by_id_for_update(self.kwargs['contrID'])
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict
+             ) -> HttpResponse or HttpResponseRedirect:
+        contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        context = self.get_context_data()
         form = self.form_class(data=request.POST, instance=contractor)
-
+        trust_person = dict(name=request.POST['trust_person_name'],
+                            comment=request.POST['trust_person_comment'])
         if form.is_valid():
-            data = {
-                'name': form.cleaned_data['name'],
-                'address': form.cleaned_data['address'],
-                'IIN_or_BIN': form.cleaned_data['IIN_or_BIN'],
-                'IIC': form.cleaned_data['IIC'],
-                'bank_name': form.cleaned_data['bank_name'],
-                'BIC': form.cleaned_data['BIC'],
-                'phone': form.cleaned_data['phone'],
-                'trust_person_name': request.POST['trust_person_name'],
-                'trust_person_comment': request.POST['trust_person_comment']
-            }
-
-            ContractorService.update_contractor(contractor, data)
-
-            return redirect('contractor_detail', orgID=1,
-                            contrID=self.kwargs['contrID'],
-                            tpID=self.kwargs['tpID'])
+            form.cleaned_data['trust_person'] = trust_person
+            try:
+                ContractorService.update_contractor(contractor, form.cleaned_data)
+                return redirect('contractor_detail', orgID=1,
+                                contrID=self.kwargs['contrID'], tpID=self.kwargs['tpID'])
+            except RecordModifiedError:
+                context['form'] = form.cleaned_data
+                print(self.kwargs)
+                return render(request, template_name='contractor/contractor_update_compare.html', context=context)
         else:
-            context = self.get_context_data()
             context['form'] = form
-            context['trust_person'] = dict(name=request.POST['trust_person_name'],
-                                           comment=request.POST['trust_person_comment'])
+            context['trust_person'] = trust_person
             context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
 
             return render(request, template_name=self.template_name, context=context)
+
+
+class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, View):
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict
+             ) -> HttpResponse or HttpResponseRedirect:
+        contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+
+        with disable_concurrency(contractor):
+            contractor.name = request.POST.get('name')
+            contractor.address = request.POST.get('address')
+            contractor.IIN_or_BIN = request.POST.get('IIN_or_BIN')
+            contractor.IIC = request.POST.get('IIC')
+            contractor.BIC = request.POST.get('BIC')
+            contractor.bank_name = request.POST.get('bank_name')
+            contractor.phone = request.POST.get('phone')
+            contractor.trust_person = ast.literal_eval(request.POST['trust_person'])
+            contractor.save()
+            return redirect('contractor_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
+                            contrID=self.kwargs['contrID'])

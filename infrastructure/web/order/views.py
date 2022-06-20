@@ -1,3 +1,4 @@
+import ast
 import json
 from django.template.context_processors import request
 from django.views import View
@@ -6,10 +7,11 @@ from django.views.generic import TemplateView
 from .forms import (
     OrderForm, PaymentForm,
     OrderCreateFormStage1, OrderCreateFormStage2,
-    OrderCreateFormStage3
+    OrderCreateFormStage3, OrderUpdateForm
 )
+from datetime import datetime
 from django.shortcuts import render, redirect
-from models.order.models import ORDER_STATUS_CHOICES
+from models.order.models import ORDER_STATUS_CHOICES, Order
 from models.payment.models import PAYMENT_STATUS_CHOICES
 from models.nomenclature.category_choices import CATEGORY_CHOICES
 from services.employee_services import EmployeeServices
@@ -24,6 +26,14 @@ from typing import Dict, Any, List
 from django.http import HttpRequest, HttpResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from rest_framework import generics, filters
+from models.order.models import Order
+from infrastructure.web.order.serializers import OrderSerializer
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from concurrency.exceptions import RecordModifiedError
+from concurrency.api import disable_concurrency
+
 
 
 class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateView):
@@ -35,13 +45,57 @@ class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateVi
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
             self.request, self.request.user.uuid
         )
-
+        context['payment_statuses'] = PAYMENT_STATUS_CHOICES
+        context['order_statuses'] = ORDER_STATUS_CHOICES
+        context['order_dates'] = Order.objects.filter(trade_point_id=self.kwargs.get('tpID'))
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
 
         return render(request, self.template_name, self.get_context_data())
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'limit'
+
+
+class OrderFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request: HttpRequest, queryset: List[Order], view: View) -> List[Order]:
+        try:
+            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+        except ValueError:
+            return [order for order in queryset \
+                    if request.GET.get('payment_status') in order.payment.payment_status
+                    and (
+                            request.GET.get('search').lower() in order.contractor.name.lower()
+                            or request.GET.get('search').lower() in order.own.number.lower()
+                    )]
+        else:
+            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+
+            return [order for order in queryset \
+                    if request.GET.get('payment_status') in order.payment.payment_status
+                    and (
+                            request.GET.get('search').lower() in order.contractor.name.lower()
+                            or request.GET.get('search').lower() in order.own.number.lower()
+                    )
+                    and request_date.day == order.created_at.day
+                    and request_date.month == order.created_at.month
+                    and request_date.year == order.created_at.year
+                    ]
+
+
+class OrderListApiView(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    pagination_class = MyPagination
+    filter_backends = [DjangoFilterBackend, OrderFilterBackend]
+    filter_fields = ['status']
+
+    def get_queryset(self):
+        trade_point_id = self.kwargs.get('tpID')
+        return Order.objects.filter(trade_point_id=trade_point_id).order_by('-created_at')
 
 
 class HomeRedirectView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, View):
@@ -123,7 +177,6 @@ class OrderCreateViewStage2(TemplateView):
         context = self.get_context_data()
 
         jobs = request.session.get('jobs')
-        print(jobs)
 
         if jobs:
             context['session_jobs'] = json.dumps(jobs)
@@ -310,17 +363,113 @@ class OrderDetail(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'order/order_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
+        order = OrderService.get_order_by_id(self.kwargs['ordID'])
+
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(
-            self.kwargs['contrID']
-        )
-        context['own'] = OwnServices.get_own_by_id(self.kwargs)
-        context['order'] = OrderService.get_order_by_id(self.kwargs['ordID'])
+        context['contractor'] = order.contractor
+        context['own'] = order.own
+        context['order'] = order
+
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
 
         return super().get(request, *args, **kwargs)
+
+
+class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
+    template_name = 'order/update.html'
+    concurrency_template_name = 'order/concurrency_update.html'
+    form_class = OrderUpdateForm
+
+    def get_services(self, context: dict) -> Dict[str, List[dict]]:
+        services = TradePointServices.get_trade_point_by_id(context).nomenclature.services
+        filtered_data = {}
+
+        for category in CATEGORY_CHOICES:
+            filtered_data[f'{category[0]}'] = \
+                [service for service in services if service['Категория'] == category[0]]
+
+        return filtered_data
+
+    def get_context_data_for_GET(self, form: OrderUpdateForm, order: Order, request: HttpRequest) -> Dict[str, Any]:
+        context = self.get_context_data()
+        context['form'] = form
+        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+        context['ordID'] = order.id
+        context['categories'] = CATEGORY_CHOICES
+        context['services'] = self.get_services(context)
+
+        employees = EmployeeServices.get_employee_by_tradepoint(
+                tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+            ).filter(role='Мастер')
+
+        context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
+
+        return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        self.delete_order_data_from_session(request)
+
+        order = OrderService.get_order_by_id(self.kwargs['ordID'])
+
+        form = self.form_class(initial=OrderService.get_initial_for_update(order))
+
+        context = self.get_context_data_for_GET(form, order, request)
+
+        return render(request, self.template_name, context)
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        order = OrderService.get_order_by_id(self.kwargs['ordID'])
+
+        form = self.form_class(data=request.POST, instance=order)
+
+        if form.is_valid():
+            try:
+                order.jobs = form.cleaned_data['jobs']
+                order.mileage = form.cleaned_data['mileage']
+                order.note = form.cleaned_data['note']
+
+                order.save()
+            except RecordModifiedError:
+                context = self.get_context_data()
+                context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+                context['ordID'] = order.id
+                context['current_data'] = OrderService.get_order_by_id(self.kwargs['ordID'])
+                context['new_data'] = form.cleaned_data
+
+                return render(request, self.concurrency_template_name, context)
+            else:
+                order.jobs = form.cleaned_data['jobs']
+                order.mileage = form.cleaned_data['mileage']
+                order.note = form.cleaned_data['note']
+
+                order.save()
+
+                return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], ordID=self.kwargs['ordID'])
+        else:
+            context = self.get_context_data()
+            context['form'] = form
+            context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+            context['ordID'] = order.id
+            context['categories'] = CATEGORY_CHOICES
+            context['services'] = self.get_services(context)
+
+            return render(request, self.template_name, context)
+
+
+class OrderUpdateConcurrencyView(View):
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict):
+        order = OrderService.get_order_by_id(self.kwargs['ordID'])
+
+        with disable_concurrency(order):
+            order.jobs = ast.literal_eval(request.POST['jobs'])
+            order.mileage = request.POST.get('mileage')
+            order.note = request.POST.get('note')
+
+            order.save()
+
+            return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], ordID=self.kwargs['ordID'])
