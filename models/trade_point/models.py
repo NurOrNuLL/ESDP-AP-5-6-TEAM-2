@@ -1,8 +1,10 @@
 from django.db import models
+from concurrency.fields import AutoIncVersionField
 
 
 class TradePoint(models.Model):
     """Филиал"""
+    version = AutoIncVersionField()
     name = models.CharField(
         max_length=250, verbose_name='Название'
     )
@@ -16,7 +18,7 @@ class TradePoint(models.Model):
     )
     nomenclature = models.ForeignKey(
         'nomenclature.Nomenclature', verbose_name='Номенклатура',
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT, related_name='trade_points'
     )
 
     class Meta:

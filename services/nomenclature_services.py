@@ -103,3 +103,7 @@ class NomenclatureService:
             data.append(i.values())
             file_data = data.export(file_extension)
         return file_data
+
+    @staticmethod
+    def get_nomenclatures_by_organization(kwargs: dict) -> List['Nomenclature']:
+        return Nomenclature.objects.filter(organization=kwargs['orgID'])

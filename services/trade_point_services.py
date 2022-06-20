@@ -21,3 +21,15 @@ class TradePointServices:
     @staticmethod
     def get_trade_point_by_id(kwargs: dict) -> TradePoint:
         return TradePoint.objects.get(id=kwargs['tpID'])
+
+    @staticmethod
+    def get_trade_point_by_clean_id(tpID: dict) -> TradePoint:
+        return TradePoint.objects.get(id=tpID)
+
+    @staticmethod
+    def update_trade_point(trade_point: TradePoint, data: dict) -> None:
+        trade_point.name = data['name']
+        trade_point.address = data['address']
+        trade_point.nomenclature = data['nomenclature']
+
+        trade_point.save()
