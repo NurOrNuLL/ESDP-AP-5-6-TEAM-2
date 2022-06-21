@@ -1,15 +1,13 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Детали контрагента{% endblock %}
+{% block title %}Детали сотрудника{% endblock %}
 
 {% block content %}
-{#    <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk tpID %}">К списку</a><br><br>#}
     <div class="d-flex mb-4">
-        <h4>Данные контрагента были изменены другим пользователем! <br> Вы хотите повторно изменить данные?</h4>
-
-{#        <a class="ms-2 edit-link" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}"><img width=35 src="{% static 'pics/edit.png' %}"></a><br>#}
+        <h4>Данные сотрудника были изменены другим пользователем! Вы хотите повторно изменить данные?</h4>
     </div>
+
     <div class="card mb-3">
         <div class="card-header bg-transparent">
             <div class="row">
@@ -24,24 +22,36 @@
         <div class="card-header bg-transparent">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Наименование:</span>
-                    <span>{{ contractor.name }}</span>
+                    <span class="text" style="font-weight: bold">Имя:</span>
+                    <span>{{ employee.name }}</span>
                 </div>
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Наименование:</span>
-                    <span style="padding-left: 5px">{{ form.name.value }}</span>
+                    <span class="text" style="font-weight: bold">Имя:</span>
+                    <span style="padding-left: 5px">{{ form.name }}</span>
                 </div>
             </div>
         </div>
         <div class="card-header bg-transparent">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
-                    <span>{{ contractor.IIN_or_BIN }}</span>
+                    <span class="text" style="font-weight: bold">Фамилия:</span>
+                    <span>{{ employee.surname }}</span>
                 </div>
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
-                    <span style="padding-left: 5px">{{ form.IIN_or_BIN.value }}</span>
+                    <span class="text" style="font-weight: bold">Фамилия:</span>
+                    <span style="padding-left: 5px">{{ form.surname }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН:</span>
+                    <span>{{ employee.IIN }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН:</span>
+                    <span style="padding-left: 5px">{{ form.IIN }}</span>
                 </div>
             </div>
         </div>
@@ -49,11 +59,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Телефон:</span>
-                    <span>{{ contractor.phone }}</span>
+                    <span>{{ employee.phone }}</span>
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Телефон: </span>
-                    <span style="padding-left: 5px">{{ form.phone.value }}</span>
+                    <span style="padding-left: 5px">{{ form.phone }}</span>
                 </div>
             </div>
         </div>
@@ -61,61 +71,72 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Адрес:</span>
-                    <span>{{ contractor.address }}</span>
+                    <span>{{ employee.address }}</span>
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Адрес: </span>
-                    <span style="padding-left: 5px">{{ form.address.value }}</span>
+                    <span style="padding-left: 5px">{{ form.address }}</span>
                 </div>
             </div>
         </div>
-        {% if contractor.IIC or contractor.bank_name or contractor.BIC or form.IIC.value or form.bank_name.value or form.BIC.value%}
-        <div class="card-header bg-transparent">
+        <div class="card-footer bg-transparent">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Банковские детали:</span><br>
-                        <span class="text"><b>ИИК:</b></span>
-                        <span style="padding-left: 8px" class="card-text">{% if contractor.IIC %}{{ contractor.IIC }}{% endif %}</span><br>
-                        <span class="text"><b>Банк:</b></span>
-                        <span style="padding-left: 5px" class="card-text">{% if contractor.bank_name %}{{ contractor.bank_name }}{% endif %}</span><br>
-                        <span class="text"><b>БИК:</b></span>
-                        <span style="padding-left: 9px" class="card-text">{{ contractor.BIC }}</span>
+                    <span class="text" style="font-weight: bold">Дата рождения:</span>
+                    <span style="padding-left: 5px">{{ employee.birthdate }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Дата рождения:</span>
+                    <span style="padding-left: 5px">{{ form.birthdate }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Филиал:</span>
+                    <span style="padding-left: 5px">{{ employee.tradepoint.name }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Филиал:</span>
+                    <span style="padding-left: 5px">{{ form.tradepoint.name }}</span>
+                </div>
+            </div>
+        </div>
+         <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Фото документа:</span>
+                    <span style="padding-left: 5px">{{ employee.image }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Фото документа:</span>
+                    <span style="padding-left: 5px">{{ form.image }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px">
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-outline-secondary me-2" href="{% url 'employees' orgID tpID %}">К списку</a>
+            </div>
+            <div class="col-md-6">
+                <form action="{% url 'employee_concurrency_update' orgID tpID employee.uuid %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ form.name }}">
+                    <input type="hidden" name="surname" value="{{ form.surname }}">
+                    <input type="hidden" name="address" value="{{ form.address }}">
+                    <input type="hidden" name="IIN" value="{{ form.IIN }}">
+                    <input type="date" style="display: none" name="birthdate" value="{{ form.birthdate|date:'Y-m-d' }}">
+                    <input type="hidden" name="phone" value="{{ form.phone }}">
+                    <input type="hidden" name="tradepoint" value="{{ form.tradepoint }}">
+                    <input type="hidden" name="image" accept="image/*" value="{{ form.image }}">
+                    <input type="hidden" name="role" value="{{ form.role }}">
 
-</div>
-                <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Банковские детали:</span><br>
-                        <span class="text"><b>ИИК:</b></span>
-                        <span style="padding-left: 8px" class="card-text">{% if form.IIC.value %}{{ form.IIC.value }}{% endif %}</span><br>
-                        <span class="text"><b>Банк:</b></span>
-                        <span style="padding-left: 5px" class="card-text">{% if form.bank_name.value %}{{ form.bank_name.value }}{% endif %}</span><br>
-                        <span class="text"><b>БИК:</b></span>
-                        <span style="padding-left: 9px" class="card-text">{{ form.BIC.value }}</span>
-                </div>
-            </div>
-        </div>
-        {% endif %}
-        <div class="card-footer bg-transparent">
-            <div class="row">
-                <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Доверенное лицо:</span>
-                    <span style="padding-left: 5px">{{ contractor.trust_person.name }}</span>
-                </div>
-                <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Доверенное лицо:</span>
-                    <span style="padding-left: 5px">{{ trust_person.name }}</span>
-                </div>
-            </div>
-        </div>
-        <div class="card-footer bg-transparent">
-            <div class="row">
-                <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Комментарий:</span>
-                    <span style="padding-left: 5px">{{ contractor.trust_person.comment }}</span>
-                </div>
-                <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">Комментарий:</span>
-                    <span style="padding-left: 5px">{{ trust_person.comment }}</span>
-                </div>
+                    <a href="{% url 'employee_detail' orgID tpID employee.uuid %}" class="btn btn-secondary" style="width: 15%">Нет</a>
+                    <button type="submit" class="btn btn-primary" style="width: 15%">Применить изменения</button>
+                </form><br>
             </div>
         </div>
     </div>

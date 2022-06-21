@@ -1,5 +1,6 @@
 <form method="POST" id="emp" enctype="multipart/form-data">
     {% csrf_token %}
+    <input type="hidden" name="version" value="{{ form.version.value }}">
     <div class="row">
         <div class="col">
             <label for="name" class="form-label">Имя <span class="text-danger">*</span></label>

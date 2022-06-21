@@ -1,4 +1,6 @@
 import uuid
+
+from concurrency.fields import AutoIncVersionField
 from django.core.validators import RegexValidator
 from django.db import models
 from .validators import birthdate_validator
@@ -11,6 +13,7 @@ class Employee(models.Model):
         ('Управляющий', 'Управляющий'),
         ('Менеджер', 'Менеджер'),
     ]
+    version = AutoIncVersionField()
     uuid = models.CharField(
         max_length=100000,
         primary_key=True,

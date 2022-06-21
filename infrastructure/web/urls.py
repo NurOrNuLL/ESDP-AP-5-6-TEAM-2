@@ -24,7 +24,8 @@ from .contractor.views import (
 )
 from .trade_point.views import TradePointCreate, TradePointList
 from .employee.views import (EmployeeCreate,
-                             EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate)
+                             EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate,
+                             EmployeeConcurrencyUpdate)
 from infrastructure.accounts.views import RegisterView
 
 nomenclature_urls = [
@@ -93,6 +94,7 @@ employee_urls = [
     path('employee/list/', EmployeeList.as_view(), name="employees"),
     path('employee/<slug:empUID>/', EmployeeDetail.as_view(), name="employee_detail"),
     path('employee/<slug:empUID>/update/', EmployeeUpdate.as_view(), name='employee_update'),
+    path('employee/<slug:empUID>/concurrency_update/', EmployeeConcurrencyUpdate.as_view(), name='employee_concurrency_update'),
     path('register/', RegisterView.as_view(), name='register')
 ]
 

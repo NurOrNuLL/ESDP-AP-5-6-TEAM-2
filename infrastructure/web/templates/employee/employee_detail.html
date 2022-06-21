@@ -8,7 +8,7 @@
     <hr>
     <div class="d-flex mb-4">
         <a class="btn btn-secondary me-2" href="{% url 'employees' orgID tpID %}">К списку</a>
-        <a class="btn btn-outline-secondary" href="{% url 'employee_update' orgID tpID employee.uuid %}">Редактировать</a><br><br>
+        <a class="btn btn-outline-secondary me-2" href="{% url 'employee_update' orgID tpID employee.uuid %}">Редактировать</a>
         <a class="btn btn-primary me-2" download href="#">Скачать удостоверение</a>
         <a class="btn btn-primary" download href="#">Посмотреть удостоверение</a>
     </div>
@@ -53,6 +53,7 @@
                 </div>
             </div>
         </div>
+    </div>
     <script>
         var tpID = {{ tpID }}
     </script>
