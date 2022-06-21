@@ -1,5 +1,5 @@
 import os
-
+import dotenv
 from celery import Celery
 import dotenv
 env_file = os.path.join(os.path.dirname(os.path.dirname(
@@ -21,6 +21,10 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 # Load task modules from all registered Django apps.
 app.autodiscover_tasks()
 
+env_file = os.path.join(os.path.dirname(os.path.dirname(
+     os.path.realpath(__file__))), '.env'
+ )
+dotenv.read_dotenv(env_file)
 
 @app.task(bind=True)
 def debug_task(self):

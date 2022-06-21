@@ -9,5 +9,5 @@ class EmployeeForm(forms.ModelForm):
             'name',
             'surname', 'role',
             'IIN', 'image', 'address', 'phone',
-            'birthdate', 'tradepoint'
+            'birthdate', 'tradepoint', 'version'
         ]
