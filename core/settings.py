@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'import_export',
     'infrastructure',
     'infrastructure.accounts',
+    'infrastructure.web',
     'models.contractor',
     'models.nomenclature',
     'models.organization',
@@ -72,14 +73,17 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
-    'http://195.201.135.12'
+    'http://195.201.135.12',
+    'https://gservicegroup.top',
+    'https://testesdp.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
-    'https://gservicegroup.top'
+    'https://gservicegroup.top',
+    'https://testesdp.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -186,7 +190,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'ru-RU'
+LANGUAGE_CODE = 'ru-ru'
 
 TIME_ZONE = 'Asia/Almaty'
 
@@ -231,3 +235,14 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_IGNORE_RESULT = True
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.environ.get('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379'),
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}

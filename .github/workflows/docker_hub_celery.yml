@@ -2,12 +2,15 @@ name: ci
 
 on:
   pull_request:
-    types: [closed]
+    types:
+      - closed
+      - labeled
     branches:
       - 'master'
 
 jobs:
   docker:
+    if: ${{ github.event.label.name == 'celery' }}
     runs-on: ubuntu-latest
     steps:
       -

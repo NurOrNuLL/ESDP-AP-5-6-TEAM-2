@@ -1,5 +1,5 @@
 from models.order.models import Order
-from typing import List
+from typing import Any, Dict, List
 
 
 class OrderService:
@@ -17,6 +17,15 @@ class OrderService:
             mileage=data['mileage'],
             jobs=data['jobs'],
         )
+
+    @staticmethod
+    def get_initial_for_update(order: Order) -> Dict[str, Any]:
+        return {
+            'jobs': order.jobs,
+            'mileage': order.mileage,
+            'note': order.note,
+            'version': order.version
+        }
 
     @staticmethod
     def get_orders_by_trade_point(kwargs: dict) -> List['Order']:

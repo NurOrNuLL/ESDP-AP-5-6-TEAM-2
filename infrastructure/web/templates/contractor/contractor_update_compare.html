@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали контрагента{% endblock %}
+
+{% block content %}
+    <div class="d-flex mb-4">
+        <h4>Данные контрагента были изменены другим пользователем! <br> Вы хотите повторно изменить данные?</h4>
+    </div>
+
+    <form action="{% url 'contractor_update_concurrency' orgID tpID contractor.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="name" value="{{ form.name }}">
+        <input type="hidden" name="address" value="{{ form.address }}">
+        <input type="hidden" name="IIN_or_BIN" value="{{ form.IIN_or_BIN }}">
+        {% if form.IIC %}
+            <input type="hidden" name="IIC" class="d-none" value="{{ form.IIC }}">
+        {% endif %}
+        {% if form.bank_name %}
+            <input type="hidden" name="bank_name" class="d-none" value="{{ form.bank_name }}">
+        {% endif %}
+        {% if form.BIC %}
+            <input type="hidden" name="BIC" class="d-none" value="{{ form.BIC }}">
+        {% endif %}
+        <input type="hidden" class="d-none" name="phone" value="{{ form.phone }}">
+        {% if form.trust_person %}
+            <input type="hidden" class="d-none" name="trust_person" value="{{ form.trust_person }}">
+        {% endif %}
+        <a href="{% url 'contractor_detail' orgID tpID contractor.pk %}" class="btn btn-secondary" style="width: 15%">Нет</a>
+        <button type="submit" class="btn btn-primary" style="width: 15%">Да</button>
+    </form><br>
+
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Текущие данные</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Предлагаемые изменения</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование:</span>
+                    {% if contractor.name != form.name %}
+                        <span class="text-danger">{{ contractor.name }}</span>
+                    {% else %}
+                        <span>{{ contractor.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование:</span>
+                    {% if contractor.name != form.name %}
+                        <span class="text-success">{{ form.name }}</span>
+                    {% else %}
+                        <span>{{ form.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
+                    {% if contractor.IIN_or_BIN != form.IIN_or_BIN %}
+                        <span class="text-danger">{{ contractor.IIN_or_BIN }}</span>
+                    {% else %}
+                        <span>{{ contractor.IIN_or_BIN }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
+                    {% if contractor.IIN_or_BIN != form.IIN_or_BIN %}
+                        <span class="text-success">{{ form.IIN_or_BIN }}</span>
+                    {% else %}
+                        <span>{{ form.IIN_or_BIN }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Телефон:</span>
+                    {% if contractor.phone != form.phone %}
+                        <span class="text-danger">{{ contractor.phone }}</span>
+                    {% else %}
+                        <span>{{ contractor.phone }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Телефон: </span>
+                    {% if contractor.phone != form.phone %}
+                        <span class="text-success">{{ form.phone }}</span>
+                    {% else %}
+                        <span>{{ form.phone }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес:</span>
+                    {% if contractor.address != form.address %}
+                        <span class="text-danger">{{ contractor.address }}</span>
+                    {% else %}
+                        <span>{{ contractor.address }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес: </span>
+                    {% if contractor.address != form.address %}
+                        <span class="text-success">{{ form.address }}</span>
+                    {% else %}
+                        <span>{{ form.address }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if contractor.IIC or contractor.bank_name or contractor.BIC or form.IIC or form.bank_name or form.BIC %}
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Банковские детали:</span><br>
+                        <span class="text"><b>ИИК:</b></span>
+                        {% if contractor.IIC %}
+                            {% if contractor.IIC != form.IIC %}
+                                <span class="text-danger">{{ contractor.IIC }}</span><br>
+                            {% else %}
+                                <span>{{ contractor.IIC }}</span><br>
+                            {% endif %}
+                        {% endif %}
+                        <span class="text"><b>Банк:</b></span>
+                        {% if contractor.bank_name %}
+                            {% if contractor.bank_name != form.bank_name %}
+                                <span class="text-danger">{{ contractor.bank_name }}</span><br>
+                            {% else %}
+                                <span>{{ contractor.bank_name }}</span><br>
+                            {% endif %}
+                        {% endif %}
+                        <span class="text"><b>БИК:</b></span>
+                        {% if contractor.BIC %}
+                            {% if contractor.BIC != form.BIC %}
+                                <span class="text-danger">{{ contractor.BIC }}</span><br>
+                            {% else %}
+                                <span>{{ contractor.BIC }}</span><br>
+                            {% endif %}
+                        {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Банковские детали:</span><br>
+                        <span class="text"><b>ИИК:</b></span>
+                        {% if form.BIC %}
+                            {% if contractor.BIC != form.BIC %}
+                                <span class="text-success">{{ form.BIC }}</span><br>
+                            {% else %}
+                                <span>{{ form.BIC }}</span><br>
+                            {% endif %}
+                        {% endif %}
+                        <span class="text"><b>Банк:</b></span>
+                        {% if form.bank_name %}
+                            {% if contractor.bank_name != form.bank_name %}
+                                <span class="text-success">{{ form.bank_name }}</span><br>
+                            {% else %}
+                                <span>{{ form.bank_name }}</span><br>
+                            {% endif %}
+                        {% endif %}
+                        <span class="text"><b>БИК:</b></span>
+                        {% if form.BIC %}
+                            {% if contractor.BIC != form.BIC %}
+                                <span class="text-success">{{ form.BIC }}</span><br>
+                            {% else %}
+                                <span>{{ form.BIC }}</span><br>
+                            {% endif %}
+                        {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Доверенное лицо:</span>
+                    {% if contractor.trust_person.name %}
+                        {% if contractor.trust_person.name != form.trust_person.name %}
+                            <span class="text-danger">{{ contractor.trust_person.name }}</span>
+                        {% else %}
+                            <span>{{ contractor.trust_person.name }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Доверенное лицо:</span>
+                    {% if form.trust_person.name %}
+                        {% if contractor.trust_person.name != form.trust_person.name %}
+                            <span class="text-success">{{ form.trust_person.name }}</span>
+                        {% else %}
+                            <span>{{ form.trust_person.name }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Комментарий:</span>
+                    {% if contractor.trust_person.comment %}
+                        {% if contractor.trust_person.comment != form.trust_person.comment %}
+                            <span class="text-danger">{{ contractor.trust_person.comment }}</span>
+                        {% else %}
+                            <span>{{ contractor.trust_person.comment }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Комментарий:</span>
+                    {% if form.trust_person.comment %}
+                        {% if contractor.trust_person.comment != form.trust_person.comment %}
+                            <span class="text-success">{{ form.trust_person.comment }}</span>
+                        {% else %}
+                            <span>{{ form.trust_person.comment }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

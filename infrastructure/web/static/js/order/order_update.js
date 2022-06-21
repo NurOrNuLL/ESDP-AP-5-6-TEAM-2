@@ -10,7 +10,7 @@ let nothingSelected = document.getElementById('nothingSelected');
 let serviceEmployeeForm = document.getElementById('serviceEmployeeForm');
 
 let employees = eval(document.getElementById('employees').innerText.trim());
-let sessionJobs = eval(document.getElementById('session_jobs').innerText.trim());
+let initialJobs = eval(document.getElementById('initialJobs').innerText.trim());
 
 let serviceOptions = document.getElementsByClassName('service-option');
 
@@ -18,33 +18,33 @@ let serviceList = document.getElementById('service-list');
 let employeeList = document.getElementById('employee-list');
 
 
-if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
+if (typeof initialJobs === 'object' && initialJobs.length != 0) {
     tableBody.innerHTML = '';
     nothingSelected.classList.add('d-none');
 
-    for (let i = 0; i < sessionJobs.length; i++) {
+    for (let i = 0; i < initialJobs.length; i++) {
         let employeesIIN = [];
 
-        for (employee of sessionJobs[i]['Мастера']) {
+        for (employee of initialJobs[i]['Мастера']) {
             employeesIIN.push(employee['ИИН']);
         }
 
         for (let j = 0; j < serviceOptions.length; j++) {
-            if (serviceOptions[j] == serviceOptions[sessionJobs[i]['Индекс']]) {
+            if (serviceOptions[j] == serviceOptions[initialJobs[i]['Индекс']]) {
                 serviceOptions[j].selected = true;
                 serviceOptions[j].dataset['serviceEmployees'] = employeesIIN;
-                serviceOptions[j].dataset['serviceGaranty'] = sessionJobs[i]['Гарантия'];
+                serviceOptions[j].dataset['serviceGaranty'] = initialJobs[i]['Гарантия'];
             }
         }
 
-        tableBody.innerHTML += `<tr class="service-row" data-service-index="${sessionJobs[i]['Индекс']}" data-service-name="${sessionJobs[i]['Название услуги']}" data-service-category="${sessionJobs[i]['Категория услуги']}" data-service-mark="${sessionJobs[i]['Марка услуги']}" data-service-employees="${employeesIIN}" data-service-garanty="${sessionJobs[i]['Гарантия']}" data-service-price="${sessionJobs[i]['Цена услуги']}">
-                                    <td>${sessionJobs[i]['Название услуги']}</td>
+        tableBody.innerHTML += `<tr class="service-row" data-service-index="${initialJobs[i]['Индекс']}" data-service-name="${initialJobs[i]['Название услуги']}" data-service-category="${initialJobs[i]['Категория услуги']}" data-service-mark="${initialJobs[i]['Марка услуги']}" data-service-employees="${employeesIIN}" data-service-garanty="${initialJobs[i]['Гарантия']}" data-service-price="${initialJobs[i]['Цена услуги']}">
+                                    <td>${initialJobs[i]['Название услуги']}</td>
                                     <td>${service.selectedOptions[i].dataset['tokens']}</td>
                                     <td>${service.selectedOptions[i].dataset['subtext']}</td>
                                     <td>
                                         <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                     </td>
-                                    <td class="checkedEmployees" style="width: 100px">
+                                    <td class="checkedEmployees">
                                         Мастера не выбранны!
                                     </td>
                                     <td>
@@ -52,7 +52,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                             <input class="form-check-input garanty" type="checkbox" role="switch">
                                         </div>
                                     </td>
-                                    <th><span class="Price">${sessionJobs[i]['Цена услуги']}</span><span> ₸</span></th>
+                                    <th><span class="Price">${initialJobs[i]['Цена услуги']}</span><span> ₸</span></th>
                                 </tr>`;
     }
 
@@ -76,7 +76,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
 
             for (let i = 0; i < empSelect.selectedOptions.length; i++) {
                 selectedValues.push(empSelect.selectedOptions[i].value);
-                checkedEmployees[j].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${empSelect.selectedOptions[i].dataset['empName'].toUpperCase()} ${empSelect.selectedOptions[i].dataset['empSurname']}</span>`
+                checkedEmployees[j].innerHTML += `<div>${empSelect.selectedOptions[i].innerText}</div>`
             }
 
 
@@ -86,30 +86,30 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
     }
 
     for (let i = 0; i < price.length; i++) {
-        if (!(sessionJobs[i]['Гарантия'])) {
+        if (!(initialJobs[i]['Гарантия'])) {
             total += eval(price[i].innerText);
         }
     }
 
-    for (let i = 0; i < sessionJobs.length; i++) {
+    for (let i = 0; i < initialJobs.length; i++) {
         checkedEmployees[i].innerHTML = '';
         let employeesIIN = [];
 
-        for (employee of sessionJobs[i]['Мастера']) {
+        for (employee of initialJobs[i]['Мастера']) {
             employeesIIN.push(employee['ИИН']);
         }
 
         employees.forEach(emp => {
             if (employeesIIN.indexOf(eval(emp.IIN)) != -1) {
-                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
-                checkedEmployees[i].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${emp.name[0].toUpperCase()}. ${emp.surname}</span>`
+                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                checkedEmployees[i].innerHTML += `<div>${emp.name} ${emp.surname}</div>`
             }
             else {
-                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
             }
         })
 
-        if (sessionJobs[i]['Гарантия']) {
+        if (initialJobs[i]['Гарантия']) {
             garantyBtns[i].checked = true;
             price[i].style.cssText = 'text-decoration: line-through;';
         }
@@ -157,7 +157,7 @@ service.addEventListener('change', e => {
                                                 <td>
                                                     <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                                 </td>
-                                                <td class="checkedEmployees" style="width: 100px">
+                                                <td class="checkedEmployees">
                                                     Мастера не выбранны!
                                                 </td>
                                                 <td>
@@ -183,15 +183,15 @@ service.addEventListener('change', e => {
 
 
                     if (employeesIIN.indexOf(emp.IIN) != -1) {
-                        empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
-                        checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${emp.name[0]}. ${emp.surname}</span>`
+                        empSelect.innerHTML += `<option value="${emp.IIN}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                        checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML += `<div>${emp.name} ${emp.surname}</div>`
                     }
                     else {
-                        empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                        empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                     }
                 }
                 else {
-                    empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                    empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                     checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML = 'Мастера не выбранны!';
                 }
             })
@@ -212,7 +212,7 @@ service.addEventListener('change', e => {
 
                 for (let i = 0; i < empSelect.selectedOptions.length; i++) {
                     selectedValues.push(empSelect.selectedOptions[i].value);
-                    checkedEmployees[j].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${empSelect.selectedOptions[i].dataset['empName'].toUpperCase()} ${empSelect.selectedOptions[i].dataset['empSurname']}</span>`
+                    checkedEmployees[j].innerHTML += `<div>${empSelect.selectedOptions[i].innerText}</div>`
                 }
 
 
@@ -271,10 +271,14 @@ serviceEmployeeForm.addEventListener('submit', e => {
     e.preventDefault();
 
     let resultServices = document.getElementById('resultServices');
+    let fullPrice = document.getElementById('fullPrice');
+    let priceForPay = document.getElementById('priceForPay');
     let serviceRows = document.getElementsByClassName('service-row');
     let checkedEmployees = document.getElementsByClassName('checkedEmployees');
 
-    let result = [];
+    let resultJobs = [];
+    let resultPriceForPay = 0;
+    let resultFullPrice = 0;
 
     for (let i = 0; i < serviceRows.length; i++) {
         const serviceRow = serviceRows[i];
@@ -290,7 +294,7 @@ serviceEmployeeForm.addEventListener('submit', e => {
             })
         }
 
-        result.push({
+        resultJobs.push({
             'Индекс': eval(serviceRow.dataset['serviceIndex']),
             'Название услуги': serviceRow.dataset['serviceName'],
             'Категория услуги': serviceRow.dataset['serviceCategory'],
@@ -299,9 +303,19 @@ serviceEmployeeForm.addEventListener('submit', e => {
             'Гарантия': eval(serviceRow.dataset['serviceGaranty']),
             'Мастера': parsed_employees
         });
+
+        if (eval(serviceRow.dataset['serviceGaranty']) === true) {
+            resultFullPrice += eval(serviceRow.dataset['servicePrice']);
+        }
+        else {
+            resultPriceForPay += eval(serviceRow.dataset['servicePrice']);
+            resultFullPrice += eval(serviceRow.dataset['servicePrice']);
+        }
     }
 
-    resultServices.value = JSON.stringify(result);
+    resultServices.value = JSON.stringify(resultJobs);
+    fullPrice.value = resultFullPrice;
+    priceForPay.value = resultPriceForPay;
 
     serviceEmployeeForm.submit();
 })

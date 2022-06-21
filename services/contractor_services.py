@@ -19,7 +19,7 @@ class ContractorService:
         )
 
     @staticmethod
-    def update_contractor(contractor: Contractor, data: dict) -> None:
+    def update_contractor(contractor: Contractor, data: dict) -> Contractor:
         contractor.name = data['name']
         contractor.address = data['address']
         contractor.IIN_or_BIN = data['IIN_or_BIN']
@@ -28,12 +28,10 @@ class ContractorService:
         contractor.BIC = data['BIC']
         contractor.phone = data['phone']
         contractor.trust_person = {
-            'name': data['trust_person_name'],
-            'comment': data['trust_person_comment']
+            'name': data['trust_person']['name'],
+            'comment': data['trust_person']['comment']
         }
-
         contractor.save()
-
         return contractor
 
     @staticmethod

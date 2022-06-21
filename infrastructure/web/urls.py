@@ -6,7 +6,8 @@ from .order.views import (
     HomePageView, OrderCreateFromContractor,
     OrderDetail, OrderCreateViewStage1,
     OrderCreateViewStage2, OrderCreateViewStage3,
-    OrderCreateViewStage4
+    OrderCreateViewStage4, OrderUpdateView,
+    OrderUpdateConcurrencyView, OrderListApiView
 )
 from .nomenclature.views import (
     NomenclatureCreate, NomenclatureImportView,
@@ -18,11 +19,14 @@ from .nomenclature.views import (
     NomenclatureProgressView
 )
 from .own.views import OwnDeleteView, OwnCreate, OwnList
-from .contractor.views import (
-    ContractorCreate, ContractorList,
-    ContractorDetail, ContractorUpdate, ContractorFilterApiView
-)
-from .trade_point.views import TradePointCreate, TradePointList
+
+from .trade_point.views import TradePointCreate, TradePointList, \
+    TradePointUpdate, TradePointUpdateConcurrecnyView
+
+from .contractor.views import (ContractorCreate, ContractorList, ContractorDetail,
+                               ContractorUpdate, ContractorFilterApiView,
+                               ContractorUpdateConcurrecnyView)
+
 from .employee.views import (EmployeeCreate,
                              EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate,
                              EmployeeConcurrencyUpdate)
@@ -61,21 +65,21 @@ nomenclature_urls = [
 
 trade_point_urls = [
     path('trade_point/create/', TradePointCreate.as_view(), name="trade_point_create"),
-    path('trade_point/list/', TradePointList.as_view(), name='trade_point_list')
+    path('trade_point/list/', TradePointList.as_view(), name='trade_point_list'),
+    path('trade_point/<int:trade_pointID>/update/',
+         TradePointUpdate.as_view(), name='trade_point_update'),
+    path('trade_point/<int:trade_pointID>/update_concurrency/',
+         TradePointUpdateConcurrecnyView.as_view(), name='trade_point_update_concurrency')
 ]
 
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path(
-        'contractor/<int:contrID>/',
-        ContractorDetail.as_view(), name="contractor_detail"
-    ),
+    path('contractor/<int:contrID>/',ContractorDetail.as_view(), name="contractor_detail"),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
-    path(
-        'contractor/<int:contrID>/update/',
-        ContractorUpdate.as_view(), name="contractor_update"
-    )
+    path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
+    path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
+         name="contractor_update_concurrency")
 ]
 
 own_urls = [
@@ -101,12 +105,14 @@ employee_urls = [
 order_urls = [
     path('contractor/<int:contrID>/own/<int:ownID>/order/create/',
          OrderCreateFromContractor.as_view(), name="order_create"),
-    path('contractor/<int:contrID>/own/<int:ownID>/order/<int:ordID>/',
-         OrderDetail.as_view(), name="order_detail"),
+    path('order/<int:ordID>/', OrderDetail.as_view(), name="order_detail"),
+    path('order/<int:ordID>/update', OrderUpdateView.as_view(), name="order_update"),
+    path('order/<int:ordID>/update/concurrency', OrderUpdateConcurrencyView.as_view(), name="order_update_concurrency"),
     path('order/create/stage/1/', OrderCreateViewStage1.as_view(), name='order_create_stage1'),
     path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2'),
     path('order/create/stage/3/', OrderCreateViewStage3.as_view(), name='order_create_stage3'),
-    path('order/create/stage/4/', OrderCreateViewStage4.as_view(), name='order_create_stage4')
+    path('order/create/stage/4/', OrderCreateViewStage4.as_view(), name='order_create_stage4'),
+    path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
 urlpatterns = [
