@@ -2,13 +2,13 @@ name: ci
 
 on:
   pull_request:
-    types: [closed, labeled]
+    types: [labeled]
     branches:
       - 'master'
 
 jobs:
   docker:
-    if: contains(github.event.pull_request.labels.*.name, 'celery')
+    if: ${{ github.event.label.name == 'celery' }}
     runs-on: ubuntu-latest
     steps:
       -
@@ -28,7 +28,7 @@ jobs:
         name: Build and push Docker gservicegroup
         uses: docker/build-push-action@v2
         with:
-          push: true
+          push: ${{ github.event_name != 'pull_request' }}
           context: .
           file: ./Dockerfile_celery
           tags: esdp2/celery:latest, esdp2/celery:${{ steps.date.outputs.date }}
