@@ -21,6 +21,9 @@ class TradePoint(models.Model):
         on_delete=models.PROTECT, related_name='trade_points'
     )
 
+    def __str__(self):
+        return f'{self.name}'
+
     class Meta:
         verbose_name = "Филиал"
         verbose_name_plural = "Филиалы"

@@ -1,1 +1,92 @@
-<p>RecordModifiedError</p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали филиала{% endblock %}
+
+{% block content %}
+    <div class="d-flex mb-4">
+        <h4>Данные филиала были изменены другим пользователем! <br> Вы хотите повторно изменить данные?</h4>
+    </div>
+
+    <form action="{% url 'trade_point_update_concurrency' orgID tpID trade_point.pk %}" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="name" value="{{ form.name }}">
+        <input type="hidden" name="address" value="{{ form.address }}">
+        <input type="hidden" name="nomenclature_id" value="{{ form.nomenclature.id }}">
+        <a href="{% url 'trade_point_list' orgID tpID %}" class="btn btn-secondary" style="width: 15%">Нет</a>
+        <button type="submit" class="btn btn-primary" style="width: 15%">Да</button>
+    </form><br>
+
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Текущие данные</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Предлагаемые изменения</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование:</span>
+                    {% if trade_point.name != form.name %}
+                        <span class="text-danger">{{ trade_point.name }}</span>
+                    {% else %}
+                        <span>{{ trade_point.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование:</span>
+                    {% if trade_point.name != form.name %}
+                        <span class="text-success">{{ form.name }}</span>
+                    {% else %}
+                        <span>{{ form.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес:</span>
+                    {% if trade_point.address != form.address %}
+                        <span class="text-danger">{{ trade_point.address }}</span>
+                    {% else %}
+                        <span>{{ trade_point.address }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес: </span>
+                    {% if trade_point.address != form.address %}
+                        <span class="text-success">{{ form.address }}</span>
+                    {% else %}
+                        <span>{{ form.address }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Номенклатура:</span>
+                    {% if trade_point.nomenclature.id != form.nomenclature.id %}
+                        <span class="text-danger">{{ trade_point.nomenclature }}</span>
+                    {% else %}
+                        <span>{{ trade_point.nomenclature }}</span>
+                    {% endif %}
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Номенклатура:</span>
+                    {% if trade_point.nomenclature.id != form.nomenclature.id %}
+                        <span class="text-success">{{ form.nomenclature }}</span>
+                    {% else %}
+                        <span>{{ form.nomenclature }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

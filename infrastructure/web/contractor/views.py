@@ -1,5 +1,4 @@
 import ast
-from concurrency.exceptions import RecordModifiedError
 from django.views.generic import TemplateView, View
 from rest_framework import filters
 from models.contractor.models import Contractor
@@ -15,6 +14,7 @@ from services.trade_point_services import TradePointServices
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 
 
@@ -106,7 +106,7 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
     form_class = ContractorForm
 
     def get_context_data(self, **kwargs: dict) -> dict:
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**self.kwargs)
         context['contractors'] = ContractorService.get_contractors(self.kwargs)
         context['contractor'] = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
         context['tpID'] = self.kwargs['tpID']
@@ -155,7 +155,6 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
                                 contrID=self.kwargs['contrID'], tpID=self.kwargs['tpID'])
             except RecordModifiedError:
                 context['form'] = form.cleaned_data
-                print(self.kwargs)
                 return render(request, template_name='contractor/contractor_update_compare.html', context=context)
         else:
             context['form'] = form
