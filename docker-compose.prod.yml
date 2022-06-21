@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 gservicegroup celery
+    command: --interval 300 --enable-lifecycle-hooks gservicegroup --label=com.centurylinklabs.watchtower.lifecycle.post-update="./restore-data.sh" celery
 
   web:
     image: esdp2/gservicegroup:latest
