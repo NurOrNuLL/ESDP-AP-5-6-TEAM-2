@@ -1,5 +1,6 @@
 import uuid
 
+from concurrency.fields import AutoIncVersionField
 from django.core.validators import RegexValidator
 from django.db import models
 from .validators import birthdate_validator
@@ -12,6 +13,7 @@ class Employee(models.Model):
         ('Управляющий', 'Управляющий'),
         ('Менеджер', 'Менеджер'),
     ]
+    version = AutoIncVersionField()
     uuid = models.CharField(
         max_length=100000,
         primary_key=True,
@@ -32,11 +34,7 @@ class Employee(models.Model):
         null=False, blank=False, max_length=12, unique=True,
         verbose_name='ИИН', validators=[RegexValidator(r'^\d{12,12}$')]
     )
-    image = models.ImageField(
-        upload_to='image',
-        blank=False,
-        null=False
-    )
+    image = models.ImageField()
     address = models.CharField(
         max_length=50,
         null=False,

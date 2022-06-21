@@ -11,7 +11,7 @@ from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
 from services.trade_point_services import TradePointServices
-from infrastructure.web.employee.tasks import upload
+# from infrastructure.web.employee.tasks import upload
 
 
 class RegisterView(TemplateView):
