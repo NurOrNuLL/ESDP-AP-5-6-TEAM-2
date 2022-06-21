@@ -74,14 +74,16 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
-    'https://gservicegroup.top'
+    'https://gservicegroup.top',
+    'https://testesdp.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
-    'https://gservicegroup.top'
+    'https://gservicegroup.top',
+    'https://testesdp.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
