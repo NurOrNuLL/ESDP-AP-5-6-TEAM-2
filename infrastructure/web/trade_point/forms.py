@@ -6,4 +6,4 @@ class TradePointForm(forms.ModelForm):
 
     class Meta:
         model = TradePoint
-        fields = ['name', 'address', 'nomenclature']
+        exclude = ['organization']
