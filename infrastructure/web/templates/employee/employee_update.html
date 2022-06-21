@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Редактировать сотрудника{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Редактировать данные</h1>
+    <hr>
+    <div class="card border-secondary">
+        <div class="card-body">
+            {% include 'partials/employee/employee_form.html' with button_text="Редактировать" tpID=tpID %}
+        </div>
+    </div>
+    <script>
+        var tpID = {{ tpID }};
+    </script>
+{% endblock content %}
