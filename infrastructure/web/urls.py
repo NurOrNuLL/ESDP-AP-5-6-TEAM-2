@@ -1,4 +1,7 @@
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import path
+from django.views.generic import RedirectView
+
 from .order.views import (
     HomePageView, OrderCreateFromContractor,
     OrderDetail, OrderCreateViewStage1,
@@ -25,7 +28,8 @@ from .contractor.views import (ContractorCreate, ContractorList, ContractorDetai
                                ContractorUpdateConcurrecnyView)
 
 from .employee.views import (EmployeeCreate,
-                             EmployeeFilterApiView, EmployeeList, EmployeeDetail)
+                             EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate,
+                             EmployeeConcurrencyUpdate)
 from infrastructure.accounts.views import RegisterView
 
 nomenclature_urls = [
@@ -93,6 +97,8 @@ employee_urls = [
     path('employee/list/filter/', EmployeeFilterApiView.as_view()),
     path('employee/list/', EmployeeList.as_view(), name="employees"),
     path('employee/<slug:empUID>/', EmployeeDetail.as_view(), name="employee_detail"),
+    path('employee/<slug:empUID>/update/', EmployeeUpdate.as_view(), name='employee_update'),
+    path('employee/<slug:empUID>/concurrency_update/', EmployeeConcurrencyUpdate.as_view(), name='employee_concurrency_update'),
     path('register/', RegisterView.as_view(), name='register')
 ]
 
@@ -111,6 +117,7 @@ order_urls = [
 
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
+    path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
 ]
 
 urlpatterns += nomenclature_urls

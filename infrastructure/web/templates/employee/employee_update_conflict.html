@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали сотрудника{% endblock %}
+
+{% block content %}
+    <div class="d-flex mb-4">
+        <h4>Данные сотрудника были изменены другим пользователем! Вы хотите повторно изменить данные?</h4>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Текущие данные</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Предлагаемые изменения</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Имя:</span>
+                    <span>{{ employee.name }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Имя:</span>
+                    <span style="padding-left: 5px">{{ form.name }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Фамилия:</span>
+                    <span>{{ employee.surname }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Фамилия:</span>
+                    <span style="padding-left: 5px">{{ form.surname }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН:</span>
+                    <span>{{ employee.IIN }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН:</span>
+                    <span style="padding-left: 5px">{{ form.IIN }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Телефон:</span>
+                    <span>{{ employee.phone }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Телефон: </span>
+                    <span style="padding-left: 5px">{{ form.phone }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес:</span>
+                    <span>{{ employee.address }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес: </span>
+                    <span style="padding-left: 5px">{{ form.address }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Дата рождения:</span>
+                    <span style="padding-left: 5px">{{ employee.birthdate }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Дата рождения:</span>
+                    <span style="padding-left: 5px">{{ form.birthdate }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Филиал:</span>
+                    <span style="padding-left: 5px">{{ employee.tradepoint.name }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Филиал:</span>
+                    <span style="padding-left: 5px">{{ form.tradepoint.name }}</span>
+                </div>
+            </div>
+        </div>
+         <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Фото документа:</span>
+                    <span style="padding-left: 5px">{{ employee.image }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Фото документа:</span>
+                    <span style="padding-left: 5px">{{ form.image }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 10px">
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-outline-secondary me-2" href="{% url 'employees' orgID tpID %}">К списку</a>
+            </div>
+            <div class="col-md-6">
+                <form action="{% url 'employee_concurrency_update' orgID tpID employee.uuid %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="name" value="{{ form.name }}">
+                    <input type="hidden" name="surname" value="{{ form.surname }}">
+                    <input type="hidden" name="address" value="{{ form.address }}">
+                    <input type="hidden" name="IIN" value="{{ form.IIN }}">
+                    <input type="date" style="display: none" name="birthdate" value="{{ form.birthdate|date:'Y-m-d' }}">
+                    <input type="hidden" name="phone" value="{{ form.phone }}">
+                    <input type="hidden" name="tradepoint" value="{{ form.tradepoint }}">
+                    <input type="hidden" name="image" accept="image/*" value="{{ form.image }}">
+                    <input type="hidden" name="role" value="{{ form.role }}">
+
+                    <a href="{% url 'employee_detail' orgID tpID employee.uuid %}" class="btn btn-secondary" style="width: 15%">Нет</a>
+                    <button type="submit" class="btn btn-primary" style="width: 15%">Применить изменения</button>
+                </form><br>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,5 +1,6 @@
 <form method="POST" id="emp" enctype="multipart/form-data">
     {% csrf_token %}
+    <input type="hidden" name="version" value="{{ form.version.value }}">
     <div class="row">
         <div class="col">
             <label for="name" class="form-label">Имя <span class="text-danger">*</span></label>
@@ -28,19 +29,17 @@
     <div class="row">
         <div class="col">
             <label for="employee_image" class="form-label">Фотография удостоверения <span class="text-danger">*</span></label><br>
-            <div class="input-group">
-                <input type="button" id="loadFileImage" class="btn btn-secondary" value="Выберите фото"
-                   onclick="document.getElementById('employee_image').click();"/>
-                <label for="loadFileImage" class="input-group-text bg-transparent border-secondary" style="width: 71%;" id="file-name">фото не выбран <span class="text-danger">*</span></label>
-            </div>
-            <input type="file" style="display: none" class="form-control border-secondary" id="employee_image" name="image"
-                   value="{{ form.image.value|default:'' }}" accept="image/*" required><br>
+            <input type="file" class="form-control border-secondary" id="employee_image" name="image"
+                   value="{{ form.image.value }}" accept="image/*" {% if button_text == 'Создать' %}required{% endif %}><br>
+                    {% if form.image.value %}
+                        <img style="width: 30%" src="{{ form.image.value.url }}">
+                    {%  endif %}
             <div class="form-text c-red">{{ form.errors.image }}</div>
         </div>
         <div class="col">
             <label for="employee_birthdate" class="form-label">Дата рождения <span class="text-danger">*</span></label>
             <input type="date" class="form-control border-secondary" id="employee_birthdate" name="birthdate"
-                   value="{{ form.birthdate.value|default:'' }}" required>
+                   value="{{ form.birthdate.value|date:'Y-m-d'|default:'' }}" required>
             <div class="form-text" style="color: red;">
                 {% for err in form.errors.birthdate %}{{ err }}{% endfor %}</div>
         </div>
