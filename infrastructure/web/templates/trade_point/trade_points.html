@@ -17,6 +17,7 @@
           <th scope="row">{{ trade_point.id }}</th>
           <td>{{ trade_point.name }}</td>
           <td>{{ trade_point.address|default:'-' }}</td>
+          <td><a class="btn btn-secondary" href="{% url 'trade_point_update' orgID tpID trade_point.pk %}">Редактировать</a></td>
         </tr>
       {% endfor %}
       </tbody>
