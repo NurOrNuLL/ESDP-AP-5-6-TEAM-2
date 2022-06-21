@@ -7,7 +7,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 --enable-lifecycle-hooks gservicegroup --label=com.centurylinklabs.watchtower.lifecycle.post-update="./restore-data.sh" celery
+    command: --interval 300 gservicegroup celery
 
   web:
     image: esdp2/gservicegroup:latest
@@ -62,12 +62,22 @@ services:
     restart: always
     volumes:
       - static_volume:/app/static
-      - certbot:/etc/certbot
+      - ./data/nginx/conf_ssl.d:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
     ports:
       - "80:80"
       - "443:443"
     depends_on:
       - web
+
+  # certbot:
+  #   image: certbot/certbot
+  #   restart: unless-stopped
+  #   volumes:
+  #     - ./data/certbot/conf:/etc/letsencrypt
+  #     - ./data/certbot/www:/var/www/certbot
+  #   entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 5d & wait $${!}; done;'"
 
 volumes:
   postgres_data:
