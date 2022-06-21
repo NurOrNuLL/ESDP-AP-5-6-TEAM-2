@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Детали контрагента{% endblock %}
+
+{% block content %}
+{#    <a class="btn btn-outline-secondary" href="{% url 'contractors' organization.pk tpID %}">К списку</a><br><br>#}
+    <div class="d-flex mb-4">
+        <h4>Данные контрагента были изменены другим пользователем! <br> Вы хотите повторно изменить данные?</h4>
+
+{#        <a class="ms-2 edit-link" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}"><img width=35 src="{% static 'pics/edit.png' %}"></a><br>#}
+    </div>
+    <div class="card mb-3">
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Текущие данные</h4>
+                </div>
+                <div class="col-md-6">
+                    <h4 class="text" style="font-weight: bold">Предлагаемые изменения</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование:</span>
+                    <span>{{ contractor.name }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Наименование:</span>
+                    <span style="padding-left: 5px">{{ form.name.value }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
+                    <span>{{ contractor.IIN_or_BIN }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
+                    <span style="padding-left: 5px">{{ form.IIN_or_BIN.value }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Телефон:</span>
+                    <span>{{ contractor.phone }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Телефон: </span>
+                    <span style="padding-left: 5px">{{ form.phone.value }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес:</span>
+                    <span>{{ contractor.address }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Адрес: </span>
+                    <span style="padding-left: 5px">{{ form.address.value }}</span>
+                </div>
+            </div>
+        </div>
+        {% if contractor.IIC or contractor.bank_name or contractor.BIC or form.IIC.value or form.bank_name.value or form.BIC.value%}
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Банковские детали:</span><br>
+                        <span class="text"><b>ИИК:</b></span>
+                        <span style="padding-left: 8px" class="card-text">{% if contractor.IIC %}{{ contractor.IIC }}{% endif %}</span><br>
+                        <span class="text"><b>Банк:</b></span>
+                        <span style="padding-left: 5px" class="card-text">{% if contractor.bank_name %}{{ contractor.bank_name }}{% endif %}</span><br>
+                        <span class="text"><b>БИК:</b></span>
+                        <span style="padding-left: 9px" class="card-text">{{ contractor.BIC }}</span>
+
+</div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Банковские детали:</span><br>
+                        <span class="text"><b>ИИК:</b></span>
+                        <span style="padding-left: 8px" class="card-text">{% if form.IIC.value %}{{ form.IIC.value }}{% endif %}</span><br>
+                        <span class="text"><b>Банк:</b></span>
+                        <span style="padding-left: 5px" class="card-text">{% if form.bank_name.value %}{{ form.bank_name.value }}{% endif %}</span><br>
+                        <span class="text"><b>БИК:</b></span>
+                        <span style="padding-left: 9px" class="card-text">{{ form.BIC.value }}</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Доверенное лицо:</span>
+                    <span style="padding-left: 5px">{{ contractor.trust_person.name }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Доверенное лицо:</span>
+                    <span style="padding-left: 5px">{{ trust_person.name }}</span>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Комментарий:</span>
+                    <span style="padding-left: 5px">{{ contractor.trust_person.comment }}</span>
+                </div>
+                <div class="col-md-6">
+                    <span class="text" style="font-weight: bold">Комментарий:</span>
+                    <span style="padding-left: 5px">{{ trust_person.comment }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -21,3 +21,7 @@ class TradePointServices:
     @staticmethod
     def get_trade_point_by_id(kwargs: dict) -> TradePoint:
         return TradePoint.objects.get(id=kwargs['tpID'])
+
+    @staticmethod
+    def get_trade_point_from_form(kwargs: dict) -> TradePoint:
+        return TradePoint.objects.get(id=kwargs['tradepoint'].id)
