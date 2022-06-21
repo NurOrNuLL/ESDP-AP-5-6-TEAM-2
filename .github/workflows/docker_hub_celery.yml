@@ -8,7 +8,7 @@ on:
 
 jobs:
   docker:
-    if: ${{ github.event.label.name == 'celery' }}
+    if: contains(github.event.pull_request.labels.*.name, 'celery')
     runs-on: ubuntu-latest
     steps:
       -
