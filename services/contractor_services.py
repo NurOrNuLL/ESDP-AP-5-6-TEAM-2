@@ -19,7 +19,7 @@ class ContractorService:
         )
 
     @staticmethod
-    def update_contractor(contractor: Contractor, data: dict) -> None:
+    def update_contractor(contractor: Contractor, data: dict) -> Contractor:
         contractor.name = data['name']
         contractor.address = data['address']
         contractor.IIN_or_BIN = data['IIN_or_BIN']
