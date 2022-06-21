@@ -16,10 +16,31 @@ function render(search, date, status, payment_status, page, limit) {
                     var hh = String(today.getHours())
                     var min = String(today.getMinutes())
                     today = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
-                    body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>'
-                        + item.status + '</td><td>' + item.payment.payment_status + '</td>' +
+
+                    if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
+                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-primary">'
+                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-danger">' + item.payment.payment_status + '</span>' + '</td>' +
                         '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
                         '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
+                    }
+                    else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
+                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-primary">'
+                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-success">' + item.payment.payment_status + '</span>' + '</td>' +
+                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
+                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
+                    }
+                    else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
+                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-success">'
+                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-danger">' + item.payment.payment_status + '</span>' + '</td>' +
+                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
+                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
+                    }
+                    else {
+                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-success">'
+                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-success">' + item.payment.payment_status + '</span>' + '</td>' +
+                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
+                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
+                    }
                 })
 
                 if (data.previous === null && data.next === null) {
