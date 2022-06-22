@@ -19,13 +19,16 @@
                 <div class="row">
                     <div class="col">
                         <label for="password" class="form-label">Пароль <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control border-secondary" id="password" name="password" required>
+                        <input type="password" class="form-control border-secondary" id="password" name="password"
+                               required>
                         <div class="form-text" style="color: red;">
                             {% for err in register_form.errors.password %}{{ err }}{% endfor %}</div>
                     </div>
                     <div class="col">
-                        <label for="password_confirm" class="form-label">Повторите пароль <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control border-secondary" id="password_confirm" name="password_confirm" required>
+                        <label for="password_confirm" class="form-label">Повторите пароль <span
+                                class="text-danger">*</span></label>
+                        <input type="password" class="form-control border-secondary" id="password_confirm"
+                               name="password_confirm" required>
                         <div class="form-text" style="color: red;">
                             {% for err in register_form.errors.password_confirm %}{{ err }}{% endfor %}</div>
                     </div>
@@ -64,19 +67,24 @@
                             {% for err in employee_form.errors.role %}{{ err }}{% endfor %}</div>
                     </div>
                     <div class="col">
-                        <label for="employee_image" class="form-label">Фотография удостоверения <span class="text-danger">*</span></label><br>
+                        <label for="employee_image" class="form-label">Фотография удостоверения <span
+                                class="text-danger">*</span></label><br>
                         <div class="input-group">
                             <input type="button" id="loadFileImage" class="btn btn-secondary" value="Выберите фото"
-                            onclick="document.getElementById('employee_image').click();"/>
-                            <label for="loadFileImage" class="input-group-text bg-transparent border-secondary" style="width: 61%;" id="file-name">фото не выбрано</label>
+                                   onclick="document.getElementById('employee_image').click();"/>
+                            <label for="loadFileImage" class="input-group-text bg-transparent border-secondary"
+                                   style="width: 61%;" id="file-name">фото не выбрано</label>
                         </div>
-                        <input type="file" style="display: none" class="form-control border-secondary" id="employee_image" name="image"
-                            value="{{ form.image.value|default:'' }}" accept="image/*" required>
+                        <input type="file" style="display: none" class="form-control border-secondary"
+                               id="employee_image" name="image"
+                               value="{{ form.image.value|default:'' }}" accept="image/*" required>
                         <div class="form-text c-red">{{ form.errors.image }}</div>
                     </div>
                     <div class="col">
-                        <label for="employee_birthdate" class="form-label">Дата рождения <span class="text-danger">*</span></label>
-                        <input type="date" class="form-control border-secondary" id="employee_birthdate" name="birthdate"
+                        <label for="employee_birthdate" class="form-label">Дата рождения <span
+                                class="text-danger">*</span></label>
+                        <input type="date" class="form-control border-secondary" id="employee_birthdate"
+                               name="birthdate"
                                value="{{ employee_form.birthdate.value|default:'' }}" required>
                         <div class="form-text" style="color: red;">
                             {% for err in employee_form.errors.birthdate %}{{ err }}{% endfor %}</div>
@@ -114,7 +122,8 @@
                             {% for err in employee_form.errors.IIN %}{{ err }}{% endfor %}</div>
                     </div>
                     <div class="col">
-                        <label for="employee_phone" class="form-label">Телефон <span class="text-danger">*</span></label>
+                        <label for="employee_phone" class="form-label">Телефон <span
+                                class="text-danger">*</span></label>
                         <input type="number" class="form-control border-secondary" id="employee_phone" name="phone"
                                value="{{ employee_form.phone.value|default:'' }}" required>
                         <div class="form-text" style="color: red;">
@@ -133,32 +142,10 @@
             integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
     <script>
-        $(function () {
-            $("#emp_reg").on("submit", (e) => {
-                e.preventDefault()
-                let formData = new FormData($("#emp_reg")[0])
-                //formData.append('csrfmiddleware', "{% csrf_token %}")
-                $.ajax({
-                    type: "POST",
-                    url: "",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    cache: false,
-                    async: true,
-                    success: function (res) {
-                        var taskId = res.task_id
-                        console.log(taskId)
-                        if (taskId) {
-                            alert('Загрузка выполнено на 100%')
-                            window.location.replace('{% url 'home_redirect' %}')
-                        }
-                    },
-                    error: function (err) {
-                        console.log(err);
-                    },
-                })
-            })
+        let employeeImage = document.getElementById('employee_image');
+        employeeImage.addEventListener('change', function () {
+            let emplImage = employeeImage.files[0].name;
+            localStorage.setItem('empImage', emplImage);
         })
     </script>
 {% endblock content %}
