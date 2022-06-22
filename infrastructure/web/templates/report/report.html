@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+	<h1>Сформировать отчет</h1>
+	<hr>
+    <form method="post">
+        {% csrf_token %}
+        <div class="d-flex mb-3" style="width: 555px">
+            <div class="input-group p-0 me-2 border-secondary">
+                <span class="input-group-text border-secondary">От</span>
+                <input type="date" class="form-control border-secondary" name="from_date" value="{{ form.from_date.value }}">
+            </div>
+            <div class="input-group p-0 mx-2">
+                <span class="input-group-text border-secondary">До</span>
+                <input type="date" class="form-control border-secondary" name="to_date" value="{{ form.to_date.value }}">
+            </div>
+            <button type="submit" class="btn btn-primary ms-2">Сформировать</button>
+        </div>
+    </form>
+	<div class="card border-secondary" style="min-height: 600px;">
+		<div class="card-header bg-transparent">
+			<h3 class="my-3">Отчет</h3>
+		</div>
+		<div class="card-body d-flex justify-content-center align-items-center">
+			<h4 class="text-center">Отчет еще не сформирован!</h4>
+		</div>
+	</div>
+
+{% endblock content %}
+
+
+{% block js_block %}
+
+	<script src="{% static 'js/report_modal.js' %}"></script>
+
+{% endblock js_block %}

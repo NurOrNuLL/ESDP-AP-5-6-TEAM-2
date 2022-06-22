@@ -32,6 +32,8 @@ from .employee.views import (EmployeeCreate,
                              EmployeeConcurrencyUpdate)
 from infrastructure.accounts.views import RegisterView
 
+from infrastructure.web.report.views import ReportPreviewView
+
 nomenclature_urls = [
     path(
         'nomenclature/export/',
@@ -115,6 +117,10 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
+report_urls = [
+	path('report/preview/', ReportPreviewView.as_view(), name="report_preview")
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
@@ -126,3 +132,4 @@ urlpatterns += contractor_urls
 urlpatterns += own_urls
 urlpatterns += employee_urls
 urlpatterns += order_urls
+urlpatterns += report_urls

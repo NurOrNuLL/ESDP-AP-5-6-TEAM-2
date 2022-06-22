@@ -26,6 +26,7 @@ sidebarLinks.forEach((element) => {
     sidebarDivs.forEach((element) => {
       if (elementParent == element) {
         sidebarBtns[sidebarDivs.indexOf(element)].classList.remove('collapsed')
+        sidebarBtns[sidebarDivs.indexOf(element)].ariaExpanded = 'true'
         element.classList.add('show')
       }
     })
