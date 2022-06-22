@@ -70,6 +70,7 @@ services:
       - "443:443"
     depends_on:
       - web
+      - celery
 
   certbot:
     image: certbot/certbot
