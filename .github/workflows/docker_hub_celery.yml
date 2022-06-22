@@ -2,7 +2,9 @@ name: ci
 
 on:
   pull_request:
-    types: [closed, labeled]
+    types:
+      - closed
+      - labeled
     branches:
       - 'master'
 
