@@ -19,13 +19,12 @@ class ExportExcelTask(BaseTask):
             nomenclatures = NomenclatureService.get_all_nomenclatures()
             cache.set('nomenclatures', nomenclatures, 60 * 1440)
         if nomenclatures:
-            for i, nomenclature in enumerate(list(nomenclatures)):
+            for nomenclature in list(nomenclatures):
                 if int(nomenclature_pk) == nomenclature.id:
                     progress_recorder = ProgressRecorder(self)
                     if nomenclature.services:
                         total_record = len(nomenclature.services)
                         for k, services in enumerate(nomenclature.services):
-                            sleep(0.08)
                             progress_recorder.set_progress(k + 1, total=total_record,
                                                            description="Inserting record into row")  # noqa E501
                         json = {'main_data': nomenclature.services, 'extension': extension,
