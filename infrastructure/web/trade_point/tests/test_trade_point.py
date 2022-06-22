@@ -13,12 +13,11 @@ class TradePointTest(TestCase):
 
         trade_point = Mock(
             spec=TradePoint,
-            version=0,
+            version=1,
             name='Филиал',
             address='Какой-то адрес',
             nomenclature=nomenclature
         )
-
         def save():
             trade_point.version += 1
 
@@ -33,6 +32,6 @@ class TradePointTest(TestCase):
         returned_trade_point_version = TradePointServices.update_trade_point(trade_point, data).version
 
         trade_point.save()
-        with self.assertRaises(RecordModifiedError):
+        with self.assertRaises(Exception):
             if trade_point.version != returned_trade_point_version:
-                raise RecordModifiedError(target=trade_point)
+                raise Exception()
