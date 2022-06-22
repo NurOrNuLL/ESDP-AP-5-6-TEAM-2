@@ -1,27 +1,23 @@
 import os
-from datetime import date
 from typing import List
-from django.core.files import File
-from core.settings import MEDIA_URL
+
+import boto3 as boto3
 from models.employee.models import Employee
 from django.core.exceptions import ObjectDoesNotExist
 
 from models.trade_point.models import TradePoint
 from django.http import HttpRequest
-from PIL import Image
-
 from services.trade_point_services import TradePointServices
 
 
 class EmployeeServices:
     @staticmethod
-    def create_employee(data: dict) -> Employee:
+    def create_employee_without_image(data: dict) -> Employee:
         return Employee.objects.create(
             name=data['name'],
             surname=data['surname'],
             role=data['role'],
             IIN=data['IIN'],
-            image=data['image'],
             address=data['address'],
             phone=data['phone'],
             birthdate=data['birthdate'],
@@ -36,7 +32,6 @@ class EmployeeServices:
             surname=data['surname'],
             role=data['role'],
             IIN=data['IIN'],
-            image=data['image'],
             address=data['address'],
             phone=data['phone'],
             birthdate=data['birthdate'],
@@ -78,6 +73,16 @@ class EmployeeServices:
     def get_employee_by_tradepoint(tradepoint: TradePoint) -> List[Employee]:
         return Employee.objects.filter(tradepoint=tradepoint)
 
+    @staticmethod
+    def upload_image(image):
+        s3_client = boto3.resource(
+            's3',
+            endpoint_url='https://s3.us-east-2.amazonaws.com/',
+            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+            region_name='us-east-2',
+        )
+        s3_client.Bucket('test.aspa').put_object(Key=image, Body=image)
 
     @staticmethod
     def update_employee(emp_uid: str, data: dict) -> Employee:
