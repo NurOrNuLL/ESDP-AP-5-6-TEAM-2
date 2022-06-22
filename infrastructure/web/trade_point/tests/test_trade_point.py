@@ -15,20 +15,23 @@ class TradePointTest(TestCase):
                            address='Какой-то адрес', nomenclature=nomenclature
                            )
 
-        def save():
-            trade_point.version += 1
+        with patch('models.trade_point.models.TradePoint.save') as save_trade_point:
+            save_trade_point.return_value = None
 
-        trade_point.save = save
+            def save():
+                trade_point.version += 1
 
-        data = {
-            'name': 'Филиал 1',
-            'address': 'Новый адрес',
-            'nomenclature': trade_point.nomenclature
-        }
+            trade_point.save = save
 
-        returned_trade_point_version = TradePointServices.update_trade_point(trade_point, data).version
+            data = {
+                'name': 'Филиал 1',
+                'address': 'Новый адрес',
+                'nomenclature': trade_point.nomenclature
+            }
 
-        trade_point.save()
-        with self.assertRaises(Exception):
-            if trade_point.version != returned_trade_point_version:
-                raise Exception()
+            returned_trade_point_version = TradePointServices.update_trade_point(trade_point, data).version
+
+            trade_point.save()
+            with self.assertRaises(RecordModifiedError):
+                if trade_point.version != returned_trade_point_version:
+                    raise RecordModifiedError(target=trade_point)
