@@ -2,13 +2,13 @@ name: ci
 
 on:
   pull_request:
-    types: [labeled]
+    types: [closed, labeled]
     branches:
       - 'master'
 
 jobs:
   docker:
-    if: ${{ github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.event.label.name == 'pull request celery' }}
+    if: ${{github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.action == 'labeled' && github.event.pull_request.merged == true && github.event.label.name == 'pull request celery'}}
     runs-on: ubuntu-latest
     steps:
       -
