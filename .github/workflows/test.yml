@@ -1,4 +1,4 @@
-name: Run Python Tests
+name: Run Python3.8 Tests
 
 on:
   pull_request:
