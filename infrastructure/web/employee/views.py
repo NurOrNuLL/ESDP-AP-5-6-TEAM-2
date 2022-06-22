@@ -16,9 +16,11 @@ from services.organization_services import OrganizationService
 from services.trade_point_services import TradePointServices
 from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
-from .serializers import EmployeeSerializer
-# from .tasks import upload
+from .serializers import EmployeeSerializer, EmployeeImageSerializer
+from .tasks import upload
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 
 
 class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
@@ -48,15 +50,35 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
     ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
-            employee = EmployeeServices.create_employee(form.cleaned_data)
-            return redirect('employee_detail', empUID=employee.uuid, orgID=self.kwargs['orgID'],
-                            tpID=self.kwargs['tpID'])
+            employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
+            return redirect(
+                'employee_detail',
+                orgID=self.kwargs['orgID'],
+                tpID=self.kwargs['tpID'],
+                empUID=employee.uuid
+            )
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data
             context['tradepoints'] = EmployeeServices.get_tradepoint()
             return render(request, self.template_name, context)
+
+
+class EmployeeImageUpdateView(GenericAPIView):
+    serializer_class = EmployeeImageSerializer
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
+
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid()
+
+        task = upload.delay(serializer.data['image'], employee.uuid)
+
+        return Response(
+            {"task_id": task.id},
+            content_type='application/json')
 
 
 class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):
@@ -86,10 +108,12 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'employee/employee_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
+        employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['employee'] = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
+        context['employee'] = employee
+        context['empUID'] = employee.uuid
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:

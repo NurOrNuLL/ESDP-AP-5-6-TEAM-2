@@ -56,5 +56,34 @@
     </div>
     <script>
         var tpID = {{ tpID }}
+        var empUID = {{ empUID }}
+    </script>
+    <script>
+        let empImage = localStorage.getItem('empImage');
+        localStorage.removeItem('empImage')
+
+        window.addEventListener('load', e => {
+            if (empImage !=  undefined) {
+                $.ajax({
+                    method: 'post',
+                    url: "{% url 'employee_update_image' orgID=1 tpID=tpID empUID=empUID %}",
+                    headers: {'X-CSRFToken': $.cookie('csrftoken')},
+                    data: JSON.stringify({
+                        'image': empImage
+                    }),
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    success: function (data) {
+                        var taskId = data.task_id
+                        if (taskId){
+                            alert('Сотрудник создан')
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                })
+            }
+        })
     </script>
 {% endblock %}

@@ -34,7 +34,7 @@ class Employee(models.Model):
         null=False, blank=False, max_length=12, unique=True,
         verbose_name='ИИН', validators=[RegexValidator(r'^\d{12,12}$')]
     )
-    image = models.ImageField()
+    image = models.ImageField(null=True, blank=True)
     address = models.CharField(
         max_length=50,
         null=False,
