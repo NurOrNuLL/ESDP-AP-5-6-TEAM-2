@@ -2,13 +2,24 @@ name: ci
 
 on:
   pull_request:
-    types: [closed]
     branches:
       - 'master'
+    types: [labeled, closed]
 
 jobs:
+  labels:
+    name: Label taking off
+    if: github.event.label.name == 'pull request celery'
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Take off label
+        uses: actions/github-script@v1
+        with:
+          script: "github.issues.removeLabel({...context.issue, name: '${{ github.event.label.name }}' })"
+
   docker:
-    if: ${{github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true}}
+    if: github.event.label.name == 'pull request celery' && github.event.action == 'closed'
     runs-on: ubuntu-latest
     steps:
       -
