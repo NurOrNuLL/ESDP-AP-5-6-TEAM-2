@@ -8,6 +8,6 @@ class EmployeeForm(forms.ModelForm):
         fields = [
             'name',
             'surname', 'role',
-            'IIN', 'image', 'address', 'phone',
+            'IIN', 'address', 'phone',
             'birthdate', 'tradepoint', 'version'
         ]
