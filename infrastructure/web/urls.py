@@ -29,7 +29,7 @@ from .contractor.views import (ContractorCreate, ContractorList, ContractorDetai
 
 from .employee.views import (EmployeeCreate,
                              EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate,
-                             EmployeeConcurrencyUpdate)
+                             EmployeeConcurrencyUpdate, EmployeeImageUpdateView)
 from infrastructure.accounts.views import RegisterView
 
 nomenclature_urls = [
@@ -94,6 +94,7 @@ own_urls = [
 employee_urls = [
 
     path('employee/create/', EmployeeCreate.as_view(), name="employee_create"),
+    path('employee/<slug:empUID>/update/image', EmployeeImageUpdateView.as_view(), name="employee_update_image"),
     path('employee/list/filter/', EmployeeFilterApiView.as_view()),
     path('employee/list/', EmployeeList.as_view(), name="employees"),
     path('employee/<slug:empUID>/', EmployeeDetail.as_view(), name="employee_detail"),
