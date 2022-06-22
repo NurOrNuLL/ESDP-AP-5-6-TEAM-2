@@ -182,3 +182,4 @@ class EmployeeConcurrencyUpdate(View):
             employee.save()
             return redirect('employee_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
                             empUID=self.kwargs['empUID'])
+
