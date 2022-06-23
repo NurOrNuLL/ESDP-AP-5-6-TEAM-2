@@ -59,18 +59,15 @@
         var empUID = {{ empUID }}
     </script>
     <script>
-        let empImage = localStorage.getItem('empImage');
-        localStorage.removeItem('empImage')
+        let imageState = localStorage.getItem('image');
+        localStorage.removeItem('image');
 
         window.addEventListener('load', e => {
-            if (empImage !=  undefined) {
+            if (imageState === 'waiting to upload!') {
                 $.ajax({
-                    method: 'post',
+                    method: 'get',
                     url: "{% url 'employee_update_image' orgID=1 tpID=tpID empUID=empUID %}",
                     headers: {'X-CSRFToken': $.cookie('csrftoken')},
-                    data: JSON.stringify({
-                        'image': empImage
-                    }),
                     dataType: 'json',
                     contentType: 'application/json',
                     success: function (data) {
