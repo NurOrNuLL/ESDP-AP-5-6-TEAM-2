@@ -70,20 +70,18 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testesdp.ddns.net',
+    'https://testdomen.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testesdp.ddns.net',
+    'https://testdomen.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -93,7 +91,10 @@ AUTH_USER_MODEL = 'accounts.CustomUser'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'infrastructure/web/templates/'],
+        'DIRS': [
+            BASE_DIR / 'infrastructure/web/templates/',
+            os.path.join(BASE_DIR, 'templates')
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -161,11 +162,6 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        # 'django': {
-        #     'handlers': ['file'],
-        #     'level': 'DEBUG',
-        #     'propagate': True,
-        # },
     }
 }
 
@@ -205,24 +201,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "infrastructure/web/static"]
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = 'test.aspa'
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_DEFAULT_ACL = 'public-read'
-AWS_LOCATION = 'static'
-MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_HOST = '0.0.0.0'
+REDIS_HOST = 'redis'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
@@ -240,7 +225,7 @@ CELERY_IGNORE_RESULT = True
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379'),
+        'LOCATION': 'redis://redis:6379/',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
