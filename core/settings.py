@@ -225,7 +225,7 @@ CELERY_IGNORE_RESULT = True
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379'),
+        'LOCATION': 'redis://redis:6379/',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
