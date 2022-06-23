@@ -6,7 +6,7 @@ let page = document.getElementById('page');
 let search = document.getElementById('contractorSearch');
 
 $.ajax({
-    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/list/filter/?search=&ordering=name`,
+    url: `${locationHost}/org/1/tp/${tpID}/contractor/list/filter/?search=&ordering=name`,
     method: 'GET',
     success: (data) => {
         if (data.next && data.previous === null) {
@@ -40,7 +40,7 @@ $.ajax({
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
   $.ajax({
-    url: `http://127.0.0.1:8000/org/1/contractor/list/filter/?page=${page.value}&search=${search.value}&ordering=name`,
+    url: `${locationHost}/org/1/contractor/list/filter/?page=${page.value}&search=${search.value}&ordering=name`,
     method: 'GET',
     success: (data) => {
         body.innerText = ""
@@ -77,7 +77,7 @@ back.addEventListener('click', (e) => {
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
   $.ajax({
-    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/list/filter/?page=${page.value}&search=${search.value}&ordering=name`,
+    url: `${locationHost}/org/1/tp/${tpID}/contractor/list/filter/?page=${page.value}&search=${search.value}&ordering=name`,
     method: 'GET',
     success: (data) => {
         body.innerText = ""
@@ -112,7 +112,7 @@ next.addEventListener('click', (e) => {
 
 search.addEventListener('input', (e) => {
       $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/list/filter/?search=${search.value}&ordering=name`,
+        url: `${locationHost}/org/1/tp/${tpID}/contractor/list/filter/?search=${search.value}&ordering=name`,
         method: 'GET',
         success: (data) => {
             body.innerHTML = '';

@@ -11,7 +11,7 @@ if (own.value != '' && contractor.value != '') {
         contractorDetailLink.remove();
     }
 
-    contractorLinks.innerHTML += `<a href="http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
+    contractorLinks.innerHTML += `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
 
 
     if (contractor.selectedOptions[0].dataset['address'] === '') {
@@ -114,7 +114,7 @@ contractor.addEventListener('change', (e) => {
         contractorDetailLink.remove();
     }
 
-    contractorLinks.innerHTML += `<a href="http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
+    contractorLinks.innerHTML += `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
 
     if (contractor.selectedOptions[0].dataset['address'] === '') {
         contractorInfo.innerHTML = `<div class="d-flex">
@@ -152,7 +152,7 @@ contractor.addEventListener('change', (e) => {
     own.innerHTML = ''
 
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contractor.value}/own/?contrID=${contractor.value}`,
+        url: `${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}/own/?contrID=${contractor.value}`,
         method: 'get',
         success: (data) => {
             if (own.attributes.getNamedItem('disabled')) {
