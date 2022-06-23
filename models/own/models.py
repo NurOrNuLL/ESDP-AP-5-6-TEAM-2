@@ -1,4 +1,7 @@
 from django.db import models
+from tomlkit import value
+
+from models.own.validators import OwnValidator
 
 
 class Own(models.Model):
@@ -12,7 +15,7 @@ class Own(models.Model):
         on_delete=models.PROTECT, null=False, blank=False
     )
     number = models.CharField(
-        max_length=50, null=True, blank=True, unique=True,
+        max_length=50, null=True, blank=True, unique=True, validators=[OwnValidator.int_latin_letter_validator],
         verbose_name='Номер'
     )
     comment = models.CharField(
