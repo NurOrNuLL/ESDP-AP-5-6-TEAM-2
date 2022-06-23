@@ -74,15 +74,9 @@ class EmployeeServices:
         return Employee.objects.filter(tradepoint=tradepoint)
 
     @staticmethod
-    def upload_image(image):
-        s3_client = boto3.resource(
-            's3',
-            endpoint_url='https://s3.us-east-2.amazonaws.com/',
-            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
-            region_name='us-east-2',
-        )
-        s3_client.Bucket('test.aspa').put_object(Key=image, Body=image)
+    def upload_image(image, empUID):
+        s3 = boto3.client('s3')
+        s3.upload_fileobj(image, os.environ.get('AWS_BUCKET_NAME'), f'employee_image_{empUID}.png')
 
     @staticmethod
     def update_employee(emp_uid: str, data: dict) -> Employee:
