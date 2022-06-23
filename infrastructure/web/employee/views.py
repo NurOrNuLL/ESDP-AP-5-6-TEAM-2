@@ -1,3 +1,4 @@
+import base64
 from datetime import datetime, date
 
 from concurrency.api import disable_concurrency
@@ -49,6 +50,13 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
+
+        image = request.FILES.get('image').read()
+
+        encoded_image = base64.b64encode(image)
+
+        request.session['image'] = encoded_image.decode('utf-8')
+
         if form.is_valid():
             employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
             return redirect(
@@ -68,13 +76,13 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
 class EmployeeImageUpdateView(GenericAPIView):
     serializer_class = EmployeeImageSerializer
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
 
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid()
+        image = request.session.get('image')
+        del request.session['image']
 
-        task = upload.delay(serializer.data['image'], employee.uuid)
+        task = upload.delay(image, employee.uuid)
 
         return Response(
             {"task_id": task.id},
@@ -110,6 +118,8 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
     def get_context_data(self, **kwargs: dict) -> dict:
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
+        if employee.image:
+            context['emp_image'] = ast.literal_eval(employee.image)[0]
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['employee'] = employee
