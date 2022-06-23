@@ -21,6 +21,6 @@ jobs:
         pip install -r requirements.txt
     - name: Run Tests
       env:
-        SECRET_KEY: django-insecure-bbp5kln3$iqjjmm_j^)66ivw5y7=$hxmr5-nxk1v0eoh&7omyi
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
       run: |
         python manage.py test

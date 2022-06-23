@@ -1,0 +1,9 @@
+#header {
+    background: #696969;
+}
+.content {
+    background: #DCDCDC;
+}
+div.breadcrumbs, .module caption {
+    background: #808080;
+}

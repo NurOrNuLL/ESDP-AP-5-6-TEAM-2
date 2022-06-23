@@ -13,5 +13,4 @@ def upload(encoded_image, empUID):
     employee = EmployeeServices.get_employee_by_uuid(empUID)
     employee.image = f"https://s3.amazonaws.com/{os.environ.get('AWS_BUCKET_NAME')}/employee_image_{empUID}.png",
     employee.save()
-
     return 'success'

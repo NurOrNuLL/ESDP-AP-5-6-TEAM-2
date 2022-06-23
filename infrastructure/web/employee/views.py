@@ -83,7 +83,6 @@ class EmployeeImageUpdateView(GenericAPIView):
         del request.session['image']
 
         task = upload.delay(image, employee.uuid)
-
         return Response(
             {"task_id": task.id},
             content_type='application/json')
