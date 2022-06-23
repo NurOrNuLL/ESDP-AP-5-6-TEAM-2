@@ -22,7 +22,7 @@ ownDeleteForm.addEventListener('submit', (e) => {
 
 
     $.ajax({
-        url: `http://127.0.0.1:8000/org/${ownIdInput.dataset['orgId']}/tp/${tpID}/contractor/${ownIdInput.dataset['contrId']}/own/${ownIdInput.value}/delete/`,
+        url: `${locationHost}/org/${ownIdInput.dataset['orgId']}/tp/${tpID}/contractor/${ownIdInput.dataset['contrId']}/own/${ownIdInput.value}/delete/`,
         method: 'post',
         dataType: 'json',
         contentType: 'application/json',

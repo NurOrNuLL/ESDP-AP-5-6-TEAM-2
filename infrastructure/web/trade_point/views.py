@@ -88,7 +88,8 @@ class TradePointUpdate(ResetOrderCreateFormDataMixin, TemplateView):
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict
              ) -> HttpResponse or HttpResponseRedirect:
-        trade_point = TradePointServices.get_trade_point_by_id(self.kwargs)
+        trade_point = TradePointServices.get_trade_point_by_clean_id(self.kwargs['trade_pointID'])
+
         context = self.get_context_data(**self.kwargs)
         form = self.form_class(data=request.POST, instance=trade_point)
 
