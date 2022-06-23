@@ -70,20 +70,18 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testesdp.ddns.net',
+    'https://testdomen.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testesdp.ddns.net',
+    'https://testdomen.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -164,11 +162,6 @@ LOGGING = {
             'level': 'INFO',
             'propagate': True,
         },
-        # 'django': {
-        #     'handlers': ['file'],
-        #     'level': 'DEBUG',
-        #     'propagate': True,
-        # },
     }
 }
 
@@ -214,7 +207,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_HOST = '0.0.0.0'
+REDIS_HOST = 'redis'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
@@ -232,7 +225,7 @@ CELERY_IGNORE_RESULT = True
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379'),
+        'LOCATION': 'redis://redis:6379/',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
