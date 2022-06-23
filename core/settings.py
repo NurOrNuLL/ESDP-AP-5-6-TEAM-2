@@ -70,20 +70,18 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testesdp.ddns.net',
+    'https://testdomen.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:1337',
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testesdp.ddns.net',
+    'https://testdomen.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -227,7 +225,7 @@ CELERY_IGNORE_RESULT = True
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.environ.get('ENT_REDIS_LOCATION', 'redis://127.0.0.1:6379'),
+        'LOCATION': 'redis://redis:6379/',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
