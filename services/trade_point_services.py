@@ -1,4 +1,3 @@
-from models.nomenclature.models import Nomenclature
 from models.trade_point.models import TradePoint
 from models.organization.models import Organization
 from django.shortcuts import get_object_or_404
@@ -10,12 +9,12 @@ from services.nomenclature_services import NomenclatureService
 class TradePointServices:
     @staticmethod
     def create_trade_point(data: dict) -> None:
-        TradePoint.objects.create(
+        trade_point = TradePoint.objects.create(
             name=data['name'],
             address=data['address'],
-            organization=get_object_or_404(Organization, id=1),
-            nomenclature=data['nomenclature']
+            organization=get_object_or_404(Organization, id=1)
         )
+        trade_point.nomenclature.set(data['nomenclature'])
 
     @staticmethod
     def get_trade_points(kwargs: dict) -> List['TradePoint']:

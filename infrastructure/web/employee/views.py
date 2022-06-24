@@ -1,3 +1,5 @@
+import ast
+import base64
 from datetime import datetime, date
 
 from concurrency.api import disable_concurrency
@@ -8,6 +10,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView, UpdateView
+
 from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
 from django.core.files import File
@@ -49,6 +52,13 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
         form = self.form_class(request.POST, request.FILES)
+
+        image = request.FILES.get('image').read()
+
+        encoded_image = base64.b64encode(image)
+
+        request.session['image'] = encoded_image.decode('utf-8')
+
         if form.is_valid():
             employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
             return redirect(
@@ -68,17 +78,18 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
 class EmployeeImageUpdateView(GenericAPIView):
     serializer_class = EmployeeImageSerializer
 
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
 
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid()
+        if request.session.get('image'):
+            image = request.session.get('image')
+            del request.session['image']
 
-        task = upload.delay(serializer.data['image'], employee.uuid)
-
-        return Response(
-            {"task_id": task.id},
-            content_type='application/json')
+            task = upload.delay(image, employee.IIN)
+            return Response(
+                {"task_id": task.id},
+                content_type='application/json')
+        return Response('success')
 
 
 class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):
@@ -110,6 +121,8 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
     def get_context_data(self, **kwargs: dict) -> dict:
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
+        if employee.image:
+            context['emp_image'] = ast.literal_eval(employee.image)[0]
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
         context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
         context['employee'] = employee
@@ -161,21 +174,30 @@ class EmployeeUpdate(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context['form'] = self.get_file_form()
-        context['image_remains'] = self.get_file_form()['image'].value()
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
         context['orgID'] = self.kwargs['orgID']
-        self.request.session['image_remains'] = self.get_file_form()['image'].value().__str__()
+
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = self.get_context_data()
         form = self.get_file_form()
+        if request.FILES.get('image'):
+            image = request.FILES.get('image').read()
+            encoded_image = base64.b64encode(image)
+            request.session['image'] = encoded_image.decode('utf-8')
+
         if form.is_valid():
             try:
                 form.save()
-                EmployeeServices.update_employee(self.object.uuid, form.cleaned_data)
-                return redirect('employee_detail', empUID=self.object.uuid, orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+                EmployeeServices.update_employee_without_image(
+                    self.object.uuid, form.cleaned_data
+                )
+                return redirect(
+                    'employee_detail', empUID=self.object.uuid,
+                    orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
+                )
             except RecordModifiedError:
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
@@ -206,4 +228,3 @@ class EmployeeConcurrencyUpdate(View):
             employee.save()
             return redirect('employee_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
                             empUID=self.kwargs['empUID'])
-
