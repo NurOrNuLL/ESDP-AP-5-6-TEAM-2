@@ -1,6 +1,5 @@
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
-
 from services.employee_services import EmployeeServices
 from .forms import TradePointForm
 from services.trade_point_services import TradePointServices
@@ -34,7 +33,7 @@ class TradePointCreate(ResetOrderCreateFormDataMixin, TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             TradePointServices.create_trade_point(form.cleaned_data)
-            return redirect('home_redirect')
+            return redirect('nomenclature_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
 
         return render(request, self.template_name, {
             'form': form,
