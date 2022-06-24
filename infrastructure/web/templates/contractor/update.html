@@ -5,6 +5,9 @@
 {% block content %}
 <h1 class="mb-4">Редактировать контрагента</h1>
 <hr>
+<div class="d-flex mb-4">
+    <a class="btn btn-secondary me-2" href="{% url 'contractors' orgID tpID %}">К списку</a>
+</div>
 <div class="card border-secondary">
     <div class="card-body">
         <form method="POST">
@@ -44,7 +47,7 @@
                 {% if form.IIC.value or form.BIC.value or form.bank_name.value %}
                     <div class="row">
                         <div class="col">
-                            <label for="contractor_bank_name" class="form-label">Имя банка</label><br>
+                            <label for="contractor_bank_name" class="form-label">Наименование банка</label><br>
                             <input type="text" class="form-control border-secondary" id="contractor_bank_name" name="bank_name" value="{{ form.bank_name.value|default:'' }}">
                             <div class="form-text text-danger">{% for err in form.bank_name.errors %}{{ err }}{% endfor %}</div><br>
                         </div>
