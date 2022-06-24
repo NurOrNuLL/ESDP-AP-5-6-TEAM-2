@@ -1,8 +1,21 @@
+import datetime
 from models.order.models import Order
 from typing import Any, Dict, List
+from services.trade_point_services import TradePointServices
 
 
 class OrderService:
+    @staticmethod
+    def get_finished_orders_in_period(from_date: datetime.date, to_date: datetime.date, tpID: int) -> List[Order]:
+        trade_point = TradePointServices.get_trade_point_by_clean_id(tpID)
+        all_orders = Order.objects.filter(trade_point=trade_point, status='Завершен')
+
+        orders = [order for order in all_orders \
+                    if order.finished_at >= from_date \
+                    and order.finished_at <= to_date]
+
+        return orders
+
     @staticmethod
     def create_order(data: dict) -> Order:
         return Order.objects.create(

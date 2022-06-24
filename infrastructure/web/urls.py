@@ -32,7 +32,7 @@ from .employee.views import (EmployeeCreate,
                              EmployeeConcurrencyUpdate, EmployeeImageUpdateView)
 from infrastructure.accounts.views import RegisterView
 
-from infrastructure.web.report.views import ReportPreviewView
+from infrastructure.web.report.views import ReportCreateView, ReportPreviewView
 
 nomenclature_urls = [
     path(
@@ -119,7 +119,8 @@ order_urls = [
 ]
 
 report_urls = [
-	path('report/preview/', ReportPreviewView.as_view(), name="report_preview")
+	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+	path('report/create/', ReportCreateView.as_view(), name="report_create")
 ]
 
 urlpatterns = [

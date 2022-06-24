@@ -286,7 +286,7 @@ serviceEmployeeForm.addEventListener('submit', e => {
 
             parsed_employees.push({
                 'Наименование': employeeNameSurname,
-                'ИИН': serviceRow.dataset['serviceEmployees'].split(',').map(element => {return eval(element)})[j]
+                'ИИН': serviceRow.dataset['serviceEmployees'].split(',')[j]
             })
         }
 

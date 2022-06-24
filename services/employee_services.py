@@ -47,6 +47,10 @@ class EmployeeServices:
         return Employee.objects.get(uuid=empUID)
 
     @staticmethod
+    def get_employee_by_iin(empIIN: int) -> Employee:
+        return Employee.objects.get(IIN=empIIN)
+
+    @staticmethod
     def get_tradepoint() -> List['TradePoint']:
         return TradePoint.objects.all()
 

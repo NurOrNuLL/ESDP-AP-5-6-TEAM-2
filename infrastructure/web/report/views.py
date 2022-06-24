@@ -5,7 +5,10 @@ from .forms import ReportDateForm
 from django.shortcuts import render
 import datetime
 import calendar
-
+from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
+from tasks import get_report
+from .serializers import ReportSerializer
 
 class ReportPreviewView(TemplateView):
     template_name = 'report/report.html'
@@ -46,7 +49,9 @@ class ReportPreviewView(TemplateView):
         if form.is_valid():
             context = self.get_context_data(**kwargs)
             context['form'] = form
-            context['report_generated'] = True
+            context['from_date'] = form.cleaned_data['from_date']
+            context['to_date'] = form.cleaned_data['to_date']
+            context['report'] = self.get_report(form.cleaned_data['from_date'], form.cleaned_data['to_date'])
 
             return render(request, self.template_name, context)
         else:
@@ -54,3 +59,15 @@ class ReportPreviewView(TemplateView):
             context['form'] = form
 
             return render(request, self.template_name, context)
+
+
+class ReportCreateView(GenericAPIView):
+    serializer_class = ReportSerializer
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        serializer = self.serializer_class(request.data)
+        serializer.is_valid()
+
+        report = get_report.delay(serializer.data['from_date'], serializer.data['to_date'], serializer.data['tpID'])
+        print(report)
+
+        return Response(report)
