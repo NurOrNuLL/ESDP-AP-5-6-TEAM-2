@@ -134,11 +134,17 @@
                     <input type="hidden" name="image" accept="image/*" value="{{ form.image }}">
                     <input type="hidden" name="role" value="{{ form.role }}">
 
-                    <a href="{% url 'employee_detail' orgID tpID employee.uuid %}" class="btn btn-secondary" style="width: 15%">Нет</a>
+                    <a type="button" href="{% url 'employee_detail' orgID tpID employee.uuid %}" class="btn btn-secondary" style="width: 15%" id="noChange">Нет</a>
                     <button type="submit" class="btn btn-primary" style="width: 15%">Применить изменения</button>
                 </form><br>
             </div>
         </div>
     </div>
-
+    <script>
+        let saveNoChange = document.getElementById('noChange');
+        let imageState = localStorage.getItem('image');
+        saveNoChange.addEventListener('click', e => {
+            localStorage.removeItem('image');
+        })
+    </script>
 {% endblock %}
