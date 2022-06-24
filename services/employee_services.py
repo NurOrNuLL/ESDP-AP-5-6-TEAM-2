@@ -47,6 +47,10 @@ class EmployeeServices:
         return Employee.objects.get(uuid=empUID)
 
     @staticmethod
+    def get_employee_by_iin(empIIN: str) -> Employee:
+        return Employee.objects.get(IIN=empIIN)
+
+    @staticmethod
     def get_tradepoint() -> List['TradePoint']:
         return TradePoint.objects.all()
 
@@ -74,19 +78,21 @@ class EmployeeServices:
         return Employee.objects.filter(tradepoint=tradepoint)
 
     @staticmethod
-    def upload_image(image, empUID):
+    def upload_image(image, empIIN):
         s3 = boto3.client('s3')
-        s3.upload_fileobj(image, os.environ.get('AWS_BUCKET_NAME'), f'employee_image_{empUID}.png')
+        s3.upload_fileobj(
+            image, os.environ.get('AWS_BUCKET_NAME'),
+            f'employee_image_{empIIN}.png'
+        )
 
     @staticmethod
-    def update_employee(emp_uid: str, data: dict) -> Employee:
+    def update_employee_without_image(emp_uid: str, cleaned_data: dict) -> Employee:
         employee = Employee.objects.get(uuid=emp_uid)
-        employee.image = data['image'],
-        employee.name = data['name'],
-        employee.surname = data['surname'],
-        employee.role = data['role'],
-        employee.IIN = data['IIN'],
-        employee.address = data['address'],
-        employee.phone = data['phone'],
-        employee.tradepoint = TradePointServices.get_trade_point_from_form(data)
+        employee.name = cleaned_data['name']
+        employee.surname = cleaned_data['surname']
+        employee.role = cleaned_data['role']
+        employee.IIN = cleaned_data['IIN']
+        employee.address = cleaned_data['address']
+        employee.phone = cleaned_data['phone']
+        employee.tradepoint = TradePointServices.get_trade_point_from_form(cleaned_data)
         return employee
