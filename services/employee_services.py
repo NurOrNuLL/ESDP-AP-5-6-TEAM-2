@@ -80,7 +80,10 @@ class EmployeeServices:
     @staticmethod
     def upload_image(image, empIIN):
         s3 = boto3.client('s3')
-        s3.upload_fileobj(image, os.environ.get('AWS_BUCKET_NAME'), f'employee_image_{empIIN}.png')
+        s3.upload_fileobj(
+            image, os.environ.get('AWS_BUCKET_NAME'),
+            f'employee_image_{empIIN}.png'
+        )
 
     @staticmethod
     def update_employee_without_image(emp_uid: str, cleaned_data: dict) -> Employee:

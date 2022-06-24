@@ -191,8 +191,13 @@ class EmployeeUpdate(TemplateView):
         if form.is_valid():
             try:
                 form.save()
-                EmployeeServices.update_employee_without_image(self.object.uuid, form.cleaned_data)
-                return redirect('employee_detail', empUID=self.object.uuid, orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+                EmployeeServices.update_employee_without_image(
+                    self.object.uuid, form.cleaned_data
+                )
+                return redirect(
+                    'employee_detail', empUID=self.object.uuid,
+                    orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
+                )
             except RecordModifiedError:
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']

@@ -11,6 +11,7 @@ def upload(encoded_image, empIIN):
     EmployeeServices.upload_image(decoded_image, empIIN)
 
     employee = EmployeeServices.get_employee_by_iin(empIIN)
-    employee.image = f"https://s3.amazonaws.com/{os.environ.get('AWS_BUCKET_NAME')}/employee_image_{empIIN}.png",
+    employee.image = f"https://s3.amazonaws.com/" \
+        f"{os.environ.get('AWS_BUCKET_NAME')}/employee_image_{empIIN}.png",
     employee.save()
     return 'success'
