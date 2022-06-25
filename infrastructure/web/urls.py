@@ -32,7 +32,10 @@ from .employee.views import (EmployeeCreate,
                              EmployeeConcurrencyUpdate, EmployeeImageUpdateView)
 from infrastructure.accounts.views import RegisterView
 
-from infrastructure.web.report.views import ReportCreateView, ReportPreviewView
+from infrastructure.web.report.views import ReportPreviewView
+
+from infrastructure.web.report.consumers import ReportConsumer
+from django.urls import re_path
 
 nomenclature_urls = [
     path(
@@ -120,13 +123,18 @@ order_urls = [
 
 report_urls = [
 	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
-	path('report/create/', ReportCreateView.as_view(), name="report_create")
+]
+
+report_websocket_urls = [
+    path('report/create', ReportConsumer.as_asgi())
 ]
 
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
 ]
+
+websocket_urlpatterns = []
 
 urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
@@ -135,3 +143,5 @@ urlpatterns += own_urls
 urlpatterns += employee_urls
 urlpatterns += order_urls
 urlpatterns += report_urls
+
+websocket_urlpatterns += report_websocket_urls

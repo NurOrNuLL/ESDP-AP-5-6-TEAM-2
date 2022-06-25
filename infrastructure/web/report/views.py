@@ -7,8 +7,10 @@ import datetime
 import calendar
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from tasks import get_report
+from .tasks import get_report
 from .serializers import ReportSerializer
+from celery.result import AsyncResult
+
 
 class ReportPreviewView(TemplateView):
     template_name = 'report/report.html'
@@ -59,15 +61,3 @@ class ReportPreviewView(TemplateView):
             context['form'] = form
 
             return render(request, self.template_name, context)
-
-
-class ReportCreateView(GenericAPIView):
-    serializer_class = ReportSerializer
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
-        serializer = self.serializer_class(request.data)
-        serializer.is_valid()
-
-        report = get_report.delay(serializer.data['from_date'], serializer.data['to_date'], serializer.data['tpID'])
-        print(report)
-
-        return Response(report)

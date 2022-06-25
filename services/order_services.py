@@ -2,6 +2,10 @@ import datetime
 from models.order.models import Order
 from typing import Any, Dict, List
 from services.trade_point_services import TradePointServices
+import pytz
+
+
+utc = pytz.UTC
 
 
 class OrderService:
@@ -11,8 +15,8 @@ class OrderService:
         all_orders = Order.objects.filter(trade_point=trade_point, status='Завершен')
 
         orders = [order for order in all_orders \
-                    if order.finished_at >= from_date \
-                    and order.finished_at <= to_date]
+                    if order.finished_at >= utc.localize(from_date) \
+                    and order.finished_at <= utc.localize(to_date)]
 
         return orders
 

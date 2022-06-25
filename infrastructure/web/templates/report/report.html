@@ -11,12 +11,13 @@
         <div class="d-flex mb-3" style="width: 555px">
             <div class="input-group p-0 me-2 border-secondary">
                 <span class="input-group-text border-secondary">От</span>
-                <input type="date" class="form-control border-secondary" name="from_date" value="{{ form.from_date.value }}">
+                <input type="date" class="form-control border-secondary" id="from_date" value="{{ form.from_date.value }}">
             </div>
             <div class="input-group p-0 mx-2">
                 <span class="input-group-text border-secondary">До</span>
-                <input type="date" class="form-control border-secondary" name="to_date" value="{{ form.to_date.value }}">
+                <input type="date" class="form-control border-secondary" id="to_date" value="{{ form.to_date.value }}">
             </div>
+            <input type="number" class="d-none"id="tpID" value="{{ tpID }}">
             <button type="submit" class="btn btn-primary ms-2">Сформировать</button>
         </div>
     </form>
@@ -25,128 +26,12 @@
             <div class="card-header bg-transparent">
                 <h3 class="my-3">Отчет за период {{ from_date|date:'d.m.Y' }} - {{ to_date|date:'d.m.Y' }}</h3>
             </div>
-            <div class="card-body">
-                {% if report|get_item:'paidJobs' %}
-                    <span class="badge fs-5 mb-2 bg-success">Оплаченные работы</span>
-                    <table class="table table-sm table-bordered border-secondary align-middle">
-                        <thead>
-                            <tr class="table-success border-secondary">
-                                <th class="text-center" scope="col" style="width: 40px">№</th>
-                                <th style="width: 500px;" scope="col">Название услуги</th>
-                                <th scope="col">Катагория</th>
-                                <th scope="col">Марка</th>
-                                <th scope="col">Мастера</th>
-                                <th style="width: 150px;" scope="col">Гарантия</th>
-                                <th scope="col">Цена</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for job in report|get_item:'paidJobs' %}
-                                <tr>
-                                    <th class="text-center">{{ forloop.counter }}</th>
-                                    <td>{{ job|get_item:'Название услуги' }}</td>
-                                    <td>{{ job|get_item:'Категория услуги' }}</td>
-                                    <td>{{ job|get_item:'Марка услуги' }}</td>
-                                    <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
-                                    <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                                    <th>{{ job|get_item:'Цена услуги' }}</th>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% endif %}
-                {% if report|get_item:'unpaidJobs' %}
-                    <span class="badge fs-5 mb-2 bg-danger">Неоплаченные работы</span>
-                    <table class="table table-sm table-bordered border-secondary align-middle">
-                        <thead>
-                            <tr class="table-danger border-secondary">
-                                <th class="text-center" scope="col" style="width: 40px">№</th>
-                                <th style="width: 500px;" scope="col">Название услуги</th>
-                                <th scope="col">Катагория</th>
-                                <th scope="col">Марка</th>
-                                <th scope="col">Мастера</th>
-                                <th style="width: 150px;" scope="col">Гарантия</th>
-                                <th scope="col">Цена</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for job in report|get_item:'unpaidJobs' %}
-                                <tr>
-                                    <th class="text-center">{{ forloop.counter }}</th>
-                                    <td>{{ job|get_item:'Название услуги' }}</td>
-                                    <td>{{ job|get_item:'Категория услуги' }}</td>
-                                    <td>{{ job|get_item:'Марка услуги' }}</td>
-                                    <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
-                                    <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                                    <th>{{ job|get_item:'Цена услуги' }}</th>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                {% endif %}
-                <div class="d-flex justify-content-between">
-                    <div class="w-50">
-                        <span class="badge fs-5 mb-2 bg-primary">Зарплаты мастерам</span>
-                        <table class="table table-sm table-bordered border-secondary align-middle">
-                            <thead>
-                                <tr class="table-primary border-secondary">
-                                    <th scope="col" class="text-center" style="width: 20px">№</th>
-                                    <th scope="col" style="width: 250px">Мастер</th>
-                                    <th scope="col" style="width: 100px">ИИН</th>
-                                    <th scope="col" style="width: 150px">Зарплата</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for employee in report|get_item:'employeeSalary' %}
-                                    <tr>
-                                        <th class="text-center">{{ forloop.counter }}</th>
-                                        <td>{{ employee|get_item:'Наименование' }}</td>
-                                        <td>{{ employee|get_item:'ИИН' }}</td>
-                                        <th>{{ employee|get_item:'Зарплата' }}</th>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div style="width: 600px">
-                        <span class="badge fs-5 mb-2 bg-info">Итог</span>
-                        <table class="table table-sm table-bordered border-secondary align-middle">
-                            <thead>
-                                <tr class="table-info border-secondary">
-                                    <th scope="col" class="text-center" style="width: 20px">№</th>
-                                    <th scope="col">Критерий</th>
-                                    <th scope="col">Сумма</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th class="text-center">1</th>
-                                    <th>Общая реализация</th>
-                                    <th>{{ report|get_item:'total' }}</th>
-                                </tr>
-                                <tr>
-                                    <th class="text-center">2</th>
-                                    <th>Гарантия</th>
-                                    <th>{{ report|get_item:'garanty' }}</th>
-                                </tr>
-                                <tr>
-                                    <th class="text-center">3</th>
-                                    <th>Оплаченные работы</th>
-                                    <th>{{ report|get_item:'totalPaid' }}</th>
-                                </tr>
-                                <tr>
-                                    <th class="text-center">4</th>
-                                    <th>Неоплаченные работы</th>
-                                    <th>{{ report|get_item:'totalUnpaid' }}</th>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+            <div class="card-body"></div>
         {% else %}
-            <div class="card-body d-flex justify-content-center align-items-center">
-                <h4 class="text-center">Отчет еще не сформирован!</h4>
+            <div class="card-body">
+                <div id="bodyBlock">
+                    <h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>
+                </div>
             </div>
         {% endif %}
 	</div>
@@ -156,6 +41,9 @@
 
 {% block js_block %}
 
-	<script src="{% static 'js/report_task_ajax.js' %}"></script>
+    <script>
+        var tpID = {{ tpID }};
+    </script>
+	<script src="{% static 'js/report/report_task_ajax.js' %}"></script>
 
 {% endblock js_block %}
