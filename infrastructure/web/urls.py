@@ -18,7 +18,7 @@ from .nomenclature.views import (
     NomenclatureDownloadView,
     NomenclatureProgressView
 )
-from .own.views import OwnDeleteView, OwnCreate, OwnList
+from .own.views import OwnDeleteView, OwnCreate, OwnList, OwnFullList, OwnFilterApiView
 
 from .trade_point.views import TradePointCreate, TradePointList, \
     TradePointUpdate, TradePointUpdateConcurrecnyView
@@ -83,6 +83,8 @@ contractor_urls = [
 ]
 
 own_urls = [
+    path('owns/', OwnFullList.as_view(), name="owns"),
+    path('own/list/filter/', OwnFilterApiView.as_view()),
     path('contractor/<int:contrID>/own/create/', OwnCreate.as_view(), name="own_create"),
     path(
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
