@@ -7,7 +7,7 @@
     <h1>Контрагент</h1>
     <hr>
     <div class="d-flex mb-4">
-        <a class="btn btn-secondary me-2" href="{% url 'contractors' organization.pk tpID %}">Вернуться к списку</a>
+        <a class="btn btn-secondary me-2" href="{% url 'contractors' organization.pk tpID %}">К списку</a>
         <a class="btn btn-secondary me-2" href="{% url 'contractor_update' organization.pk tpID contractor.pk %}">Редактировать контрагента</a>
         <a class="btn btn-secondary" href="{% url 'own_create' orgID tpID contrID %}">Добавить собственность</a>
     </div>
@@ -66,17 +66,17 @@
         </div>
         <div class="card-footer bg-transparent">
             <div class="text-center">
-                <strong>Список собственностей</strong>
+                <strong>Список автомобилей</strong>
             </div>
         </div>
         <div class="card-footer bg-transparent">
             <table class="table">
-                <thead>
-                    <th>Наименование</th>
-                    <th>Номер</th>
-                </thead>
                 <tbody id="w">
                 {% if contractor.owns.all %}
+                <thead>
+                    <th>Наименование</th>
+                <th>Номер</th>
+                </thead>
                 {% for own in contractor.owns.all %}
                     {% if own.is_part is False %}
                         <tr id="own_instance_{{ own.id }}">
@@ -84,6 +84,8 @@
                                 <td>{% if own.number %}{{ own.number }}{% else %}Не указан{% endif %}</td>
                             <td class="d-flex justify-content-end" scope="col"><a
                                     class="btn btn-danger buttonDelete" data-bs-toggle="modal"
+                                    data-own_name="{{ own.name }}"
+                                    data-own_auto_number="{{ own.number }}"
                                     data-own_id="{{ own.id }}" data-contr_id="{{ contractor.id }}"
                                     data-org_id="{{ organization.id }}"
                                     data-bs-target="#own_modal">Удалить</a><br>
@@ -95,7 +97,7 @@
                     {% endif %}
                 {% endfor %}
                 {% else %}
-                    У этого котрактора пока нет собственности
+                    <p class="text-danger">У данного контрагента пока отсутсвуют собственности. Создайте нажав кнопку "Добавить собственность"</p>
                 {% endif %}
                 </tbody>
             </table>
