@@ -381,6 +381,7 @@ reportForm.addEventListener('submit', e => {
                                     <div class="spinner-border" role="status"> \
                                         <span class="visually-hidden">Loading...</span> \
                                     </div> \
+                                    <h5 style="position: relative; right: 75px;">Отчет составляется</h5> \
                                 </div>';
     };
 
