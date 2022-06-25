@@ -41,7 +41,8 @@ JOBS_JSON_SCHEMA = {
                             'maxLength': 500
                         },
                         'ИИН': {
-                            'type': 'integer',
+                            'type': 'string',
+                            'maxLength': 12
                         }
                     },
                     'required': ['Наименование', 'ИИН'],
