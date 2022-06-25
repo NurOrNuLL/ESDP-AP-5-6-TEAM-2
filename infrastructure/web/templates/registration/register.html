@@ -13,7 +13,7 @@
                     <input type="text" class="form-control border-secondary" id="username" name="username"
                            value="{{ register_form.username.value|default:'' }}" required>
                     <div class="form-text" style="color: red;">
-                        {% for err in register_form.errors.username %}{{ err }}{% endfor %}
+                        {% for err in register_form.errors.username %}{{ err }} {% endfor %}
                     </div>
                 </div>
                 <br>
@@ -22,7 +22,7 @@
                         <label for="password" class="form-label">Пароль <span class="text-danger">*</span></label>
                         <input type="password" class="form-control border-secondary" id="password" name="password" required>
                         <div class="form-text" style="color: red;">
-                            {% for err in register_form.errors.password %}{{ err }}{% endfor %}</div>
+                            {% for err in register_form.errors.password %}{{ err }}  {% endfor %}</div>
                     </div>
                     <div class="col">
                         <label for="password_confirm" class="form-label">Повторите пароль <span

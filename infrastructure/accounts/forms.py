@@ -1,12 +1,22 @@
 from django import forms
 from .models import CustomUser
-from .validators import number_validate, uppercase_validate, symbol_validate, len_validate
+from .validators import (
+    number_validate, uppercase_validate, symbol_validate,
+    len_validate, cyrillic_validate, len_username_validate,
+    cyrillic_username_validate
+)
 
 
 class RegisterForm(forms.ModelForm):
+    username = forms.CharField(
+        label='Логин', required=True, validators=(len_username_validate, cyrillic_username_validate, )
+    )
     password = forms.CharField(
         label="Пароль", strip=False, required=True, widget=forms.PasswordInput,
-        validators=(number_validate, uppercase_validate, symbol_validate, len_validate, )
+        validators=(
+            number_validate, uppercase_validate, symbol_validate,
+            len_validate, cyrillic_validate,
+        )
     )
     password_confirm = forms.CharField(
         label="Подтвердите пароль", required=True, widget=forms.PasswordInput, strip=False
