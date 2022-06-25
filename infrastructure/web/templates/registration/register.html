@@ -6,23 +6,23 @@
     <hr>
     <div class="card border-secondary">
         <div class="card-body">
-            <form method="POST" id="emp_reg" enctype="multipart/form-data">
+            <form class="needs-validation" novalidate method="POST" id="emp_reg" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div>
                     <label for="username" class="form-label">Логин <span class="text-danger">*</span></label>
                     <input type="text" class="form-control border-secondary" id="username" name="username"
                            value="{{ register_form.username.value|default:'' }}" required>
                     <div class="form-text" style="color: red;">
-                        {% for err in register_form.errors.username %}{{ err }}{% endfor %}</div>
+                        {% for err in register_form.errors.username %}{{ err }} {% endfor %}
+                    </div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col">
                         <label for="password" class="form-label">Пароль <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control border-secondary" id="password" name="password"
-                               required>
+                        <input type="password" class="form-control border-secondary" id="password" name="password" required>
                         <div class="form-text" style="color: red;">
-                            {% for err in register_form.errors.password %}{{ err }}{% endfor %}</div>
+                            {% for err in register_form.errors.password %}{{ err }}  {% endfor %}</div>
                     </div>
                     <div class="col">
                         <label for="password_confirm" class="form-label">Повторите пароль <span
@@ -54,7 +54,7 @@
                 <div class="row">
                     <div class="col">
                         <label for="employee_role" class="form-label">Роль <span class="text-danger">*</span></label>
-                        <select class="form-select border-secondary" name="role" id="role">
+                        <select class="form-select border-secondary" name="role" id="role" required>
                             {% for role in roles %}
                                 {% if role.0 == employee_form.role.value %}
                                     <option selected value="{{ role.0 }}">{{ role.1 }}</option>
@@ -71,7 +71,7 @@
                                 class="text-danger">*</span></label><br>
                         <div class="input-group">
                             <input type="button" id="loadFileImage" class="btn btn-secondary" value="Выберите фото"
-                                   onclick="document.getElementById('employee_image').click();"/>
+                                   onclick="document.getElementById('employee_image').click();" required/>
                             <label for="loadFileImage" class="input-group-text bg-transparent border-secondary"
                                    style="width: 61%;" id="file-name">фото не выбрано</label>
                         </div>
@@ -91,7 +91,7 @@
                     </div>
                     <div class="col">
                         <label for="employee_tradepoints" class="form-label">Филиалы <span class="text-danger">*</span></label>
-                        <select class="form-select border-secondary" id="tradepoint" name="tradepoint">
+                        <select class="form-select border-secondary" id="tradepoint" name="tradepoint" required>
                             {% for tp in tradepoints %}
                                 {% if tp.id|slugify != employee_form.tradepoint.value %}
                                     <option value="{{ tp.id }}">{{ tp.name }}</option>
@@ -143,5 +143,27 @@
     <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
     <script>
         localStorage.setItem('image', 'waiting to upload!');
+    </script>
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict'
+
+            // Fetch all the forms we want to apply custom Bootstrap validation styles to
+            var forms = document.querySelectorAll('.needs-validation')
+
+            // Loop over them and prevent submission
+            Array.prototype.slice.call(forms)
+                .forEach(function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (!form.checkValidity()) {
+                            event.preventDefault()
+                            event.stopPropagation()
+                        }
+
+                        form.classList.add('was-validated')
+                    }, false)
+                })
+        })()
     </script>
 {% endblock content %}
