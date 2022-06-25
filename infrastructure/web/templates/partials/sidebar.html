@@ -48,8 +48,9 @@
             </button>
             <div class="collapse sidebar-ul" id="contragent-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'contractors' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
-                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
+                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать контрагента</a></li>
+                    <li><a href="{% url 'contractors' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список контрагентов</a></li>
+                    <li><a href="{% url 'owns' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список собственностей</a></li>
                 </ul>
             </div>
         </li>

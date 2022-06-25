@@ -1,7 +1,10 @@
 import json
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
-
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
+from rest_framework.pagination import PageNumberPagination
+from rest_framework import filters
 from services.organization_services import OrganizationService
 from services.own_services import OwnServices
 from .forms import OwnForm
@@ -75,3 +78,27 @@ class OwnList(GenericAPIView):
         serializer = self.serializer_class(owns, many=True)
 
         return Response(serializer.data)
+
+
+class OwnFullList(TemplateView):
+    template_name = 'own/owns.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['owns'] = OwnServices.get_owns()
+        context['tpID'] = self.kwargs['tpID']
+        context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        return context
+
+
+class MyPagination(PageNumberPagination):
+    page_size = 100
+
+
+class OwnFilterApiView(generics.ListAPIView):
+    serializer_class = OwnSerializer
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter, DjangoFilterBackend]
+    filterset_fields = ['is_part']
+    search_fields = ['name', 'number', 'comment']
+    pagination_class = MyPagination
+    queryset = OwnServices.get_owns()
