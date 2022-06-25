@@ -5,7 +5,7 @@
     <h1 class="mb-4">Заказ-наряды</h1>
     <hr>
     <div class="row mt-0 me-0 ms-0 mb-3">
-        <input type="date" id="order_date" class="col me-2 form-control border-secondary bg-transparent">
+        <input type="date" translate="yes" lang="ru-Ru"  placeholder="дд.мм.гггг" id="order_date" class="col me-2 form-control border-secondary bg-transparent">
         <select id="order_status" class="col me-2 form-select border-secondary bg-transparent" name="order_status"
                 aria-label="Default select example">
             <option selected value="">Выберите статус</option>
@@ -28,7 +28,7 @@
                    value="100" id="limit">
             <div class="btn-group align-items-center">
                 <button class="btn btn-secondary" id="back">&#8592;</button>
-                <input type="number" class="form-control bg-transparent border-secondary" style="width: 50px" id="page"
+                <input type="number" class="form-control bg-transparent border-secondary" style="width: 80px; padding-left: 33px" id="page"
                        value="1" disabled>
                 <button class="btn btn-secondary" id="next">&#8594;</button>
             </div>

@@ -89,7 +89,7 @@ class EmployeeImageUpdateView(GenericAPIView):
             return Response(
                 {"task_id": task.id},
                 content_type='application/json')
-        return Response('success')
+        return Response('Error')
 
 
 class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):

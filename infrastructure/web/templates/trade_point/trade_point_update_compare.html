@@ -12,7 +12,12 @@
         {% csrf_token %}
         <input type="hidden" name="name" value="{{ form.name }}">
         <input type="hidden" name="address" value="{{ form.address }}">
-        <input type="hidden" name="nomenclature_id" value="{{ form.nomenclature.id }}">
+        <select hidden multiple class="selectpicker d-none" data-live-search="true" data-width="100%"
+                id="trade_point_nomenclature" name="nomenclature">
+            {% for nom in form.nomenclature %}
+                <option selected value="{{ nom.pk }}">{{ nom.name }}</option>
+            {% endfor %}
+        </select>
         <a href="{% url 'trade_point_list' orgID tpID %}" class="btn btn-secondary" style="width: 15%">Нет</a>
         <button type="submit" class="btn btn-primary" style="width: 15%">Да</button>
     </form><br>
@@ -72,19 +77,15 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Номенклатура:</span>
-                    {% if trade_point.nomenclature.id != form.nomenclature.id %}
-                        <span class="text-danger">{{ trade_point.nomenclature }}</span>
-                    {% else %}
-                        <span>{{ trade_point.nomenclature }}</span>
-                    {% endif %}
+                    {% for nom in trade_point.nomenclature.all %}
+                        <span class="text-danger">{{ nom }}<span>
+                    {% endfor %}
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Номенклатура:</span>
-                    {% if trade_point.nomenclature.id != form.nomenclature.id %}
-                        <span class="text-success">{{ form.nomenclature }}</span>
-                    {% else %}
-                        <span>{{ form.nomenclature }}</span>
-                    {% endif %}
+                    {% for nom in form.nomenclature %}
+                        <span class="text-success">{{ nom }}</span>
+                    {% endfor %}
                 </div>
             </div>
         </div>
