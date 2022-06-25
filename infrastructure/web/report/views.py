@@ -5,11 +5,6 @@ from .forms import ReportDateForm
 from django.shortcuts import render
 import datetime
 import calendar
-from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
-from .tasks import get_report
-from .serializers import ReportSerializer
-from celery.result import AsyncResult
 
 
 class ReportPreviewView(TemplateView):
@@ -53,7 +48,6 @@ class ReportPreviewView(TemplateView):
             context['form'] = form
             context['from_date'] = form.cleaned_data['from_date']
             context['to_date'] = form.cleaned_data['to_date']
-            context['report'] = self.get_report(form.cleaned_data['from_date'], form.cleaned_data['to_date'])
 
             return render(request, self.template_name, context)
         else:
