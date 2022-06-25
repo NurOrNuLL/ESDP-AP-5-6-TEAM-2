@@ -1,10 +1,12 @@
 from django import forms
 from .models import CustomUser
+from .validators import number_validate, uppercase_validate, symbol_validate, len_validate
 
 
 class RegisterForm(forms.ModelForm):
     password = forms.CharField(
-        label="Пароль", strip=False, required=True, widget=forms.PasswordInput
+        label="Пароль", strip=False, required=True, widget=forms.PasswordInput,
+        validators=(number_validate, uppercase_validate, symbol_validate, len_validate, )
     )
     password_confirm = forms.CharField(
         label="Подтвердите пароль", required=True, widget=forms.PasswordInput, strip=False
@@ -14,6 +16,7 @@ class RegisterForm(forms.ModelForm):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         password_confirm = cleaned_data.get("password_confirm")
+
         if password and password_confirm and password != password_confirm:
             self.errors['password'] = 'Пароли не совпадают!'
             self.errors['password_confirm'] = 'Пароли не совпадают!'
