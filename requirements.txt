@@ -75,7 +75,7 @@ isort==5.10.1
 itypes==1.2.0
 Jinja2==2.10.3
 jmespath==1.0.0
-jsonschema==4.5.1
+jsonschema==3.2.0
 kombu==5.2.4
 kwargs==1.0.1
 lazy-object-proxy==1.7.1
