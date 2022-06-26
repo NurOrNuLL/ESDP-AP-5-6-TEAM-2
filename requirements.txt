@@ -73,9 +73,9 @@ inflection==0.5.1
 iniconfig==1.1.1
 isort==5.10.1
 itypes==1.2.0
-Jinja2==3.1.2
+Jinja2==2.10.3
 jmespath==1.0.0
-jsonschema==4.5.1
+jsonschema==3.2.0
 kombu==5.2.4
 kwargs==1.0.1
 lazy-object-proxy==1.7.1
@@ -103,9 +103,6 @@ pyasn1-modules==0.2.8
 pycodestyle==2.8.0
 pycparser==2.21
 pyflakes==2.4.0
-pylint==2.13.9
-pylint-django==2.5.3
-pylint-plugin-utils==0.7
 pyOpenSSL==22.0.0
 pyparsing==3.0.9
 pyrsistent==0.18.1
@@ -135,7 +132,6 @@ tomli==2.0.1
 tomlkit==0.10.2
 tornado==6.1
 Twisted==22.4.0
-twisted-iocpsupport==1.0.2
 txaio==22.2.1
 typing_extensions==4.2.0
 tzdata==2022.1
