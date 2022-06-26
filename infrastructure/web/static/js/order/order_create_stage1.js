@@ -229,7 +229,10 @@ if (contractor.value != '' && own.value === '') {
             }
         },
         error: (response) => {
-            console.log(response)
+            if (!(own.attributes.getNamedItem('disabled'))) {
+                own.disabled = true;
+                own.innerHTML = '<option>-</option>'
+            }
         }
     })
 }
@@ -355,7 +358,10 @@ contractor.addEventListener('change', (e) => {
             }
         },
         error: (response) => {
-            console.log(response)
+            if (!(own.attributes.getNamedItem('disabled'))) {
+                own.disabled = true;
+                own.innerHTML = '<option>-</option>'
+            }
         }
     })
 })
