@@ -321,6 +321,7 @@ class OrderCreateViewStage4(TemplateView):
         data = {
             'trade_point': TradePointServices.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
             'contractor': ContractorService.get_contractor_by_id(request.session['contractor']),
+            'nomenclature': NomenclatureService.get_nomenclature_by_id(request.session['nomenclature']),
             'own': OwnServices.get_own_by_id({'ownID': request.session['own']}),
             'status': ORDER_STATUS_CHOICES[0][0],
             'price_for_pay': prices[0],
@@ -420,8 +421,8 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
     concurrency_template_name = 'order/concurrency_update.html'
     form_class = OrderUpdateForm
 
-    def get_services(self, context: dict) -> Dict[str, List[dict]]:
-        services = TradePointServices.get_trade_point_by_id(context).nomenclature.services
+    def get_services(self, order: Order) -> Dict[str, List[dict]]:
+        services = order.nomenclature.services
         filtered_data = {}
 
         for category in CATEGORY_CHOICES:
@@ -436,7 +437,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
         context['ordID'] = order.id
         context['categories'] = CATEGORY_CHOICES
-        context['services'] = self.get_services(context)
+        context['services'] = self.get_services(order)
 
         employees = EmployeeServices.get_employee_by_tradepoint(
                 tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
@@ -463,6 +464,23 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
         form = self.form_class(data=request.POST, instance=order)
 
         if form.is_valid():
+            for job in form.cleaned_data['jobs']:
+                if not job['Мастера']:
+                    form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
+                    employees = EmployeeServices.get_employee_by_tradepoint(
+                                    tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+                                ).filter(role='Мастер')
+
+                    context = self.get_context_data()
+                    context['services'] = self.get_services(order)
+                    context['categories'] = CATEGORY_CHOICES
+                    context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
+                    context['form'] = form
+                    context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+                    context['ordID'] = order.id
+
+                    return render(request, self.template_name, context)
+
             try:
                 order.jobs = form.cleaned_data['jobs']
                 order.mileage = form.cleaned_data['mileage']
@@ -486,12 +504,18 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
 
                 return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], ordID=self.kwargs['ordID'])
         else:
+            form.errors['jobs'] = 'Вы не выбрали услуги!!!'
+            employees = EmployeeServices.get_employee_by_tradepoint(
+                tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+            ).filter(role='Мастер')
+
             context = self.get_context_data()
             context['form'] = form
             context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
             context['ordID'] = order.id
             context['categories'] = CATEGORY_CHOICES
-            context['services'] = self.get_services(context)
+            context['services'] = self.get_services(order)
+            context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
 
             return render(request, self.template_name, context)
 

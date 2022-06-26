@@ -25,6 +25,7 @@ class OrderService:
         return Order.objects.create(
             trade_point=data['trade_point'],
             contractor=data['contractor'],
+            nomenclature=data['nomenclature'],
             own=data['own'],
             status=data['status'],
             price_for_pay=data['price_for_pay'],
