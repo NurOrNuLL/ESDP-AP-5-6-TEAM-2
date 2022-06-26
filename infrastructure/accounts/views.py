@@ -41,10 +41,7 @@ class RegisterView(TemplateView):
         register_form = self.register_form_class(data=register_data)
         employee_form = self.employee_form_class(employee_data, request.FILES)
 
-        image = request.FILES.get('image').read()
-        encoded_image = base64.b64encode(image)
 
-        request.session['image'] = encoded_image.decode('utf-8')
 
         if register_form.is_valid() and employee_form.is_valid():
             user = register_form.save()
