@@ -43,7 +43,15 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
                                 comment=request.POST['trust_person_comment'])
             form.cleaned_data['trust_person'] = trust_person
             contractor = ContractorService.create_contractor(form.cleaned_data)
-            return redirect('contractor_detail',
+
+            if request.GET.get('next'):
+                request.session['contractor'] = contractor.id
+
+                return redirect(request.GET.get('next'),
+                                orgID=self.kwargs['orgID'],
+                                tpID=self.kwargs['tpID'])
+            else:
+                return redirect('contractor_detail',
                             orgID=self.kwargs['orgID'],
                             contrID=contractor.pk, tpID=self.kwargs['tpID'])
         else:

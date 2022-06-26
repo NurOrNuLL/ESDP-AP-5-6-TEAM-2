@@ -1,4 +1,3 @@
-import json
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django_filters.rest_framework import DjangoFilterBackend
@@ -42,15 +41,27 @@ class OwnCreate(ResetOrderCreateFormDataMixin, TemplateView):
                 if ' ' in form.cleaned_data['number']:
                     clean_number_string = form.cleaned_data['number'].replace(' ', '')
                     form.cleaned_data['number'] = clean_number_string
-            OwnServices.create_own(
+            own = OwnServices.create_own(
                 form.cleaned_data,
                 contractor_id=self.kwargs.get('contrID')
             )
-            return redirect(
-                'contractor_detail', orgID=self.kwargs.get('orgID'),
-                contrID=self.kwargs.get('contrID'),
-                tpID=self.kwargs['tpID']
-            )
+
+            if request.GET.get('next'):
+                request.session['contractor'] = self.kwargs['contrID']
+                request.session['own'] = own.id
+
+                return redirect(
+                    request.GET.get('next'),
+                    orgID=self.kwargs.get('orgID'),
+                    tpID=self.kwargs['tpID']
+                )
+            else:
+                return redirect(
+                    'contractor_detail',
+                    orgID=self.kwargs.get('orgID'),
+                    tpID=self.kwargs['tpID'],
+                    contrID=self.kwargs.get('contrID')
+                )
 
         context = self.get_context_data(**kwargs)
         context['form'] = form

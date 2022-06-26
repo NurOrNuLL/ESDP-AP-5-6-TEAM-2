@@ -3,6 +3,9 @@ import json
 from django.template.context_processors import request
 from django.views import View
 from django.views.generic import TemplateView
+from models.nomenclature.models import Nomenclature
+
+from services.nomenclature_services import NomenclatureService
 
 from .forms import (
     OrderForm, PaymentForm,
@@ -114,6 +117,8 @@ class OrderCreateViewStage1(TemplateView):
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['contractors'] = ContractorService.get_contractors(self.kwargs)
+        context['nomenclatures'] = \
+            TradePointServices.get_trade_point_by_clean_id(self.kwargs['tpID']).nomenclature.all()
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
 
         return context
@@ -121,10 +126,20 @@ class OrderCreateViewStage1(TemplateView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
 
+        nomenclature_id = request.session.get('nomenclature')
         contractor_id = request.session.get('contractor')
         own_id = request.session.get('own')
+        print(contractor_id)
 
-        if contractor_id and own_id:
+        if contractor_id:
+            context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
+        elif contractor_id and own_id:
+            context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
+            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
+
+        if contractor_id and own_id and nomenclature_id:
+            context['session_nomenclature'] = NomenclatureService.get_nomenclature_by_id(nomenclature_id)
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
             context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
             context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
@@ -135,6 +150,7 @@ class OrderCreateViewStage1(TemplateView):
         form = self.form_class(request.POST)
 
         if form.is_valid():
+            request.session['nomenclature'] = form.cleaned_data['nomenclature']
             request.session['contractor'] = form.cleaned_data['contractor'].id
             request.session['own'] = form.cleaned_data['own'].id
 
@@ -150,8 +166,8 @@ class OrderCreateViewStage2(TemplateView):
     template_name = 'order/order_create_stage2.html'
     form_class = OrderCreateFormStage2
 
-    def get_services(self, context: dict) -> Dict[str, List[dict]]:
-        services = TradePointServices.get_trade_point_by_id(context).nomenclature.services
+    def get_services(self, nomenclature: Nomenclature) -> Dict[str, List[dict]]:
+        services = nomenclature.services
         filtered_data = {}
 
         for category in CATEGORY_CHOICES:
@@ -164,7 +180,6 @@ class OrderCreateViewStage2(TemplateView):
         context = super().get_context_data(**kwargs)
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
         context['categories'] = CATEGORY_CHOICES
-        context['services'] = self.get_services(context)
 
         employees = EmployeeServices.get_employee_by_tradepoint(
                 tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
@@ -174,7 +189,11 @@ class OrderCreateViewStage2(TemplateView):
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        nomenclature = \
+            NomenclatureService.get_nomenclature_by_id(request.session.get('nomenclature'))
+
         context = self.get_context_data()
+        context['services'] = self.get_services(nomenclature)
 
         jobs = request.session.get('jobs')
 
@@ -184,14 +203,30 @@ class OrderCreateViewStage2(TemplateView):
         return render(request, self.template_name, context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        nomenclature = \
+            NomenclatureService.get_nomenclature_by_id(request.session.get('nomenclature'))
         form = self.form_class(request.POST)
 
         if form.is_valid():
+            for job in form.cleaned_data['jobs']:
+                if not job['Мастера']:
+                    form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
+
+                    context = self.get_context_data()
+                    context['services'] = self.get_services(nomenclature)
+                    context['session_jobs'] = json.dumps(form.cleaned_data['jobs'])
+                    context['form'] = form
+
+                    return render(request, self.template_name, context)
+
             request.session['jobs'] = form.cleaned_data['jobs']
 
             return redirect('order_create_stage3', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
         else:
+            form.errors['jobs'] = 'Вы не выбрали услуги!!!'
+
             context = self.get_context_data()
+            context['services'] = self.get_services(nomenclature)
             context['form'] = form
 
             return render(request, self.template_name, context)
