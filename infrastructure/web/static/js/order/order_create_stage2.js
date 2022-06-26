@@ -45,18 +45,18 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                         <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                     </td>
                                     <td class="checkedEmployees" style="width: 100px">
-                                        Мастера не выбранны!
+                                        Мастера не выбраны!
                                     </td>
                                     <td>
                                         <div class="form-check form-switch">
                                             <input class="form-check-input garanty" type="checkbox" role="switch">
                                         </div>
                                     </td>
-                                    <th><span class="Price">${sessionJobs[i]['Цена услуги']}</span><span> ₸</span></th>
+                                    <th><span class="Price">${sessionJobs[i]['Цена услуги']}</span></th>
                                 </tr>`;
     }
 
-    let employeeSelects = document.querySelectorAll('select.employee-select')
+    let employeeSelects = document.querySelectorAll('select.employee-select');
     let checkedEmployees = document.getElementsByClassName('checkedEmployees');
     let garantyBtns = document.getElementsByClassName('garanty');
     let price = document.getElementsByClassName('Price');
@@ -71,7 +71,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
             checkedEmployees[j].innerHTML = ''
 
             if (empSelect.selectedOptions.length === 0) {
-                checkedEmployees[j].innerHTML = 'Мастера не выбранны!'
+                checkedEmployees[j].innerHTML = 'Мастера не выбраны!'
             }
 
             for (let i = 0; i < empSelect.selectedOptions.length; i++) {
@@ -92,7 +92,10 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
     }
 
     for (let i = 0; i < sessionJobs.length; i++) {
-        checkedEmployees[i].innerHTML = '';
+        if (sessionJobs[i]['Мастера'].length != 0) {
+            checkedEmployees[i].innerHTML = '';
+        }
+
         let employeesIIN = [];
 
         for (employee of sessionJobs[i]['Мастера']) {
@@ -100,8 +103,8 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
         }
 
         employees.forEach(emp => {
-            if (employeesIIN.indexOf(eval(emp.IIN)) != -1) {
-                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+            if (employeesIIN.indexOf(emp.IIN) != -1) {
+                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}" selected>${emp.name} ${emp.surname}</option>`
                 checkedEmployees[i].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${emp.name[0].toUpperCase()}. ${emp.surname}</span>`
             }
             else {
@@ -124,19 +127,19 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                 serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'true';
                 price[i].style.cssText = 'text-decoration: line-through;';
                 total -= eval(price[i].innerHTML);
-                totalPrice.innerText = `${total} ₸`;
+                totalPrice.innerText = `${total}`;
             }
             else {
                 garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceGaranty'] = 'false';
                 serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'false';
                 price[i].style.cssText = 'text-decoration: none;';
                 total += eval(price[i].innerHTML);
-                totalPrice.innerText = `${total} ₸`;
+                totalPrice.innerText = `${total}`;
             }
         })
     }
 
-    totalPrice.innerText = `${total} ₸`;
+    totalPrice.innerText = `${total} `;
 
     $('.selectpicker').selectpicker('render');
 }
@@ -158,14 +161,14 @@ service.addEventListener('change', e => {
                                                     <select class="form-control selectpicker employee-select" multiple data-live-search="true" title="Выбрать" data-max-options="5" data-selected-text-format="count" required></select>
                                                 </td>
                                                 <td class="checkedEmployees" style="width: 100px">
-                                                    Мастера не выбранны!
+                                                    Мастера не выбраны!
                                                 </td>
                                                 <td>
                                                     <div class="form-check form-switch">
                                                         <input class="form-check-input garanty" type="checkbox" role="switch">
                                                     </div>
                                                 </td>
-                                                <th><span class="Price">${service.selectedOptions[i].dataset['servicePrice']}</span><span> ₸</span></th>
+                                                <th><span class="Price">${service.selectedOptions[i].dataset['servicePrice']}</span></th>
                                             </tr>`;
                 }
             }
@@ -192,7 +195,7 @@ service.addEventListener('change', e => {
                 }
                 else {
                     empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
-                    checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML = 'Мастера не выбранны!';
+                    checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML = 'Мастера не выбраны!';
                 }
             })
         }
@@ -207,7 +210,7 @@ service.addEventListener('change', e => {
                 checkedEmployees[j].innerHTML = ''
 
                 if (empSelect.selectedOptions.length === 0) {
-                    checkedEmployees[j].innerHTML = 'Мастера не выбранны!'
+                    checkedEmployees[j].innerHTML = 'Мастера не выбраны!'
                 }
 
                 for (let i = 0; i < empSelect.selectedOptions.length; i++) {
@@ -247,23 +250,27 @@ service.addEventListener('change', e => {
                     serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'true';
                     price[i].style.cssText = 'text-decoration: line-through;';
                     total -= eval(price[i].innerHTML);
-                    totalPrice.innerText = `${total} ₸`;
+                    totalPrice.innerText = `${total} `;
                 }
                 else {
                     garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceGaranty'] = 'false';
                     serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'false';
                     price[i].style.cssText = 'text-decoration: none;';
                     total += eval(price[i].innerHTML);
-                    totalPrice.innerText = `${total} ₸`;
+                    totalPrice.innerText = `${total}`;
                 }
             })
         }
 
-        totalPrice.innerText = `${total} ₸`;
+        totalPrice.innerText = `${total}`;
     }
     else {
+        let totalPrice = document.getElementById('totalPrice');
+
+
         tableBody.innerHTML = '';
         nothingSelected.classList.remove('d-none');
+        totalPrice.innerText = 0;
     }
 })
 
@@ -305,8 +312,3 @@ serviceEmployeeForm.addEventListener('submit', e => {
 
     serviceEmployeeForm.submit();
 })
-
-
-if (errors != "") {
-    alert('Вы не заполнили услуги или мастеров для услуг! Попробуйте еще раз.')
-}
