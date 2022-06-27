@@ -207,14 +207,28 @@ class EmployeeUpdate(TemplateView):
 
         if form.is_valid():
             try:
-                form.save()
-                EmployeeServices.update_employee_without_image(
-                    self.object.uuid, form.cleaned_data
-                )
-                return redirect(
+                iin = list(form.cleaned_data['IIN'])
+                birth = iin[:6:]
+                brd = list(str(form.cleaned_data['birthdate']))
+                birthdate = brd[2::]
+                for i in range(2):
+                    birthdate.remove('-')
+                birthdates = ''.join(birthdate)
+                births = ''.join(birth)
+                if births != birthdates:
+                    print('error')
+                    form.errors.IIN = 'Введите верную дату рождения или ИИН'
+                    context['form'] = form
+                    return render(request, self.template_name, context)
+                else:
+                    form.save()
+                    EmployeeServices.update_employee_without_image(
+                        self.object.uuid, form.cleaned_data
+                    )
+                    return redirect(
                     'employee_detail', empUID=self.object.uuid,
                     orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
-                )
+                    )
             except RecordModifiedError:
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
