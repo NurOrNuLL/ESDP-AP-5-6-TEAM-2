@@ -38,7 +38,6 @@ from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 
 
-
 class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateView):
     template_name = 'home.html'
     trade_points = trade_point_context(request)
@@ -126,10 +125,13 @@ class OrderCreateViewStage1(TemplateView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
 
+        if request.GET.get('contractor') and request.GET.get('own'):
+            request.session['contractor'] = request.GET.get('contractor')
+            request.session['own'] = request.GET.get('own')
+
         nomenclature_id = request.session.get('nomenclature')
         contractor_id = request.session.get('contractor')
         own_id = request.session.get('own')
-        print(contractor_id)
 
         if contractor_id:
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
@@ -341,58 +343,6 @@ class OrderCreateViewStage4(TemplateView):
         if request.session.get('mileage'): del request.session['mileage']
 
         return redirect('home', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
-
-
-class OrderCreateFromContractor(TemplateView):
-    template_name = 'order/order_create.html'
-    order_form_class = OrderForm
-    payment_form_class = PaymentForm
-
-    def get_context_data(self, **kwargs: dict) -> dict:
-        context = super().get_context_data(**kwargs)
-        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(
-            self.kwargs['contrID']
-        )
-        context['own'] = OwnServices.get_own_by_id(self.kwargs)
-        context['payment_statuses'] = PAYMENT_STATUS_CHOICES
-        context['order_statuses'] = ORDER_STATUS_CHOICES
-        return context
-
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        context = self.get_context_data(**kwargs)
-        return render(request=request, template_name=self.template_name, context=context)
-
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        post_data = request.POST.copy()
-        payment_data = {
-            'payment_status': post_data['payment_status']
-        }
-        post_data.pop('payment_status')
-        order_data = post_data
-        payment_form = self.payment_form_class(payment_data)
-        order_form = self.order_form_class(order_data)
-        if order_form.is_valid() and payment_form.is_valid():
-            trade_point = TradePointServices.get_trade_point_by_id(self.kwargs)
-            contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
-            own = OwnServices.get_own_by_id(self.kwargs)
-            order_form.cleaned_data['trade_point'] = trade_point
-            order_form.cleaned_data['contractor'] = contractor
-            order_form.cleaned_data['own'] = own
-            payment = PaymentService.create_payment(payment_form.cleaned_data)
-            order_form.cleaned_data['payment'] = payment
-            order = OrderService.create_order(order_form.cleaned_data)
-            return redirect('order_detail', orgID=self.kwargs['orgID'],
-                            tpID=self.kwargs['tpID'],
-                            contrID=self.kwargs['contrID'],
-                            ownID=self.kwargs['ownID'],
-                            ordID=order.pk)
-        else:
-            context = self.get_context_data(**kwargs)
-            context['order_form'] = order_form
-            context['payment_form'] = payment_form
-            return render(request, template_name=self.template_name, context=context)
 
 
 class OrderDetail(ResetOrderCreateFormDataMixin, TemplateView):
