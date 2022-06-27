@@ -1,9 +1,9 @@
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import path
-from django.views.generic import RedirectView
 
+from django.views.generic import RedirectView
 from .order.views import (
-    HomePageView, OrderCreateFromContractor,
+    HomePageView,
     OrderDetail, OrderCreateViewStage1,
     OrderCreateViewStage2, OrderCreateViewStage3,
     OrderCreateViewStage4, OrderUpdateView,
@@ -18,24 +18,29 @@ from .nomenclature.views import (
     NomenclatureDownloadView,
     NomenclatureProgressView
 )
-from .own.views import OwnDeleteView, OwnCreate, OwnList, OwnFullList, OwnFilterApiView
-
-from .trade_point.views import TradePointCreate, TradePointList, \
+from .own.views import (
+    OwnDeleteView, OwnCreate,
+    OwnList, OwnFullList, OwnFilterApiView
+)
+from .trade_point.views import (
+    TradePointCreate, TradePointList,
     TradePointUpdate, TradePointUpdateConcurrecnyView
-
-from .contractor.views import (ContractorCreate, ContractorList, ContractorDetail,
-                               ContractorUpdate, ContractorFilterApiView,
-                               ContractorUpdateConcurrecnyView)
-
-from .employee.views import (EmployeeCreate,
-                             EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate,
-                             EmployeeConcurrencyUpdate, EmployeeImageUpdateView)
+)
+from .contractor.views import (
+    ContractorCreate, ContractorList, ContractorDetail,
+    ContractorUpdate, ContractorFilterApiView,
+    ContractorUpdateConcurrecnyView
+)
+from .employee.views import (
+    EmployeeCreate,
+    EmployeeFilterApiView, EmployeeList,
+    EmployeeDetail, EmployeeUpdate,
+    EmployeeConcurrencyUpdate, EmployeeImageUpdateView
+)
 from infrastructure.accounts.views import RegisterView
-
 from infrastructure.web.report.views import ReportPreviewView
-
 from infrastructure.web.report.consumers import ReportConsumer
-from django.urls import re_path
+
 
 nomenclature_urls = [
     path(
@@ -111,8 +116,6 @@ employee_urls = [
 ]
 
 order_urls = [
-    path('contractor/<int:contrID>/own/<int:ownID>/order/create/',
-         OrderCreateFromContractor.as_view(), name="order_create"),
     path('order/<int:ordID>/', OrderDetail.as_view(), name="order_detail"),
     path('order/<int:ordID>/update', OrderUpdateView.as_view(), name="order_update"),
     path('order/<int:ordID>/update/concurrency', OrderUpdateConcurrencyView.as_view(), name="order_update_concurrency"),
