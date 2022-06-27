@@ -40,7 +40,18 @@ class OwnCreate(ResetOrderCreateFormDataMixin, TemplateView):
             if form.cleaned_data['number']:
                 if ' ' in form.cleaned_data['number']:
                     clean_number_string = form.cleaned_data['number'].replace(' ', '')
-                    form.cleaned_data['number'] = clean_number_string
+                    form.cleaned_data['number'] = clean_number_string.upper()
+                form.cleaned_data['number'] = form.cleaned_data['number'].upper()
+            else:
+                if not form.cleaned_data['is_part']:
+                    form.errors.number = 'Обязательное поле!'
+
+                    context = self.get_context_data(**kwargs)
+                    context['form'] = form
+
+                    return render(request, template_name=self.template_name, context=context)
+
+
             own = OwnServices.create_own(
                 form.cleaned_data,
                 contractor_id=self.kwargs.get('contrID')
@@ -62,6 +73,9 @@ class OwnCreate(ResetOrderCreateFormDataMixin, TemplateView):
                     tpID=self.kwargs['tpID'],
                     contrID=self.kwargs.get('contrID')
                 )
+
+        if not form.cleaned_data['is_part']:
+            form.errors.number = 'Обязательное поле!'
 
         context = self.get_context_data(**kwargs)
         context['form'] = form
