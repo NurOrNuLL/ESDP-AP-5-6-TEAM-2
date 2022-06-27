@@ -1,7 +1,7 @@
 import ast
 import base64
 from datetime import datetime, date
-
+from django.core.exceptions import ValidationError
 from concurrency.api import disable_concurrency
 from concurrency.exceptions import RecordModifiedError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -51,6 +51,7 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
     def post(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
+        context = self.get_context_data(**kwargs)
         form = self.form_class(request.POST, request.FILES)
 
         image = request.FILES.get('image').read()
@@ -60,14 +61,30 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
         request.session['image'] = encoded_image.decode('utf-8')
 
         if form.is_valid():
-            employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
-            return redirect(
-                'employee_detail',
-                orgID=self.kwargs['orgID'],
-                tpID=self.kwargs['tpID'],
-                empUID=employee.uuid
-            )
+            iin = list(form.cleaned_data['IIN'])
+            birth = iin[:6:]
+            brd = list(str(form.cleaned_data['birthdate']))
+            birthdate = brd[2::]
+            for i in range(2):
+                birthdate.remove('-')
+            birthdates = ''.join(birthdate)
+            births = ''.join(birth)
+            if births != birthdates:
+                print('error')
+                form.errors.IIN = 'Введите верную дату рождения или ИИН'
+                context['form'] = form
+                return render(request, self.template_name, context)
+            else:
+                print('else')
+                employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
+                return redirect(
+                    'employee_detail',
+                    orgID=self.kwargs['orgID'],
+                    tpID=self.kwargs['tpID'],
+                    empUID=employee.uuid
+                )
         else:
+            print('else 2')
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data

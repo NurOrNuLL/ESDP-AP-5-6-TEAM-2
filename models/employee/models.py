@@ -3,7 +3,7 @@ import uuid
 from concurrency.fields import AutoIncVersionField
 from django.core.validators import RegexValidator
 from django.db import models
-from .validators import birthdate_validator
+from .validators import birthdate_validator, validate_iin
 
 
 class Employee(models.Model):
@@ -32,7 +32,7 @@ class Employee(models.Model):
                             null=False, blank=False)
     IIN = models.CharField(
         null=False, blank=False, max_length=12, unique=True,
-        verbose_name='ИИН', validators=[RegexValidator(r'^\d{12,12}$')]
+        verbose_name='ИИН', validators=[RegexValidator(r'^\d{12,12}$'), validate_iin]
     )
     image = models.URLField(null=True, blank=True)
     address = models.CharField(
