@@ -16,7 +16,8 @@ from .nomenclature.views import (
     NomenclatureExportView,
     NomenclatureFormForImpost,
     NomenclatureDownloadView,
-    NomenclatureProgressView
+    NomenclatureProgressView,
+    NomenclatureNameUpdateApiView, NomenclatureNameConcurrencyUpdateApiView
 )
 from .own.views import OwnDeleteView, OwnCreate, OwnList, OwnFullList, OwnFilterApiView
 
@@ -35,7 +36,7 @@ from infrastructure.accounts.views import RegisterView
 from infrastructure.web.report.views import ReportPreviewView
 
 from infrastructure.web.report.consumers import ReportConsumer
-from django.urls import re_path
+
 
 nomenclature_urls = [
     path(
@@ -66,6 +67,12 @@ nomenclature_urls = [
         'nomenclature/list/', NomenclaturesServiceListView.as_view(),
         name="nomenclature_list"
     ),
+    path('nomenclature/<int:pk>/update/', NomenclatureNameUpdateApiView.as_view(), name='nomenclature_update'),
+    path(
+        'nomenclature/<int:pk>/update/concurrency/',
+        NomenclatureNameConcurrencyUpdateApiView.as_view(),
+        name="nomenclature_update_concurrency"
+    )
 ]
 
 trade_point_urls = [
