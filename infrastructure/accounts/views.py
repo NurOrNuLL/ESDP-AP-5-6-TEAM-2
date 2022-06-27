@@ -29,7 +29,7 @@ class RegisterView(TemplateView):
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         post_data = request.POST.copy()
-
+        context = self.get_context_data(**kwargs)
         register_data = {
             'username': post_data.pop('username')[0],
             'password': post_data.pop('password')[0],
@@ -44,17 +44,30 @@ class RegisterView(TemplateView):
 
 
         if register_form.is_valid() and employee_form.is_valid():
-            user = register_form.save()
-            employee = EmployeeServices.create_employee_with_uuid(
-                user.uuid, employee_form.cleaned_data
-            )
-
-            return redirect(
-                'employee_detail',
-                orgID=self.kwargs['orgID'],
-                tpID=self.kwargs['tpID'],
-                empUID=employee.uuid
-            )
+            iin = list(employee_form.cleaned_data['IIN'])
+            birth = iin[:6:]
+            brd = list(str(employee_form.cleaned_data['birthdate']))
+            birthdate = brd[2::]
+            for i in range(2):
+                birthdate.remove('-')
+            birthdates = ''.join(birthdate)
+            births = ''.join(birth)
+            if births != birthdates:
+                print('error')
+                employee_form.errors.IIN = 'Введите верную дату рождения или ИИН'
+                context['employee_form'] = employee_form
+                return render(request, self.template_name, context)
+            else:
+                user = register_form.save()
+                employee = EmployeeServices.create_employee_with_uuid(
+                    user.uuid, employee_form.cleaned_data
+                )
+                return redirect(
+                    'employee_detail',
+                    orgID=self.kwargs['orgID'],
+                    tpID=self.kwargs['tpID'],
+                    empUID=employee.uuid
+                )
         else:
             context = self.get_context_data()
             context['register_form'] = register_form
