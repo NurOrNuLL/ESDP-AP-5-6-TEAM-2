@@ -90,7 +90,7 @@
                                     data-org_id="{{ organization.id }}"
                                     data-bs-target="#own_modal">Удалить</a><br>
                                     <a class="btn btn-secondary" style="margin-left: 15px"
-                                        href="{% url 'order_create' orgID tpID contrID own.pk %}">Заказ-наряд</a>
+                                        href="{% url 'order_create_stage1' orgID tpID %}?contractor={{ contractor.id }}&own={{ own.id }}">Заказ-наряд</a>
                             </td>
                         </tr>
                     {% include 'own/own_delete_modal.html' %}
