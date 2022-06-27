@@ -16,7 +16,8 @@ from .nomenclature.views import (
     NomenclatureExportView,
     NomenclatureFormForImpost,
     NomenclatureDownloadView,
-    NomenclatureProgressView
+    NomenclatureProgressView,
+    NomenclatureNameUpdateApiView, NomenclatureNameConcurrencyUpdateApiView
 )
 from .own.views import (
     OwnDeleteView, OwnCreate,
@@ -71,6 +72,12 @@ nomenclature_urls = [
         'nomenclature/list/', NomenclaturesServiceListView.as_view(),
         name="nomenclature_list"
     ),
+    path('nomenclature/<int:pk>/update/', NomenclatureNameUpdateApiView.as_view(), name='nomenclature_update'),
+    path(
+        'nomenclature/<int:pk>/update/concurrency/',
+        NomenclatureNameConcurrencyUpdateApiView.as_view(),
+        name="nomenclature_update_concurrency"
+    )
 ]
 
 trade_point_urls = [

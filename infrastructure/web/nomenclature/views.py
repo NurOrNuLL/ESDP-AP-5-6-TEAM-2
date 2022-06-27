@@ -1,15 +1,15 @@
 import tablib
+from concurrency.api import disable_concurrency
 from django.views.generic import TemplateView
 from services.employee_services import EmployeeServices
 from .forms import NomenclatureForm, NomenclatureImportForm
 from django.shortcuts import render, redirect, reverse
 from services.nomenclature_services import NomenclatureService
 from models.nomenclature.models import Nomenclature, SERVICE_JSON_FIELD_SCHEMA
-from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.paginator import Paginator
-from .serializers import NomenclatureFilterSerializer
+from .serializers import NomenclatureFilterSerializer, NomenclatureUpdateSerializer
 from models.nomenclature.category_choices import CATEGORY_CHOICES, MARK_CHOICES
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
@@ -21,6 +21,8 @@ from ..nomenclature.tasks.import_exel import import_exel_file
 from ..nomenclature.tasks.export_exel import export_exel_file
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from django.core.cache import cache
+from rest_framework.generics import GenericAPIView
+from concurrency.exceptions import RecordModifiedError
 
 
 class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
@@ -266,3 +268,47 @@ class NomenclatureProgressView(ResetOrderCreateFormDataMixin, TemplateView):
                 content_type='application/json'
             )
         raise Http404
+
+
+class NomenclatureNameUpdateApiView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = NomenclatureUpdateSerializer
+
+    def get(self, request, *args, **kwargs):
+        nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+        serializer = NomenclatureUpdateSerializer(nomenclature)
+        return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+        serializer = NomenclatureUpdateSerializer(nomenclature, data=request.data)
+
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except RecordModifiedError:
+                nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+                return Response({
+                    'current_data': {'name': nomenclature.name},
+                    'new_data': {'name': request.data['name']},
+                    'error': 'Наименование номенклатуры было изменено другим пользователем! Вы хотите повторно изменить наименование?'
+                })
+            else:
+                nomenclature.name = serializer.data['name']
+                nomenclature.save()
+
+                return Response(serializer.data)
+        return Response(serializer.errors)
+
+
+class NomenclatureNameConcurrencyUpdateApiView(GenericAPIView):
+    serializer_class = NomenclatureUpdateSerializer
+
+    def patch(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+
+        with disable_concurrency(nomenclature):
+            nomenclature.name = request.data['name']
+            nomenclature.save()
+
+            return Response(request.data)
