@@ -68,7 +68,7 @@
                 <thead>
                     <tr>
                         <th scope="col">Название услуги</th>
-                        <th scope="col">Катагория</th>
+                        <th scope="col">Категория</th>
                         <th scope="col">Марка</th>
                         <th scope="col">Мастера</th>
                         <th scope="col">Гарантия</th>
@@ -82,8 +82,13 @@
                             <td>{{ job|get_item:'Категория услуги' }}</td>
                             <td>{{ job|get_item:'Марка услуги' }}</td>
                             <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
-                            <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                            <th>{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                            {% if job|get_item:'Гарантия' %}
+                                <td>На гарантии</td>
+                                <th><s>{{ job|get_item:'Цена услуги' }}</s></th>
+                            {% else %}
+                                <td></td>
+                                <th>{{ job|get_item:'Цена услуги' }}</th>
+                            {% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>

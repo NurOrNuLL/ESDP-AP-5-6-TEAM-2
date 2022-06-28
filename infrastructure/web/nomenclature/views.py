@@ -1,15 +1,15 @@
 import tablib
+from concurrency.api import disable_concurrency
 from django.views.generic import TemplateView
 from services.employee_services import EmployeeServices
 from .forms import NomenclatureForm, NomenclatureImportForm
 from django.shortcuts import render, redirect, reverse
 from services.nomenclature_services import NomenclatureService
 from models.nomenclature.models import Nomenclature, SERVICE_JSON_FIELD_SCHEMA
-from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from django.core.paginator import Paginator
-from .serializers import NomenclatureFilterSerializer
+from .serializers import NomenclatureFilterSerializer, NomenclatureUpdateSerializer
 from models.nomenclature.category_choices import CATEGORY_CHOICES, MARK_CHOICES
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse, Http404
@@ -21,12 +21,22 @@ from ..nomenclature.tasks.import_exel import import_exel_file
 from ..nomenclature.tasks.export_exel import export_exel_file
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from django.core.cache import cache
+from rest_framework.generics import GenericAPIView
+from concurrency.exceptions import RecordModifiedError
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureImportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     """Импорт прайса для выбранной номенклатуры"""
     template_name = 'nomenclature/list.html'
     form_class = NomenclatureImportForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -69,7 +79,7 @@ class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
                 )
 
 
-class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'nomenclature/list.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -131,9 +141,16 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
         }
 
 
-class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
     form_class = NomenclatureForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
@@ -159,9 +176,16 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureExportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -183,10 +207,17 @@ class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):
         )
 
 
-class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     """При удачном выполнении задачи выдает загруженный файл"""
     template_name = 'nomenclature/list.html'
     services_file = ''
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -244,7 +275,7 @@ class NomenclatureFormForImpost(GenericAPIView):
         )
 
 
-class NomenclatureProgressView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureProgressView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     """Для получения данных о 100% загрузке"""
     template_name = 'nomenclature/list.html'
 
@@ -266,3 +297,47 @@ class NomenclatureProgressView(ResetOrderCreateFormDataMixin, TemplateView):
                 content_type='application/json'
             )
         raise Http404
+
+
+class NomenclatureNameUpdateApiView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = NomenclatureUpdateSerializer
+
+    def get(self, request, *args, **kwargs):
+        nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+        serializer = NomenclatureUpdateSerializer(nomenclature)
+        return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+        serializer = NomenclatureUpdateSerializer(nomenclature, data=request.data)
+
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except RecordModifiedError:
+                nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+                return Response({
+                    'current_data': {'name': nomenclature.name},
+                    'new_data': {'name': request.data['name']},
+                    'error': 'Наименование номенклатуры было изменено другим пользователем! Вы хотите повторно изменить наименование?'
+                })
+            else:
+                nomenclature.name = serializer.data['name']
+                nomenclature.save()
+
+                return Response(serializer.data)
+        return Response(serializer.errors)
+
+
+class NomenclatureNameConcurrencyUpdateApiView(GenericAPIView):
+    serializer_class = NomenclatureUpdateSerializer
+
+    def patch(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        nomenclature = NomenclatureService.get_nomenclature_by_id(self.kwargs.get('pk'))
+
+        with disable_concurrency(nomenclature):
+            nomenclature.name = request.data['name']
+            nomenclature.save()
+
+            return Response(request.data)

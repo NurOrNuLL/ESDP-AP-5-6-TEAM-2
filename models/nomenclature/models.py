@@ -1,5 +1,6 @@
 from django.db import models
 from .validators import JSONSchemaValidator
+from concurrency.fields import AutoIncVersionField
 
 SERVICE_JSON_FIELD_SCHEMA = {
     'schema': 'http://json-schema.org/draft-07/schema#',
@@ -36,6 +37,7 @@ SERVICE_JSON_FIELD_SCHEMA = {
 
 class Nomenclature(models.Model):
     """Номенклатура"""
+    version = AutoIncVersionField()
     name = models.CharField(
         max_length=100, null=False, blank=False, unique=True,
         verbose_name='Наименование номенклатуры'

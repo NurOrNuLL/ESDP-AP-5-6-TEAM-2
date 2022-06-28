@@ -1,17 +1,14 @@
+import ast
 import base64
-from datetime import datetime, date
-
 from concurrency.api import disable_concurrency
 from concurrency.exceptions import RecordModifiedError
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.request import HttpRequest
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import TemplateView
 from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
-from django.core.files import File
 from models.employee.models import Employee
 from services.organization_services import OrganizationService
 from services.trade_point_services import TradePointServices
@@ -22,14 +19,22 @@ from .tasks import upload
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class EmployeeCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     template_name = 'employee/employee_create.html'
     form_class = EmployeeForm
     initial_data = {
         'role': 'Мастер'
     }
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -49,6 +54,7 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
     def post(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
+        context = self.get_context_data(**kwargs)
         form = self.form_class(request.POST, request.FILES)
 
         image = request.FILES.get('image').read()
@@ -58,13 +64,26 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
         request.session['image'] = encoded_image.decode('utf-8')
 
         if form.is_valid():
-            employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
-            return redirect(
-                'employee_detail',
-                orgID=self.kwargs['orgID'],
-                tpID=self.kwargs['tpID'],
-                empUID=employee.uuid
-            )
+            iin = list(form.cleaned_data['IIN'])
+            birth = iin[:6:]
+            brd = list(str(form.cleaned_data['birthdate']))
+            birthdate = brd[2::]
+            for i in range(2):
+                birthdate.remove('-')
+            birthdates = ''.join(birthdate)
+            births = ''.join(birth)
+            if births != birthdates:
+                form.errors.IIN = 'Введите верную дату рождения или ИИН'
+                context['form'] = form
+                return render(request, self.template_name, context)
+            else:
+                employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
+                return redirect(
+                    'employee_detail',
+                    orgID=self.kwargs['orgID'],
+                    tpID=self.kwargs['tpID'],
+                    empUID=employee.uuid
+                )
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = form
@@ -79,16 +98,18 @@ class EmployeeImageUpdateView(GenericAPIView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
 
-        image = request.session.get('image')
-        del request.session['image']
+        if request.session.get('image'):
+            image = request.session.get('image')
+            del request.session['image']
 
-        task = upload.delay(image, employee.uuid)
-        return Response(
-            {"task_id": task.id},
-            content_type='application/json')
+            task = upload.delay(image, employee.IIN)
+            return Response(
+                {"task_id": task.id},
+                content_type='application/json')
+        return Response('Error')
 
 
-class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):
+class EmployeeList(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'employee/employees.html'
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -111,7 +132,7 @@ class EmployeeFilterApiView(generics.ListAPIView):
         return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))
 
 
-class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
+class EmployeeDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'employee/employee_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -131,9 +152,16 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class EmployeeUpdate(TemplateView):
+class EmployeeUpdate(UserPassesTestMixin, TemplateView):
     template_name = 'employee/employee_update.html'
     form_class = EmployeeForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
@@ -170,21 +198,43 @@ class EmployeeUpdate(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context['form'] = self.get_file_form()
-        context['image_remains'] = self.get_file_form()['image'].value()
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
         context['orgID'] = self.kwargs['orgID']
-        self.request.session['image_remains'] = self.get_file_form()['image'].value().__str__()
+
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request, *args, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = self.get_context_data()
         form = self.get_file_form()
+        if request.FILES.get('image'):
+            image = request.FILES.get('image').read()
+            encoded_image = base64.b64encode(image)
+            request.session['image'] = encoded_image.decode('utf-8')
+
         if form.is_valid():
             try:
-                form.save()
-                EmployeeServices.update_employee(self.object.uuid, form.cleaned_data)
-                return redirect('employee_detail', empUID=self.object.uuid, orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+                iin = list(form.cleaned_data['IIN'])
+                birth = iin[:6:]
+                brd = list(str(form.cleaned_data['birthdate']))
+                birthdate = brd[2::]
+                for i in range(2):
+                    birthdate.remove('-')
+                birthdates = ''.join(birthdate)
+                births = ''.join(birth)
+                if births != birthdates:
+                    form.errors.IIN = 'Введите верную дату рождения или ИИН'
+                    context['form'] = form
+                    return render(request, self.template_name, context)
+                else:
+                    form.save()
+                    EmployeeServices.update_employee_without_image(
+                        self.object.uuid, form.cleaned_data
+                    )
+                    return redirect(
+                    'employee_detail', empUID=self.object.uuid,
+                    orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
+                    )
             except RecordModifiedError:
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
@@ -199,7 +249,15 @@ class EmployeeUpdate(TemplateView):
             return render(request, self.template_name, context)
 
 
-class EmployeeConcurrencyUpdate(View):
+class EmployeeConcurrencyUpdate(UserPassesTestMixin, View):
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
     def post(self, request, *args, **kwargs):
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         with disable_concurrency(employee):

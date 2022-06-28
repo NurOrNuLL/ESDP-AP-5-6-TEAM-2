@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+	<h1>Сформировать отчет</h1>
+	<hr>
+    <form method="post" id="reportForm">
+        {% csrf_token %}
+        <div class="d-flex mb-3" style="width: 555px">
+            <div class="input-group p-0 me-2 border-secondary">
+                <span class="input-group-text border-secondary">От</span>
+                <input type="date" class="form-control border-secondary" id="from_date" value="{{ form.from_date.value }}">
+            </div>
+            <div class="input-group p-0 mx-2">
+                <span class="input-group-text border-secondary">До</span>
+                <input type="date" class="form-control border-secondary" id="to_date" value="{{ form.to_date.value }}">
+            </div>
+            <input type="number" class="d-none"id="tpID" value="{{ tpID }}">
+            <button type="submit" class="btn btn-primary ms-2">Сформировать</button>
+        </div>
+    </form>
+	<div class="card border-secondary" style="min-height: 600px;">
+        {% if report %}
+            <div class="card-header bg-transparent">
+                <h3 class="my-3">Отчет за период {{ from_date|date:'d.m.Y' }} - {{ to_date|date:'d.m.Y' }}</h3>
+            </div>
+            <div class="card-body"></div>
+        {% else %}
+            <div class="card-body">
+                <div id="bodyBlock">
+                    <h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>
+                </div>
+            </div>
+        {% endif %}
+	</div>
+
+{% endblock content %}
+
+
+{% block js_block %}
+
+    <script>
+        var tpID = {{ tpID }};
+    </script>
+	<script src="{% static 'js/report/report_task_ajax.js' %}"></script>
+
+{% endblock js_block %}

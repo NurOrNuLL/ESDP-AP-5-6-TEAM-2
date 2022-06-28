@@ -1,6 +1,5 @@
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView, View
-
 from services.employee_services import EmployeeServices
 from .forms import TradePointForm
 from services.trade_point_services import TradePointServices
@@ -34,7 +33,7 @@ class TradePointCreate(ResetOrderCreateFormDataMixin, TemplateView):
         form = self.form_class(request.POST)
         if form.is_valid():
             TradePointServices.create_trade_point(form.cleaned_data)
-            return redirect('home_redirect')
+            return redirect('nomenclature_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
 
         return render(request, self.template_name, {
             'form': form,
@@ -63,7 +62,6 @@ class TradePointUpdate(ResetOrderCreateFormDataMixin, TemplateView):
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_clean_id(tpID=self.kwargs['trade_pointID'])
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
         context['nomenclatures'] = NomenclatureService.get_nomenclatures_by_organization(self.kwargs)
@@ -75,7 +73,7 @@ class TradePointUpdate(ResetOrderCreateFormDataMixin, TemplateView):
             'version': trade_point.version,
             'name': trade_point.name,
             'address': trade_point.address,
-            'nomenclature': trade_point.nomenclature,
+            'nomenclature': trade_point.nomenclature.all(),
         }
         return initial
 
@@ -84,23 +82,28 @@ class TradePointUpdate(ResetOrderCreateFormDataMixin, TemplateView):
         context = self.get_context_data(**self.kwargs)
         form = self.form_class(initial=self.get_inital(trade_pointID=self.kwargs['trade_pointID']))
         context['form'] = form
+        context['trade_point'] = TradePointServices.get_trade_point_by_clean_id(tpID=self.kwargs['trade_pointID'])
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict
              ) -> HttpResponse or HttpResponseRedirect:
         trade_point = TradePointServices.get_trade_point_by_clean_id(self.kwargs['trade_pointID'])
 
-        context = self.get_context_data(**self.kwargs)
         form = self.form_class(data=request.POST, instance=trade_point)
 
         if form.is_valid():
             try:
                 TradePointServices.update_trade_point(trade_point, form.cleaned_data)
-                return redirect('trade_point_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
             except RecordModifiedError:
+                context = self.get_context_data(**self.kwargs)
                 context['form'] = form.cleaned_data
+                context['trade_point'] = TradePointServices.get_trade_point_by_clean_id(tpID=self.kwargs['trade_pointID'])
                 return render(request, template_name='trade_point/trade_point_update_compare.html', context=context)
+            else:
+                TradePointServices.update_trade_point(trade_point, form.cleaned_data)
+                return redirect('trade_point_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
         else:
+            context = self.get_context_data(**self.kwargs)
             context['form'] = form
             return render(request, template_name=self.template_name, context=context)
 
@@ -110,10 +113,9 @@ class TradePointUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, View):
     def post(self, request: HttpRequest, *args: list, **kwargs: dict
              ) -> HttpResponse or HttpResponseRedirect:
         trade_point = TradePointServices.get_trade_point_by_clean_id(tpID=self.kwargs['trade_pointID'])
-        nomenclature = NomenclatureService.get_nomenclature_by_id(nomenclature_id=request.POST.get('nomenclature_id'))
         with disable_concurrency(trade_point):
             trade_point.name = request.POST.get('name')
             trade_point.address = request.POST.get('address')
-            trade_point.nomenclature = nomenclature
             trade_point.save()
+            trade_point.nomenclature.set(request.POST.get('nomenclature'))
             return redirect('trade_point_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])

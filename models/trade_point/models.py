@@ -16,9 +16,9 @@ class TradePoint(models.Model):
         'organization.Organization', verbose_name="Организация",
         on_delete=models.PROTECT
     )
-    nomenclature = models.ForeignKey(
+    nomenclature = models.ManyToManyField(
         'nomenclature.Nomenclature', verbose_name='Номенклатура',
-        on_delete=models.PROTECT, related_name='trade_points'
+        related_name='trade_points'
     )
 
     def __str__(self):

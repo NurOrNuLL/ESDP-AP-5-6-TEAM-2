@@ -52,7 +52,7 @@ if (typeof initialJobs === 'object' && initialJobs.length != 0) {
                                             <input class="form-check-input garanty" type="checkbox" role="switch">
                                         </div>
                                     </td>
-                                    <th><span class="Price">${initialJobs[i]['Цена услуги']}</span><span> ₸</span></th>
+                                    <th><span class="Price">${initialJobs[i]['Цена услуги']}</span><span> </span></th>
                                 </tr>`;
     }
 
@@ -63,28 +63,6 @@ if (typeof initialJobs === 'object' && initialJobs.length != 0) {
     let totalPrice = document.getElementById('totalPrice');
     let total = 0;
 
-    for (let j = 0; j < employeeSelects.length; j++) {
-        const empSelect = employeeSelects[j];
-
-        empSelect.addEventListener('change', e => {
-            let selectedValues = [];
-            checkedEmployees[j].innerHTML = ''
-
-            if (empSelect.selectedOptions.length === 0) {
-                checkedEmployees[j].innerHTML = 'Мастера не выбранны!'
-            }
-
-            for (let i = 0; i < empSelect.selectedOptions.length; i++) {
-                selectedValues.push(empSelect.selectedOptions[i].value);
-                checkedEmployees[j].innerHTML += `<div>${empSelect.selectedOptions[i].innerText}</div>`
-            }
-
-
-            empSelect.parentElement.parentElement.parentElement.dataset['serviceEmployees'] = selectedValues;
-            serviceOptions[eval(empSelect.parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceEmployees'] = selectedValues;
-        })
-    }
-
     for (let i = 0; i < price.length; i++) {
         if (!(initialJobs[i]['Гарантия'])) {
             total += eval(price[i].innerText);
@@ -92,7 +70,13 @@ if (typeof initialJobs === 'object' && initialJobs.length != 0) {
     }
 
     for (let i = 0; i < initialJobs.length; i++) {
-        checkedEmployees[i].innerHTML = '';
+        if (initialJobs[i]['Мастера'].length != 0) {
+            checkedEmployees[i].innerHTML = '';
+        }
+        else {
+            checkedEmployees[i].innerHTML = 'Мастера не выбраны!';
+        }
+
         let employeesIIN = [];
 
         for (employee of initialJobs[i]['Мастера']) {
@@ -100,12 +84,12 @@ if (typeof initialJobs === 'object' && initialJobs.length != 0) {
         }
 
         employees.forEach(emp => {
-            if (employeesIIN.indexOf(eval(emp.IIN)) != -1) {
-                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
-                checkedEmployees[i].innerHTML += `<div>${emp.name} ${emp.surname}</div>`
+            if (employeesIIN.indexOf(emp.IIN) != -1) {
+                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}" selected>${emp.name} ${emp.surname}</option>`
+                checkedEmployees[i].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${emp.name[0].toUpperCase()}. ${emp.surname}</span>`
             }
             else {
-                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                employeeSelects[i].innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
             }
         })
 
@@ -124,19 +108,41 @@ if (typeof initialJobs === 'object' && initialJobs.length != 0) {
                 serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'true';
                 price[i].style.cssText = 'text-decoration: line-through;';
                 total -= eval(price[i].innerHTML);
-                totalPrice.innerText = `${total} ₸`;
+                totalPrice.innerText = `${total} `;
             }
             else {
                 garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceGaranty'] = 'false';
                 serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'false';
                 price[i].style.cssText = 'text-decoration: none;';
                 total += eval(price[i].innerHTML);
-                totalPrice.innerText = `${total} ₸`;
+                totalPrice.innerText = `${total} `;
             }
         })
     }
 
-    totalPrice.innerText = `${total} ₸`;
+    for (let j = 0; j < employeeSelects.length; j++) {
+        const empSelect = employeeSelects[j];
+
+        empSelect.addEventListener('change', e => {
+            let selectedValues = [];
+            checkedEmployees[j].innerHTML = ''
+
+            if (empSelect.selectedOptions.length === 0) {
+                checkedEmployees[j].innerHTML = 'Мастера не выбранны!'
+            }
+
+            for (let i = 0; i < empSelect.selectedOptions.length; i++) {
+                selectedValues.push(empSelect.selectedOptions[i].value);
+                checkedEmployees[j].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${empSelect.selectedOptions[i].dataset['empName'].toUpperCase()} ${empSelect.selectedOptions[i].dataset['empSurname']}</span>`
+            }
+
+
+            empSelect.parentElement.parentElement.parentElement.dataset['serviceEmployees'] = selectedValues;
+            serviceOptions[eval(empSelect.parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceEmployees'] = selectedValues;
+        })
+    }
+
+    totalPrice.innerText = `${total} `;
 
     $('.selectpicker').selectpicker('render');
 }
@@ -165,7 +171,7 @@ service.addEventListener('change', e => {
                                                         <input class="form-check-input garanty" type="checkbox" role="switch">
                                                     </div>
                                                 </td>
-                                                <th><span class="Price">${service.selectedOptions[i].dataset['servicePrice']}</span><span> ₸</span></th>
+                                                <th><span class="Price">${service.selectedOptions[i].dataset['servicePrice']}</span><span> </span></th>
                                             </tr>`;
                 }
             }
@@ -183,15 +189,15 @@ service.addEventListener('change', e => {
 
 
                     if (employeesIIN.indexOf(emp.IIN) != -1) {
-                        empSelect.innerHTML += `<option value="${emp.IIN}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
-                        checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML += `<div>${emp.name} ${emp.surname}</div>`
+                        empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" selected data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                        checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${emp.name[0]}. ${emp.surname}</span>`
                     }
                     else {
-                        empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                        empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                     }
                 }
                 else {
-                    empSelect.innerHTML += `<option value="${emp.IIN}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
+                    empSelect.innerHTML += `<option value="${emp.IIN}" data-emp-name="${emp.name[0]}." data-emp-surname="${emp.surname}" data-subtext="${emp.IIN}">${emp.name} ${emp.surname}</option>`
                     checkedEmployees[Object.values(employeeSelects).indexOf(empSelect)].innerHTML = 'Мастера не выбранны!';
                 }
             })
@@ -212,7 +218,7 @@ service.addEventListener('change', e => {
 
                 for (let i = 0; i < empSelect.selectedOptions.length; i++) {
                     selectedValues.push(empSelect.selectedOptions[i].value);
-                    checkedEmployees[j].innerHTML += `<div>${empSelect.selectedOptions[i].innerText}</div>`
+                    checkedEmployees[j].innerHTML += `<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">${empSelect.selectedOptions[i].dataset['empName'].toUpperCase()} ${empSelect.selectedOptions[i].dataset['empSurname']}</span>`
                 }
 
 
@@ -247,19 +253,19 @@ service.addEventListener('change', e => {
                     serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'true';
                     price[i].style.cssText = 'text-decoration: line-through;';
                     total -= eval(price[i].innerHTML);
-                    totalPrice.innerText = `${total} ₸`;
+                    totalPrice.innerText = `${total} `;
                 }
                 else {
                     garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceGaranty'] = 'false';
                     serviceOptions[eval(garantyBtns[i].parentElement.parentElement.parentElement.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'false';
                     price[i].style.cssText = 'text-decoration: none;';
                     total += eval(price[i].innerHTML);
-                    totalPrice.innerText = `${total} ₸`;
+                    totalPrice.innerText = `${total} `;
                 }
             })
         }
 
-        totalPrice.innerText = `${total} ₸`;
+        totalPrice.innerText = `${total} `;
     }
     else {
         tableBody.innerHTML = '';
@@ -290,7 +296,7 @@ serviceEmployeeForm.addEventListener('submit', e => {
 
             parsed_employees.push({
                 'Наименование': employeeNameSurname,
-                'ИИН': serviceRow.dataset['serviceEmployees'].split(',').map(element => {return eval(element)})[j]
+                'ИИН': serviceRow.dataset['serviceEmployees'].split(',').map(element => {return element})[j]
             })
         }
 
@@ -319,8 +325,3 @@ serviceEmployeeForm.addEventListener('submit', e => {
 
     serviceEmployeeForm.submit();
 })
-
-
-if (errors != "") {
-    alert('Вы не заполнили услуги или мастеров для услуг! Попробуйте еще раз.')
-}
