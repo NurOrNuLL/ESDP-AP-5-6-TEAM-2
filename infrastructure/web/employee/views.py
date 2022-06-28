@@ -1,19 +1,14 @@
 import ast
 import base64
-from datetime import datetime, date
-from django.core.exceptions import ValidationError
 from concurrency.api import disable_concurrency
 from concurrency.exceptions import RecordModifiedError
 from django.http import HttpResponseRedirect, HttpResponse
 from django.http.request import HttpRequest
 from django.shortcuts import render, redirect
-from django.urls import reverse
 from django.views import View
-from django.views.generic import TemplateView, UpdateView
-
+from django.views.generic import TemplateView
 from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
-from django.core.files import File
 from models.employee.models import Employee
 from services.organization_services import OrganizationService
 from services.trade_point_services import TradePointServices
@@ -24,14 +19,22 @@ from .tasks import upload
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class EmployeeCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     template_name = 'employee/employee_create.html'
     form_class = EmployeeForm
     initial_data = {
         'role': 'Мастер'
     }
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -70,12 +73,10 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
             birthdates = ''.join(birthdate)
             births = ''.join(birth)
             if births != birthdates:
-                print('error')
                 form.errors.IIN = 'Введите верную дату рождения или ИИН'
                 context['form'] = form
                 return render(request, self.template_name, context)
             else:
-                print('else')
                 employee = EmployeeServices.create_employee_without_image(form.cleaned_data)
                 return redirect(
                     'employee_detail',
@@ -84,7 +85,6 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, TemplateView):
                     empUID=employee.uuid
                 )
         else:
-            print('else 2')
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data
@@ -109,7 +109,7 @@ class EmployeeImageUpdateView(GenericAPIView):
         return Response('Error')
 
 
-class EmployeeList(ResetOrderCreateFormDataMixin, TemplateView):
+class EmployeeList(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'employee/employees.html'
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -132,7 +132,7 @@ class EmployeeFilterApiView(generics.ListAPIView):
         return Employee.objects.filter(tradepoint=self.kwargs.get('tpID'))
 
 
-class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
+class EmployeeDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'employee/employee_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -152,9 +152,16 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class EmployeeUpdate(TemplateView):
+class EmployeeUpdate(UserPassesTestMixin, TemplateView):
     template_name = 'employee/employee_update.html'
     form_class = EmployeeForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
@@ -216,7 +223,6 @@ class EmployeeUpdate(TemplateView):
                 birthdates = ''.join(birthdate)
                 births = ''.join(birth)
                 if births != birthdates:
-                    print('error')
                     form.errors.IIN = 'Введите верную дату рождения или ИИН'
                     context['form'] = form
                     return render(request, self.template_name, context)
@@ -243,7 +249,15 @@ class EmployeeUpdate(TemplateView):
             return render(request, self.template_name, context)
 
 
-class EmployeeConcurrencyUpdate(View):
+class EmployeeConcurrencyUpdate(UserPassesTestMixin, View):
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
     def post(self, request, *args, **kwargs):
         employee = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         with disable_concurrency(employee):
