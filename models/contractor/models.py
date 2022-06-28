@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from localflavor.generic.models import BICField, IBANField
-from .validators import JSONSchemaValidator, validate_iin, upper_word
+from .validators import JSONSchemaValidator, validate_iin
 from concurrency.fields import AutoIncVersionField
 
 
