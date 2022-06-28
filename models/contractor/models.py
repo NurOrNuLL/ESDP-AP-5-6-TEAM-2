@@ -28,7 +28,7 @@ class Contractor(models.Model):
     version = AutoIncVersionField()
     name = models.CharField(
         max_length=150, null=False, blank=False,
-        unique=True, verbose_name='Наименование'
+        unique=True, verbose_name='Наименование', validators=[upper_word]
     )
     address = models.CharField(
         max_length=250, null=True, blank=True,

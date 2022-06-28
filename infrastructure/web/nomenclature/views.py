@@ -86,7 +86,7 @@ class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, LoginRequiredM
         context = super().get_context_data(**kwargs)
         context['categories'] = CATEGORY_CHOICES
         context['marks'] = MARK_CHOICES
-        context['nomenclatures'] = NomenclatureService.get_all_nomenclatures()
+        context['nomenclatures'] = NomenclatureService.get_nomenclatures_by_tradepoint_id(self.kwargs['tpID'])
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
             self.request, self.request.user.uuid
         )
@@ -323,9 +323,6 @@ class NomenclatureNameUpdateApiView(GenericAPIView):
                     'error': 'Наименование номенклатуры было изменено другим пользователем! Вы хотите повторно изменить наименование?'
                 })
             else:
-                nomenclature.name = serializer.data['name']
-                nomenclature.save()
-
                 return Response(serializer.data)
         return Response(serializer.errors)
 
@@ -340,4 +337,7 @@ class NomenclatureNameConcurrencyUpdateApiView(GenericAPIView):
             nomenclature.name = request.data['name']
             nomenclature.save()
 
-            return Response(request.data)
+            return Response({
+                'name': nomenclature.name,
+                'version': nomenclature.version
+            })

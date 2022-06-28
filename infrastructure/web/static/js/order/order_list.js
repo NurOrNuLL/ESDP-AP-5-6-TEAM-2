@@ -2,7 +2,7 @@ let beforeTableBlock = document.getElementById('beforeTable');
 
 function render(search, date, status, payment_status, page, limit) {
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/order/list/filter?search=${search}&date=${date}&status=${status}&payment_status=${payment_status}&page=${page}&limit=${limit}`,
+        url: `${locationHost}/org/1/tp/${tpID}/order/list/filter?search=${search}&date=${date}&status=${status}&payment_status=${payment_status}&page=${page}&limit=${limit}`,
         method: 'get',
         async: false,
         success: (data) => {
@@ -150,7 +150,7 @@ $(function () {
             e.stopPropagation();
             var data = $(this).serialize();
 
-            $.post(`http://127.0.0.1:8000/org/1/tp/${tpID}/order/${idClicked}/payment/`, data);
+            $.post(`${locationHost}/org/1/tp/${tpID}/order/${idClicked}/payment/`, data);
 
         })
     })

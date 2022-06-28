@@ -11,14 +11,7 @@
                     <div class="modal-body">
                         <div class="card" style="background-color: transparent !important; border: 0;">
                             <div class="card-body">
-                                <div class="mb-3">
-                                    <select id="nomenclature_id" name="nomenclature_id"
-                                            class="form-select border-secondary bg-transparent">
-                                        {% for nomenclature in nomenclatures %}
-                                            <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
+                                <input type="number" class="d-none" name="nomenclature_id" id="nomIDExport">
                                 <div class="mb-3">
                                     <h6>Выберите расширение</h6>
                                     <select class="form-select" aria-label="Default select example" name="extension"
@@ -27,14 +20,14 @@
                                         <option value="xls">xls</option>
                                     </select>
                                 </div>
-                            </div>
-                        </div>
-                        <div id="export-progress-container" class="col-md-12">
-                            <div id="export-progress-message">Ожидание события . . .</div>
-                            <div class="progress">
-                                <div id="export-progress-bar"
-                                     class="progress-bar progress-bar-striped progress-bar-animated"
-                                     role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <div id="export-progress-container">
+                                    <div id="export-progress-message">Ожидание события . . .</div>
+                                    <div class="progress">
+                                        <div id="export-progress-bar"
+                                             class="progress-bar progress-bar-striped progress-bar-animated"
+                                             role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
