@@ -3,7 +3,8 @@ import uuid
 from concurrency.fields import AutoIncVersionField
 from django.core.validators import RegexValidator
 from django.db import models
-from .validators import birthdate_validator, validate_iin
+from .validators import birthdate_validator, validate_iin, upper_name, latin_validate, upper_surname, number_validate, \
+    latin_surname_validate, len_phone_validate, number_surname_validate
 
 
 class Employee(models.Model):
@@ -22,11 +23,11 @@ class Employee(models.Model):
     )
     name = models.CharField(
         max_length=50, null=False, blank=False,
-        verbose_name='Имя'
+        verbose_name='Имя', validators=[upper_name, latin_validate, number_validate]
     )
     surname = models.CharField(
         max_length=50, null=False, blank=False,
-        verbose_name='Фамилия'
+        verbose_name='Фамилия', validators=[upper_surname, latin_surname_validate, number_surname_validate]
     )
     role = models.CharField(max_length=150, choices=ROLE,
                             null=False, blank=False)
@@ -43,7 +44,7 @@ class Employee(models.Model):
     )
     phone = models.CharField(
         max_length=100, null=False, blank=False,
-        verbose_name='Телефон'
+        verbose_name='Телефон', validators=[len_phone_validate]
     )
     birthdate = models.DateField(validators=[birthdate_validator])
     tradepoint = models.ForeignKey(
