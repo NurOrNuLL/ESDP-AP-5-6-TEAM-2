@@ -5,13 +5,15 @@ var modalString = document.getElementById('ownModalQuestion')
 btnDeleteList.forEach(element => {
     element.addEventListener('click', (e) => {
         var ownIdInput = document.getElementById('own_id');
-        var ownId = element.dataset['own_id'];
 
+        var ownId = element.dataset['own_id'];
+        var ownName = element.dataset['own_name'];
+        var ownAutoNumber = element.dataset['own_auto_number'];
         ownIdInput.value = ownId;
         ownIdInput.dataset['orgId'] = element.dataset['org_id'];
         ownIdInput.dataset['contrId'] = element.dataset['contr_id'];
 
-        modalString.innerHTML = `<p>Собственность #${ownIdInput.value} будет удалена из списка навсегда. Вы уверены?</p>`
+        modalString.innerHTML = `<p>Автомобиль: ${ownName} <br>Госномер:  ${ownAutoNumber} <br><br>Будет удален из списка навсегда. Вы уверены?</p>`
     })
 })
 

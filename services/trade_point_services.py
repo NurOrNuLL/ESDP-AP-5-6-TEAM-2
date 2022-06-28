@@ -36,6 +36,6 @@ class TradePointServices:
     def update_trade_point(trade_point: TradePoint, data: dict) -> TradePoint:
         trade_point.name = data['name']
         trade_point.address = data['address']
-        trade_point.nomenclature = NomenclatureService.get_nomenclature_by_id(nomenclature_id=data['nomenclature'].id)
         trade_point.save()
+        trade_point.nomenclature.set(data['nomenclature'])
         return trade_point
