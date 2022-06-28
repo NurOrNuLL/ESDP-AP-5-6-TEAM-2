@@ -64,3 +64,4 @@ class ReportPreviewView(UserPassesTestMixin, TemplateView):
             context['form'] = form
 
             return render(request, self.template_name, context)
+
