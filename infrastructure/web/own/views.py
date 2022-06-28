@@ -5,6 +5,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
+
+from services.contractor_services import ContractorService
 from services.organization_services import OrganizationService
 from services.own_services import OwnServices
 from .forms import OwnForm
@@ -72,11 +74,9 @@ class OwnDeleteView(GenericAPIView):
 
 class OwnList(GenericAPIView):
     serializer_class = OwnSerializer
-
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> JsonResponse:
         owns = OwnServices.get_own_by_contr_id(request.GET['contrID'])
         serializer = self.serializer_class(owns, many=True)
-
         return Response(serializer.data)
 
 
@@ -102,3 +102,4 @@ class OwnFilterApiView(generics.ListAPIView):
     search_fields = ['name', 'number', 'comment']
     pagination_class = MyPagination
     queryset = OwnServices.get_owns()
+
