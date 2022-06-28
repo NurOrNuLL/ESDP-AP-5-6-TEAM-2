@@ -41,7 +41,7 @@ from .employee.views import (
 from infrastructure.accounts.views import RegisterView
 from infrastructure.web.report.views import ReportPreviewView
 from infrastructure.web.report.consumers import ReportConsumer
-
+from .payment.views import OrderPayment
 
 nomenclature_urls = [
     path(
@@ -141,6 +141,10 @@ report_websocket_urls = [
     path('report/create', ReportConsumer.as_asgi())
 ]
 
+payment_url = [
+    path('order/<int:ordID>/payment/', OrderPayment.as_view(), name='payment_create')
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
@@ -155,5 +159,6 @@ urlpatterns += own_urls
 urlpatterns += employee_urls
 urlpatterns += order_urls
 urlpatterns += report_urls
+urlpatterns += payment_url
 
 websocket_urlpatterns += report_websocket_urls
