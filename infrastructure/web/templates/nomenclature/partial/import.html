@@ -3,61 +3,86 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="importModalLabel">Загрузка excel файла</h4>
+                    <h4 class="modal-title" id="importModalLabel">Загрузка excel файла в <span id="nomNameImport"></span></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form method="post" enctype="multipart/form-data"
                       action="{% url 'nomenclature_import' orgID=1 tpID=tpID %}" id="importExel">
                     <div class="modal-body">
-                        <div class="card" style="background-color: transparent !important; border: 0;">
+                        <div class="card" style="background-color: transparent !important; border: 0;" id="fileInputDrag">
                             <div class="card-body">
                                 {% csrf_token %}
+                                <input type="number" class="d-none" name="nomenclature_id" id="nomIDImport">
                                 <div class="mb-3">
-                                    <select name="nomenclature_id" class="form-select border-secondary bg-transparent">
-                                        {% for nomenclature in nomenclatures %}
-                                            <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                                <div class="mb-3">
+                                    <div class="form-text text-dark mb-2">Выберите/Перетащите файл .xslx или .xls</div>
                                     <div class="input-group">
                                         <input type="button" class="btn btn-secondary" id="loadFileXlsx" value="Выберите файл"
                                             onclick="document.getElementById('file').click();"/>
-                                        <label for="loadFileXlsx" id="file-name" class="input-group-text bg-transparent border-secondary" style="width: 68%;">файл не выбран</label>
+                                        <label for="loadFileXlsx" id="file-name" class="input-group-text border-0 bg-transparent">файл не выбран</label>
                                     </div>
-                                    <input type="file" style="display: none" id="file"
-                                           class="form-control border-secondary bg-transparent"
+                                    <input type="file" id="file"
+                                           class="d-none"
                                            accept=".xlsx, .xls"
                                            name="excel_file" required>
                                     <script>
-                                        inputElement = document.getElementById('file')
-                                        labelElement = document.getElementById('file-name')
-                                        inputElement.onchange = function (event) {
-                                            var path = inputElement.value;
+                                        let fileInputDrag = document.getElementById('fileInputDrag');
+                                        let fileInput = document.getElementById('file');
+                                        let fileLabel = document.getElementById('file-name');
+
+                                        fileInputDrag.ondragover = e => {
+                                            e.preventDefault();
+                                        }
+
+                                        fileInputDrag.ondragenter = function(evt) {
+                                            fileInputDrag.classList.add('border');
+                                            fileInputDrag.classList.add('border-2');
+                                            fileInputDrag.classList.add('border-primary');
+                                        };
+
+                                        fileInputDrag.onmousemove = function(evt) {
+                                            fileInputDrag.classList.remove('border');
+                                            fileInputDrag.classList.remove('border-3');
+                                            fileInputDrag.classList.remove('border-primary');
+                                        };
+
+                                        fileInputDrag.ondrop = function(evt) {
+                                            fileInput.files = evt.dataTransfer.files;
+                                            fileInputDrag.classList.remove('border');
+                                            fileInputDrag.classList.remove('border-3');
+                                            fileInputDrag.classList.remove('border-primary');
+
                                             if (path) {
-                                                labelElement.innerHTML = path.split(/(\\|\/)/g).pop()
+                                                fileLabel.innerHTML = fileInput.value.split(/(\\|\/)/g).pop()
                                             } else {
-                                                labelElement.innerHTML = 'файл не выбран'
+                                                fileLabel.innerHTML = 'файл не выбран'
+                                            }
+
+                                            evt.preventDefault();
+                                        };
+
+                                        fileInput.onchange = function (event) {
+                                            if (fileInput.value) {
+                                                fileLabel.innerHTML = fileInput.value.split(/(\\|\/)/g).pop()
+                                            } else {
+                                                fileLabel.innerHTML = 'файл не выбран'
                                             }
                                         }
                                     </script>
-                                    <div class="form-text text-dark">Файл должен быть в расширении .xslx или .xls
+                                </div>
+                                <div id="import-progress-container">
+                                    <div id="import-progress-message">Ожидание события . . .</div>
+                                    <div class="progress">
+                                        <div id="import-progress-bar"
+                                             class="progress-bar progress-bar-striped progress-bar-animated"
+                                             role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div id="import-progress-container" class="col-md-12">
-                            <div id="import-progress-message">Ожидание события . . .</div>
-                            <div class="progress">
-                                <div id="import-progress-bar"
-                                     class="progress-bar progress-bar-striped progress-bar-animated"
-                                     role="progressbar" aria-valuemin="0" aria-valuemax="100">
+                                <div id="error_text">
+                                </div>
+                                <div id="success_text">
                                 </div>
                             </div>
-                        </div>
-                        <div id="error_text">
-                        </div>
-                        <div id="success_text">
                         </div>
                     </div>
 

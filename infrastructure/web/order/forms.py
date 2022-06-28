@@ -29,11 +29,6 @@ class OrderCreateFormStage2(forms.Form):
     jobs = forms.JSONField(required=True, validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
 
 
-class OrderCreateFormStage3(forms.Form):
-    mileage = forms.CharField()
-    note = forms.Textarea()
-
-
 class OrderCreateFormStage3(forms.ModelForm):
     class Meta:
         model = Order
