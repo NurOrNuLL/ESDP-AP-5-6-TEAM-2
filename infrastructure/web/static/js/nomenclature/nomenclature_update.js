@@ -28,7 +28,8 @@ function editNomenclatureName(name, nomID, nomVersion) {
                 newData.innerText = data['new_data']['name'];
 
                 let updateBtn = document.getElementById('updateBtn');
-                let closeBtn = document.getElementById('closeBtn');
+                let closeBtn1 = document.getElementById('closeBtn1');
+                let closeBtn2 = document.getElementById('closeBtn2');
 
                 updateBtn.addEventListener('click', e => {
                     $.ajax({
@@ -47,7 +48,18 @@ function editNomenclatureName(name, nomID, nomVersion) {
                     })
                 })
 
-                closeBtn.addEventListener('click', e => {
+                closeBtn1.addEventListener('click', e => {
+                    $.ajax({
+                        url: `${locationHost}/org/1/tp/${tpID}/nomenclature/${nomID}/update/`,
+                        method: 'get',
+                        success: (data) => {
+                            nomenclature.selectedOptions[0].innerText = data['name'];
+                            let name = document.getElementById('name');
+                            name.value = data['name'];
+                        }
+                    })
+                })
+                closeBtn2.addEventListener('click', e => {
                     $.ajax({
                         url: `${locationHost}/org/1/tp/${tpID}/nomenclature/${nomID}/update/`,
                         method: 'get',
