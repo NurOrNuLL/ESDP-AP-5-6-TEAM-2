@@ -106,11 +106,9 @@ class OwnDeleteView(GenericAPIView):
 
 class OwnList(GenericAPIView):
     serializer_class = OwnSerializer
-
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> JsonResponse:
         owns = OwnServices.get_own_by_contr_id(request.GET['contrID'])
         serializer = self.serializer_class(owns, many=True)
-
         return Response(serializer.data)
 
 
