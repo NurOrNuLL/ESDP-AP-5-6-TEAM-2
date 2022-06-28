@@ -1,0 +1,22 @@
+{% load static %}
+
+{% block content %}
+    <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                        <div class="card" style="background-color: transparent !important; border: 0;">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <img class="img-fluid" src="{{ emp_image }}" alt="empty"><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

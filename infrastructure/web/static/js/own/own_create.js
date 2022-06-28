@@ -8,11 +8,11 @@ let ownCommentErr = document.getElementById('ownCommentErr');
 
 
 if (partBtn.checked === true) {
-    labelOwnName.innerText = 'Название запчасти'
+    labelOwnName.innerHTML = 'Название запчасти: <span class="text-danger">*</span>'
     fieldOwnNumber.classList.add('d-none');
 }
 else {
-    labelOwnName.innerText = 'Модель автомобиля'
+    labelOwnName.innerHTML = 'Модель автомобиля: <span class="text-danger">*</span>'
     fieldOwnNumber.classList.remove('d-none');
 }
 
@@ -21,7 +21,7 @@ partBtn.addEventListener('click', (e) => {
     partBtn.checked = true;
     autoBtn.checked = false;
 
-    labelOwnName.innerText = 'Название запчасти'
+    labelOwnName.innerHTML = 'Название запчасти: <span class="text-danger">*</span>'
     fieldOwnNumber.classList.add('d-none');
 
     ownNameErr.innerText = "";
@@ -34,7 +34,7 @@ autoBtn.addEventListener('click', (e) => {
     autoBtn.checked = true;
     partBtn.checked = false;
 
-    labelOwnName.innerText = 'Модель автомобиля'
+    labelOwnName.innerHTML = 'Модель автомобиля: <span class="text-danger">*</span>'
     fieldOwnNumber.classList.remove('d-none');
 
     ownNameErr.innerText = "";

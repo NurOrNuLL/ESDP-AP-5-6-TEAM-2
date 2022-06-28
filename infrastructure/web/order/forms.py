@@ -18,6 +18,8 @@ class PaymentForm(forms.ModelForm):
 
 
 class OrderCreateFormStage1(forms.ModelForm):
+    nomenclature = forms.IntegerField(required=True)
+
     class Meta:
         model = Order
         fields = ['contractor', 'own']

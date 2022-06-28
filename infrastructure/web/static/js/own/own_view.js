@@ -7,6 +7,7 @@ let search = document.getElementById('ownSearch');
 let isPart = document.getElementById('isPart');
 let numberTitle = document.getElementById('numberTitle');
 
+
 $.ajax({
     url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=&is_part=${isPart.value}`,
     method: 'GET',
@@ -115,7 +116,6 @@ next.addEventListener('click', (e) => {
             if (item.number == null) {
                 item.number = '';
             }
-
             body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
         })
     },
@@ -148,6 +148,7 @@ search.addEventListener('input', (e) => {
                 next.classList.remove('disabled')
                 back.classList.remove('disabled')
             }
+
             if(data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {

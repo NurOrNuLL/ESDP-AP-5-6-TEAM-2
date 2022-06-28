@@ -23,14 +23,14 @@
     {% endif %}
     <div class="row">
         <div class="col">
-            <label for="own_name" class="form-label" id="own_name_label">Модель автомобиля:</label><br>
+            <label for="own_name" class="form-label" id="own_name_label">Модель автомобиля: <span class="text-danger">*</span></label><br>
             <input type="text" class="form-control border-secondary" id="own_name" name="name" value="{{ form.name.value|default:'' }}">
             <div class="form-text error-red" id="ownNameErr">{% for err in form.name.errors %}{{ err }}{% endfor %}</div><br>
         </div>
         <div id="number_field" class="col">
-            <label for="own_number" class="form-label" id="own_number_label">Гос. номер:</label><br>
+            <label for="own_number" class="form-label" id="own_number_label">Гос. номер: <span class="text-danger">*</span></label><br>
             <input type="text" class="form-control border-secondary" id="own_number" name="number" value="{{ form.number.value|default:'' }}">
-            <div class="form-text error-red" id="ownNumberErr">{% for err in form.number.errors %}{{ err }}{% endfor %}</div><br>
+            <div class="form-text error-red" id="ownNumberErr">{% for err in form.errors.number %}{{ err }}{% endfor %}</div><br>
         </div>
     </div>
     <div>

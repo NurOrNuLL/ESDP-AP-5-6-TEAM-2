@@ -41,7 +41,8 @@ JOBS_JSON_SCHEMA = {
                             'maxLength': 500
                         },
                         'ИИН': {
-                            'type': 'integer',
+                            'type': 'string',
+                            'maxLength': 12
                         }
                     },
                     'required': ['Наименование', 'ИИН'],
@@ -68,6 +69,9 @@ class Order(models.Model):
     own = models.ForeignKey(
         'own.Own', on_delete=models.PROTECT, null=False, blank=False,
         related_name='own_orders', verbose_name='Собственность')
+    nomenclature = models.ForeignKey(
+        'nomenclature.Nomenclature', on_delete=models.PROTECT, null=False, blank=False
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     finished_at = models.DateTimeField(null=True, blank=True,
                                        verbose_name="Дата завершения")

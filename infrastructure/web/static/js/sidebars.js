@@ -26,20 +26,9 @@ sidebarLinks.forEach((element) => {
     sidebarDivs.forEach((element) => {
       if (elementParent == element) {
         sidebarBtns[sidebarDivs.indexOf(element)].classList.remove('collapsed')
+        sidebarBtns[sidebarDivs.indexOf(element)].ariaExpanded = 'true'
         element.classList.add('show')
       }
     })
   }
 })
-
-// let button = document.getElementById('tradepointChoices');
-// let choiceItem = document.getElementById('tradepointItem');
-//
-// button.addEventListener('click', (data) => {
-//           console.log(data);
-//           data.forEach(function (item) {
-//             console.log(item);
-//             choiceItem.value = item.value.name;
-//             choiceItem.href = item.value.id;
-//           })
-// })
