@@ -28,3 +28,7 @@ class OwnServices:
         contractor = Contractor.objects.get(id=contr_id)
 
         return Own.objects.filter(contractor=contractor)
+
+    @staticmethod
+    def get_owns() -> List[Own]:
+        return Own.objects.all()

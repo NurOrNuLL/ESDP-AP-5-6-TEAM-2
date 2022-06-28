@@ -3,15 +3,17 @@ import json
 from django.template.context_processors import request
 from django.views import View
 from django.views.generic import TemplateView
+from models.nomenclature.models import Nomenclature
+
+from services.nomenclature_services import NomenclatureService
 
 from .forms import (
-    OrderForm, PaymentForm,
     OrderCreateFormStage1, OrderCreateFormStage2,
     OrderCreateFormStage3, OrderUpdateForm
 )
 from datetime import datetime
 from django.shortcuts import render, redirect
-from models.order.models import ORDER_STATUS_CHOICES, Order
+from models.order.models import ORDER_STATUS_CHOICES
 from models.payment.models import PAYMENT_STATUS_CHOICES
 from models.nomenclature.category_choices import CATEGORY_CHOICES
 from services.employee_services import EmployeeServices
@@ -24,7 +26,6 @@ from services.own_services import OwnServices
 from infrastructure.web.trade_point.context_processor import trade_point_context
 from typing import Dict, Any, List
 from django.http import HttpRequest, HttpResponse
-from django.contrib.auth.mixins import LoginRequiredMixin
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from rest_framework import generics, filters
 from models.order.models import Order
@@ -33,10 +34,10 @@ from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-
-class HomePageView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateView):
+class HomePageView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'home.html'
     trade_points = trade_point_context(request)
 
@@ -107,13 +108,22 @@ class HomeRedirectView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, View):
         ))
 
 
-class OrderCreateViewStage1(TemplateView):
+class OrderCreateViewStage1(UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage1.html'
     form_class = OrderCreateFormStage1
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['contractors'] = ContractorService.get_contractors(self.kwargs)
+        context['nomenclatures'] = \
+            TradePointServices.get_trade_point_by_clean_id(self.kwargs['tpID']).nomenclature.all()
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
 
         return context
@@ -121,10 +131,23 @@ class OrderCreateViewStage1(TemplateView):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
 
+        if request.GET.get('contractor') and request.GET.get('own'):
+            request.session['contractor'] = request.GET.get('contractor')
+            request.session['own'] = request.GET.get('own')
+
+        nomenclature_id = request.session.get('nomenclature')
         contractor_id = request.session.get('contractor')
         own_id = request.session.get('own')
 
-        if contractor_id and own_id:
+        if contractor_id:
+            context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
+        elif contractor_id and own_id:
+            context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
+            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
+
+        if contractor_id and own_id and nomenclature_id:
+            context['session_nomenclature'] = NomenclatureService.get_nomenclature_by_id(nomenclature_id)
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
             context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
             context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
@@ -135,6 +158,7 @@ class OrderCreateViewStage1(TemplateView):
         form = self.form_class(request.POST)
 
         if form.is_valid():
+            request.session['nomenclature'] = form.cleaned_data['nomenclature']
             request.session['contractor'] = form.cleaned_data['contractor'].id
             request.session['own'] = form.cleaned_data['own'].id
 
@@ -146,12 +170,19 @@ class OrderCreateViewStage1(TemplateView):
             return render(request, self.template_name, context)
 
 
-class OrderCreateViewStage2(TemplateView):
+class OrderCreateViewStage2(UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage2.html'
     form_class = OrderCreateFormStage2
 
-    def get_services(self, context: dict) -> Dict[str, List[dict]]:
-        services = TradePointServices.get_trade_point_by_id(context).nomenclature.services
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
+    def get_services(self, nomenclature: Nomenclature) -> Dict[str, List[dict]]:
+        services = nomenclature.services
         filtered_data = {}
 
         for category in CATEGORY_CHOICES:
@@ -164,7 +195,6 @@ class OrderCreateViewStage2(TemplateView):
         context = super().get_context_data(**kwargs)
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
         context['categories'] = CATEGORY_CHOICES
-        context['services'] = self.get_services(context)
 
         employees = EmployeeServices.get_employee_by_tradepoint(
                 tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
@@ -174,7 +204,11 @@ class OrderCreateViewStage2(TemplateView):
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        nomenclature = \
+            NomenclatureService.get_nomenclature_by_id(request.session.get('nomenclature'))
+
         context = self.get_context_data()
+        context['services'] = self.get_services(nomenclature)
 
         jobs = request.session.get('jobs')
 
@@ -184,22 +218,45 @@ class OrderCreateViewStage2(TemplateView):
         return render(request, self.template_name, context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        nomenclature = \
+            NomenclatureService.get_nomenclature_by_id(request.session.get('nomenclature'))
         form = self.form_class(request.POST)
 
         if form.is_valid():
+            for job in form.cleaned_data['jobs']:
+                if not job['Мастера']:
+                    form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
+
+                    context = self.get_context_data()
+                    context['services'] = self.get_services(nomenclature)
+                    context['session_jobs'] = json.dumps(form.cleaned_data['jobs'])
+                    context['form'] = form
+
+                    return render(request, self.template_name, context)
+
             request.session['jobs'] = form.cleaned_data['jobs']
 
             return redirect('order_create_stage3', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
         else:
+            form.errors['jobs'] = 'Вы не выбрали услуги!!!'
+
             context = self.get_context_data()
+            context['services'] = self.get_services(nomenclature)
             context['form'] = form
 
             return render(request, self.template_name, context)
 
 
-class OrderCreateViewStage3(TemplateView):
+class OrderCreateViewStage3(UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage3.html'
     form_class = OrderCreateFormStage3
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -247,8 +304,15 @@ class OrderCreateViewStage3(TemplateView):
             return render(request, self.template_name, context)
 
 
-class OrderCreateViewStage4(TemplateView):
+class OrderCreateViewStage4(UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage4.html'
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -286,6 +350,7 @@ class OrderCreateViewStage4(TemplateView):
         data = {
             'trade_point': TradePointServices.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
             'contractor': ContractorService.get_contractor_by_id(request.session['contractor']),
+            'nomenclature': NomenclatureService.get_nomenclature_by_id(request.session['nomenclature']),
             'own': OwnServices.get_own_by_id({'ownID': request.session['own']}),
             'status': ORDER_STATUS_CHOICES[0][0],
             'price_for_pay': prices[0],
@@ -307,59 +372,7 @@ class OrderCreateViewStage4(TemplateView):
         return redirect('home', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
 
 
-class OrderCreateFromContractor(TemplateView):
-    template_name = 'order/order_create.html'
-    order_form_class = OrderForm
-    payment_form_class = PaymentForm
-
-    def get_context_data(self, **kwargs: dict) -> dict:
-        context = super().get_context_data(**kwargs)
-        context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
-        context['contractor'] = ContractorService.get_contractor_by_id(
-            self.kwargs['contrID']
-        )
-        context['own'] = OwnServices.get_own_by_id(self.kwargs)
-        context['payment_statuses'] = PAYMENT_STATUS_CHOICES
-        context['order_statuses'] = ORDER_STATUS_CHOICES
-        return context
-
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        context = self.get_context_data(**kwargs)
-        return render(request=request, template_name=self.template_name, context=context)
-
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        post_data = request.POST.copy()
-        payment_data = {
-            'payment_status': post_data['payment_status']
-        }
-        post_data.pop('payment_status')
-        order_data = post_data
-        payment_form = self.payment_form_class(payment_data)
-        order_form = self.order_form_class(order_data)
-        if order_form.is_valid() and payment_form.is_valid():
-            trade_point = TradePointServices.get_trade_point_by_id(self.kwargs)
-            contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
-            own = OwnServices.get_own_by_id(self.kwargs)
-            order_form.cleaned_data['trade_point'] = trade_point
-            order_form.cleaned_data['contractor'] = contractor
-            order_form.cleaned_data['own'] = own
-            payment = PaymentService.create_payment(payment_form.cleaned_data)
-            order_form.cleaned_data['payment'] = payment
-            order = OrderService.create_order(order_form.cleaned_data)
-            return redirect('order_detail', orgID=self.kwargs['orgID'],
-                            tpID=self.kwargs['tpID'],
-                            contrID=self.kwargs['contrID'],
-                            ownID=self.kwargs['ownID'],
-                            ordID=order.pk)
-        else:
-            context = self.get_context_data(**kwargs)
-            context['order_form'] = order_form
-            context['payment_form'] = payment_form
-            return render(request, template_name=self.template_name, context=context)
-
-
-class OrderDetail(ResetOrderCreateFormDataMixin, TemplateView):
+class OrderDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'order/order_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -380,13 +393,20 @@ class OrderDetail(ResetOrderCreateFormDataMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
+class OrderUpdateView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/update.html'
     concurrency_template_name = 'order/concurrency_update.html'
     form_class = OrderUpdateForm
 
-    def get_services(self, context: dict) -> Dict[str, List[dict]]:
-        services = TradePointServices.get_trade_point_by_id(context).nomenclature.services
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
+    def get_services(self, order: Order) -> Dict[str, List[dict]]:
+        services = order.nomenclature.services
         filtered_data = {}
 
         for category in CATEGORY_CHOICES:
@@ -401,7 +421,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
         context['ordID'] = order.id
         context['categories'] = CATEGORY_CHOICES
-        context['services'] = self.get_services(context)
+        context['services'] = self.get_services(order)
 
         employees = EmployeeServices.get_employee_by_tradepoint(
                 tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
@@ -428,6 +448,23 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
         form = self.form_class(data=request.POST, instance=order)
 
         if form.is_valid():
+            for job in form.cleaned_data['jobs']:
+                if not job['Мастера']:
+                    form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
+                    employees = EmployeeServices.get_employee_by_tradepoint(
+                                    tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+                                ).filter(role='Мастер')
+
+                    context = self.get_context_data()
+                    context['services'] = self.get_services(order)
+                    context['categories'] = CATEGORY_CHOICES
+                    context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
+                    context['form'] = form
+                    context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+                    context['ordID'] = order.id
+
+                    return render(request, self.template_name, context)
+
             try:
                 order.jobs = form.cleaned_data['jobs']
                 order.mileage = form.cleaned_data['mileage']
@@ -451,17 +488,31 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, TemplateView):
 
                 return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], ordID=self.kwargs['ordID'])
         else:
+            form.errors['jobs'] = 'Вы не выбрали услуги!!!'
+            employees = EmployeeServices.get_employee_by_tradepoint(
+                tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+            ).filter(role='Мастер')
+
             context = self.get_context_data()
             context['form'] = form
             context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
             context['ordID'] = order.id
             context['categories'] = CATEGORY_CHOICES
-            context['services'] = self.get_services(context)
+            context['services'] = self.get_services(order)
+            context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
 
             return render(request, self.template_name, context)
 
 
-class OrderUpdateConcurrencyView(View):
+class OrderUpdateConcurrencyView(UserPassesTestMixin, View):
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
     def post(self, request: HttpRequest, *args: list, **kwargs: dict):
         order = OrderService.get_order_by_id(self.kwargs['ordID'])
 

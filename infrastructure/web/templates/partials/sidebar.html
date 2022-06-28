@@ -16,7 +16,7 @@
             {% endfor %}
         </select>
     {% else %}
-        <select class="form-select mb-3 border-bottom" disabled aria-label="Default select example" id="tradepointChoices">
+        <select class="form-select mb-3 border-bottom" aria-label="Default select example" id="tradepointChoices">
             {% for item in trade_points %}
                 {% if item.id == tpID %}
                     <option selected value="{{ item.id }}">{{ item.name }}</option>
@@ -48,13 +48,26 @@
             </button>
             <div class="collapse sidebar-ul" id="contragent-collapse">
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'contractors' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
-                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
+                    <li><a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать контрагента</a></li>
+                    <li><a href="{% url 'contractors' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список контрагентов</a></li>
+                    <li><a href="{% url 'owns' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список собственностей</a></li>
                 </ul>
             </div>
         </li>
         <li class="border-top my-3"></li>
-        <li class="mb-1">
+		<li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#report-collapse" aria-expanded="false">
+                Отчеты
+            </button>
+            <div class="collapse sidebar-ul" id="report-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'report_preview' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Посмотреть отчет</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="border-top my-3"></li>
+		<li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
                     data-bs-target="#price-list-collapse" aria-expanded="false">
                 Номенклатура
@@ -63,18 +76,6 @@
                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                     <li><a href="{% url 'nomenclature_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
                     <li><a href="{% url 'nomenclature_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="mb-1">
-            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
-                    data-bs-target="#trade-point-collapse" aria-expanded="false">
-                Филиал
-            </button>
-            <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="{% url 'trade_point_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
-                    <li><a href="{% url 'trade_point_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                 </ul>
             </div>
         </li>
@@ -90,6 +91,18 @@
                         мастера</a></li>
                     <li><a href="{% url 'register' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать
                         аккаунт</a></li>
+                </ul>
+            </div>
+        </li>
+		<li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#trade-point-collapse" aria-expanded="false">
+                Филиалы
+            </button>
+            <div class="collapse sidebar-ul" id="trade-point-collapse" style="">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="{% url 'trade_point_list' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'trade_point_create' orgID=1 tpID=tpID %}" class="link-dark sidebar-link rounded">Создать</a></li>
                 </ul>
             </div>
         </li>

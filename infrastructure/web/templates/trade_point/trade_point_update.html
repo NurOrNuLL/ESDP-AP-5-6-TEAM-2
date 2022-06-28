@@ -3,47 +3,55 @@
 {% load custom_tags %}
 
 {% block content %}
-<h1 class="mb-4">Редактировать филиал</h1>
-<hr>
-<div class="card border-secondary">
-    <div class="card-body">
-        <form method="POST">
-            {% csrf_token %}
-            <input type="hidden" name="version" value="{{ form.version.value }}">
-            <div>
-                <h2 class="my-3">{{ form.name.value }}</h2>
-                <hr>
-                <div class="row">
-                    <div class="col">
-                        <label for="trade_point_name" class="form-label">Наименование<span class="text-danger">*</span></label><br>
-                        <input type="text" class="form-control border-secondary" id="trade_point_name" name="name" value="{{ form.name.value|default:'' }}">
-                        <div class="form-text text-danger">{% for err in form.errors.name %}{{ err }}{% endfor %}</div><br>
+    <h1 class="mb-4">Редактировать филиал</h1>
+    <hr>
+    <a href="{% url 'trade_point_list' orgID=1 tpID=tpID %}" class="btn btn-secondary mb-3">Список</a>
+    <div class="card border-secondary">
+        <div class="card-body">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="version" value="{{ form.version.value }}">
+                <div>
+                    <h2 class="my-3">{{ form.name.value }}</h2>
+                    <hr>
+                    <div class="row">
+                        <div class="col">
+                            <label for="trade_point_name" class="form-label">Наименование<span
+                                    class="text-danger">*</span></label><br>
+                            <input type="text" class="form-control border-secondary" id="trade_point_name" name="name"
+                                   value="{{ form.name.value|default:'' }}">
+                            <div class="form-text text-danger">
+                                {% for err in form.errors.name %}{{ err }}{% endfor %}</div>
+                            <br>
+                        </div>
+                        <div class="col">
+                            <label for="trade_point_address" class="form-label">Адрес</label><br>
+                            <input type="text" class="form-control border-secondary" id="trade_point_address"
+                                   name="address" value="{{ form.address.value|default:'' }}">
+                            <div class="form-text text-danger">
+                                {% for err in form.errors.address %}{{ err }}{% endfor %}</div>
+                            <br>
+                        </div>
                     </div>
-                    <div class="col">
-                        <label for="trade_point_nomenclature" class="form-label">Номенклатура<span class="text-danger">*</span></label><br>
-                        <select class="form-select border-secondary" id="trade_point_nomenclature" name="nomenclature">
-                            {% for nomenclature in nomenclatures %}
-                                {% if nomenclature.id == trade_point.nomenclature.id %}
-                                    <option selected value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
-                                {% else %}
-                                    <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
-                                {% endif %}
-                            {% endfor %}
-                        </select>
-                        <div class="form-text text-danger">{% for err in form.errors.nomenclature %}{{ err }}{% endfor %}</div>
-                    </div>
+                    <label for="trade_point_nomenclature" class="form-label">Номенклатура<span
+                            class="text-danger">*</span></label><br>
+                    <select multiple class="selectpicker" data-live-search="true" data-width="100%"
+                            id="trade_point_nomenclature" name="nomenclature">
+                        {% for nom in form.nomenclature.field.queryset %}
+                            {% if nom.pk in form.nomenclature.value %}
+                                <option selected value="{{ nom.pk }}">{{ nom.name }}</option>
+                            {% else %}
+                                <option value="{{ nom.pk }}">{{ nom.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div class="form-text text-danger">
+                        {% for err in form.errors.nomenclature %}{{ err }}{% endfor %}</div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        <label for="trade_point_address" class="form-label">Адрес</label><br>
-                        <input type="text" class="form-control border-secondary" id="trade_point_address" name="address" value="{{ form.address.value|default:'' }}">
-                        <div class="form-text text-danger">{% for err in form.errors.address %}{{ err }}{% endfor %}</div><br>
-                    </div>
-                </div>
-            </div><br>
-            <button type="submit" class="btn btn-primary">Сохранить</button>
-        </form>
+                <br>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
     </div>
-</div>
 
 {% endblock content %}

@@ -15,6 +15,22 @@
                 <form method="POST" id="emp_reg" enctype="multipart/form-data" class="w-100">
                     {% csrf_token %}
                     <div>
+                        <label for="nomenclature" class="form-label">Номенклатура <span style="color: red;">*</span></label>
+                        <select class="form-control selectpicker" id="nomenclature" name="nomenclature" required>
+                            <option value="">Выберите номенклатуру</option>
+                            <optgroup label="Номенклатуры">
+                                {% for nomenclature in nomenclatures %}
+                                    {% if nomenclature.id == session_nomenclature.id %}
+                                        <option value="{{ nomenclature.id }}" selected>{{ nomenclature.name }}</option>
+                                    {% else %}
+                                        <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                    </div>
+                    <br>
+                    <div>
                         <label for="contractor" class="form-label">Контрагент <span style="color: red;">*</span></label>
                         <select class="form-control selectpicker" id="contractor" name="contractor" data-live-search="true" required>
                             <option value="">Выберите контрагента</option>
@@ -29,7 +45,7 @@
                             </optgroup>
                         </select>
                         <div class="form-text" id="contractor-links">
-                            <a href="{% url 'contractor_create' orgID=1 tpID=tpID %}" class="link-primary">Создать контрагента</a>
+                            <a href="{% url 'contractor_create' orgID=1 tpID=tpID %}?next=order_create_stage1" class="link-primary">Создать контрагента</a>
                         </div>
                         <div class="form-text" style="color: red;">
                             {% for err in form.errors.contractor %}{{ err }}{% endfor %}</div>
@@ -52,6 +68,7 @@
                                 <option value="">-</option>
                             </select>
                         {% endif %}
+                        <div class="form-text" id="own-links"></div>
                         <div class="form-text" style="color: red;">
                             {% for err in register_form.errors.own %}{{ err }}{% endfor %}</div>
                     </div>

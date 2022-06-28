@@ -1,9 +1,9 @@
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import path
-from django.views.generic import RedirectView
 
+from django.views.generic import RedirectView
 from .order.views import (
-    HomePageView, OrderCreateFromContractor,
+    HomePageView,
     OrderDetail, OrderCreateViewStage1,
     OrderCreateViewStage2, OrderCreateViewStage3,
     OrderCreateViewStage4, OrderUpdateView,
@@ -16,21 +16,32 @@ from .nomenclature.views import (
     NomenclatureExportView,
     NomenclatureFormForImpost,
     NomenclatureDownloadView,
-    NomenclatureProgressView
+    NomenclatureProgressView,
+    NomenclatureNameUpdateApiView, NomenclatureNameConcurrencyUpdateApiView
 )
-from .own.views import OwnDeleteView, OwnCreate, OwnList
-
-from .trade_point.views import TradePointCreate, TradePointList, \
+from .own.views import (
+    OwnDeleteView, OwnCreate,
+    OwnList, OwnFullList, OwnFilterApiView
+)
+from .trade_point.views import (
+    TradePointCreate, TradePointList,
     TradePointUpdate, TradePointUpdateConcurrecnyView
-
-from .contractor.views import (ContractorCreate, ContractorList, ContractorDetail,
-                               ContractorUpdate, ContractorFilterApiView,
-                               ContractorUpdateConcurrecnyView)
-
-from .employee.views import (EmployeeCreate,
-                             EmployeeFilterApiView, EmployeeList, EmployeeDetail, EmployeeUpdate,
-                             EmployeeConcurrencyUpdate, EmployeeImageUpdateView)
+)
+from .contractor.views import (
+    ContractorCreate, ContractorList, ContractorDetail,
+    ContractorUpdate, ContractorFilterApiView,
+    ContractorUpdateConcurrecnyView
+)
+from .employee.views import (
+    EmployeeCreate,
+    EmployeeFilterApiView, EmployeeList,
+    EmployeeDetail, EmployeeUpdate,
+    EmployeeConcurrencyUpdate, EmployeeImageUpdateView
+)
 from infrastructure.accounts.views import RegisterView
+from infrastructure.web.report.views import ReportPreviewView
+from infrastructure.web.report.consumers import ReportConsumer
+
 
 nomenclature_urls = [
     path(
@@ -61,6 +72,12 @@ nomenclature_urls = [
         'nomenclature/list/', NomenclaturesServiceListView.as_view(),
         name="nomenclature_list"
     ),
+    path('nomenclature/<int:pk>/update/', NomenclatureNameUpdateApiView.as_view(), name='nomenclature_update'),
+    path(
+        'nomenclature/<int:pk>/update/concurrency/',
+        NomenclatureNameConcurrencyUpdateApiView.as_view(),
+        name="nomenclature_update_concurrency"
+    )
 ]
 
 trade_point_urls = [
@@ -83,6 +100,8 @@ contractor_urls = [
 ]
 
 own_urls = [
+    path('owns/', OwnFullList.as_view(), name="owns"),
+    path('own/list/filter/', OwnFilterApiView.as_view()),
     path('contractor/<int:contrID>/own/create/', OwnCreate.as_view(), name="own_create"),
     path(
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
@@ -104,8 +123,6 @@ employee_urls = [
 ]
 
 order_urls = [
-    path('contractor/<int:contrID>/own/<int:ownID>/order/create/',
-         OrderCreateFromContractor.as_view(), name="order_create"),
     path('order/<int:ordID>/', OrderDetail.as_view(), name="order_detail"),
     path('order/<int:ordID>/update', OrderUpdateView.as_view(), name="order_update"),
     path('order/<int:ordID>/update/concurrency', OrderUpdateConcurrencyView.as_view(), name="order_update_concurrency"),
@@ -116,10 +133,20 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
+report_urls = [
+	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+]
+
+report_websocket_urls = [
+    path('report/create', ReportConsumer.as_asgi())
+]
+
 urlpatterns = [
     path('', HomePageView.as_view(), name="home"),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('img/favicon.ico')))
 ]
+
+websocket_urlpatterns = []
 
 urlpatterns += nomenclature_urls
 urlpatterns += trade_point_urls
@@ -127,3 +154,6 @@ urlpatterns += contractor_urls
 urlpatterns += own_urls
 urlpatterns += employee_urls
 urlpatterns += order_urls
+urlpatterns += report_urls
+
+websocket_urlpatterns += report_websocket_urls

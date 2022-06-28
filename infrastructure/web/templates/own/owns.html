@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Список собственностей{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Список собственностей</h1>
+    <hr>
+    <div class="d-flex">
+        <select id="isPart" class="form-select border-secondary bg-transparent" style="margin-right: 5px;" name="is_part"
+            aria-label="Default select example">
+            <option selected value="all">Все типы собственности</option>
+            <option value="false">Автомобиль</option>
+            <option value="true">Запчасть</option>
+        </select>
+        <input id="ownSearch" class="form-control border-secondary bg-transparent me-2" type="search"
+            placeholder="Поиск"
+            aria-label="Search">
+            <div class="btn-group align-items-center">
+                <button class="btn btn-secondary" id="back">&#8592;</button>
+                <input type="number" class="form-control bg-transparent border-secondary" style="width: 100px; text-align: center" id="page"
+                       value="1" disabled>
+                <button class="btn btn-secondary" id="next">&#8594;</button>
+            </div>
+    </div>
+
+    <table class="table">
+        <thead id="bodyTitle">
+        <tr>
+            <th scope="col">Наименование</th>
+            <th scope="col" id="numberTitle">Номер</th>
+            <th scope="col">Комментарий</th>
+            <th scope="col">Контрагент</th>
+        </tr>
+        </thead>
+        <tbody id="body"></tbody>
+    </table>
+    <div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
+<script>
+    var tpID = {{ tpID }}
+</script>
+{% endblock content %}
+{% block js_block %}
+    <script src="{% static 'js/own/own_view.js' %}"></script>
+{% endblock %}

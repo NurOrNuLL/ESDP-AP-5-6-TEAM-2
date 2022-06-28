@@ -16,11 +16,19 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class ContractorCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/contractor_create.html'
     form_class = ContractorForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -43,7 +51,15 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
                                 comment=request.POST['trust_person_comment'])
             form.cleaned_data['trust_person'] = trust_person
             contractor = ContractorService.create_contractor(form.cleaned_data)
-            return redirect('contractor_detail',
+
+            if request.GET.get('next'):
+                request.session['contractor'] = contractor.id
+
+                return redirect(request.GET.get('next'),
+                                orgID=self.kwargs['orgID'],
+                                tpID=self.kwargs['tpID'])
+            else:
+                return redirect('contractor_detail',
                             orgID=self.kwargs['orgID'],
                             contrID=contractor.pk, tpID=self.kwargs['tpID'])
         else:
@@ -54,7 +70,7 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, TemplateView):
             return render(request, template_name=self.template_name, context=context)
 
 
-class ContractorList(ResetOrderCreateFormDataMixin, TemplateView):
+class ContractorList(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'contractor/contractors.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -83,7 +99,7 @@ class ContractorFilterApiView(generics.ListAPIView):
     queryset = Contractor.objects.all()
 
 
-class ContractorDetail(ResetOrderCreateFormDataMixin, TemplateView):
+class ContractorDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'contractor/contractor_detail.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -101,9 +117,16 @@ class ContractorDetail(ResetOrderCreateFormDataMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
+class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/update.html'
     form_class = ContractorForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**self.kwargs)
@@ -164,7 +187,15 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, TemplateView):
             return render(request, template_name=self.template_name, context=context)
 
 
-class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, View):
+class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, View):
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
     def post(self, request: HttpRequest, *args: list, **kwargs: dict
              ) -> HttpResponse or HttpResponseRedirect:
         contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
