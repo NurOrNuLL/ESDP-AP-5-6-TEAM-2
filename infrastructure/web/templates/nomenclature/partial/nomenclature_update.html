@@ -1,0 +1,63 @@
+{% block content %}
+    <div class="modal fade" id="editName" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Редактировать наименование</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <input name="name" id="name" type="text" class="form-control">
+                        <input name="version" id="version" type="hidden" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="editButton" type="button" class="btn btn-primary"
+                            data-bs-dismiss="modal">Сохранить
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="closeBtn1" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="concurrency" tabindex="-1" aria-labelledby="concurrency" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="concurrencyHeader"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-header bg-transparent">
+                        <div class="row p-0">
+                            <div class="col-md-6">
+                                <h4 class="text" style="font-weight: bold">Текущие данные</h4>
+                            </div>
+                            <div class="col-md-6">
+                                <h4 class="text" style="font-weight: bold">Предлагаемые изменения</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row px-3">
+                        <div class="col-md-6">
+                            <span class="text" style="font-weight: bold">Наименование:</span>
+                            <span class="text-danger" id="old"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="text" style="font-weight: bold">Наименование:</span>
+                            <span class="text-success" id="new"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="updateBtn" type="button" class="btn btn-primary"
+                            data-bs-dismiss="modal">Сохранить
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="closeBtn2" data-bs-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

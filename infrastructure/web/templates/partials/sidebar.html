@@ -16,7 +16,7 @@
             {% endfor %}
         </select>
     {% else %}
-        <select class="form-select mb-3 border-bottom" disabled aria-label="Default select example" id="tradepointChoices">
+        <select class="form-select mb-3 border-bottom" aria-label="Default select example" id="tradepointChoices">
             {% for item in trade_points %}
                 {% if item.id == tpID %}
                     <option selected value="{{ item.id }}">{{ item.name }}</option>
