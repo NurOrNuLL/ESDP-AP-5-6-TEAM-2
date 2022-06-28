@@ -1,5 +1,19 @@
-let select = document.getElementById('nomenclature');
+let nomIDImport = document.getElementById('nomIDImport');
+let nomIDExport = document.getElementById('nomIDExport');
+let nomNameImport = document.getElementById('nomNameImport');
+let nomenclatureSelect = document.getElementById('nomenclature');
+let category = document.getElementById('category')
+let mark = document.getElementById('mark')
+let search = document.getElementById('search')
+
+let page = document.getElementById('page');
+let limit = document.getElementById('limit');
+let back = document.getElementById('back');
+let next = document.getElementById('next');
+
 let beforeTableBlock = document.getElementById('beforeTable');
+let nomID = nomenclatureSelect.value
+
 
 function render(nomenclature, search, category, mark, page, limit) {
     $.ajax({
@@ -50,51 +64,61 @@ function render(nomenclature, search, category, mark, page, limit) {
     })
 }
 
-let value = select.value
-let category = document.getElementById('category')
-let mark = document.getElementById('mark')
-let search = document.getElementById('search')
 
-let page = document.getElementById('page');
-let limit = document.getElementById('limit');
-let back = document.getElementById('back');
-let next = document.getElementById('next');
+nomNameImport.innerText = nomenclatureSelect.selectedOptions[0].innerText;
+nomIDImport.value = nomID;
+nomIDExport.value = nomID;
+render(nomID, '', '', '', 1, 999999);
+
 
 limit.addEventListener('input', (e) => {
     if (limit.value === '' || limit.value === 0) {
-        render(value, search.value, category.value, mark.value, page.value, 999999)
+        render(nomID, search.value, category.value, mark.value, page.value, 999999)
     }
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })
+
 
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })
+
 
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })
 
-render(value, '', '', '', 1, 999999)
 
 search.addEventListener('input', (e) => {
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })
+
 
 category.addEventListener('change', (e) => {
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })
+
 
 mark.addEventListener('change', (e) => {
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })
 
-select.addEventListener('change', function () {
-    value = select.value
+
+nomenclatureSelect.addEventListener('change', function () {
+    nomID = nomenclatureSelect.value
     if (limit.value === '' || limit.value === 0) {
-        render(value, search.value, category.value, mark.value, page.value, 999999)
+        render(nomID, search.value, category.value, mark.value, page.value, 999999)
+
+        nomNameImport.innerText = nomenclatureSelect.selectedOptions[0].innerText;
+        nomIDImport.value = nomID;
+        nomIDExport.value = nomID;
     }
-    render(value, search.value, category.value, mark.value, page.value, limit.value)
+
+    nomNameImport.innerText = nomenclatureSelect.selectedOptions[0].innerText;
+    nomIDImport.value = nomID;
+    nomIDExport.value = nomID;
+
+    render(nomID, search.value, category.value, mark.value, page.value, limit.value)
 })

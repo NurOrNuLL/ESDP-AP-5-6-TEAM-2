@@ -20,6 +20,7 @@ function editNomenclatureName(name, nomID, nomVersion) {
         success: function (data) {
             if (data['error'] === undefined) {
                 nomenclature.selectedOptions[0].innerText = data['name'];
+                nomenclature.selectedOptions[0].dataset['version'] = data['version'];
             } else {
                 concurrencyBtn.click();
 
@@ -44,6 +45,7 @@ function editNomenclatureName(name, nomID, nomVersion) {
                         success: (data) => {
                             nomenclature.selectedOptions[0].innerText = data['name'];
                             name.value = nomenclature.selectedOptions[0].innerText;
+                            nomenclature.selectedOptions[0].dataset['version'] = data['version'];
                         }
                     })
                 })
@@ -53,9 +55,10 @@ function editNomenclatureName(name, nomID, nomVersion) {
                         url: `${locationHost}/org/1/tp/${tpID}/nomenclature/${nomID}/update/`,
                         method: 'get',
                         success: (data) => {
-                            nomenclature.selectedOptions[0].innerText = data['name'];
                             let name = document.getElementById('name');
+                            nomenclature.selectedOptions[0].innerText = data['name'];
                             name.value = data['name'];
+                            nomenclature.selectedOptions[0].dataset['version'] = data['version'];
                         }
                     })
                 })
@@ -64,9 +67,10 @@ function editNomenclatureName(name, nomID, nomVersion) {
                         url: `${locationHost}/org/1/tp/${tpID}/nomenclature/${nomID}/update/`,
                         method: 'get',
                         success: (data) => {
-                            nomenclature.selectedOptions[0].innerText = data['name'];
                             let name = document.getElementById('name');
+                            nomenclature.selectedOptions[0].innerText = data['name'];
                             name.value = data['name'];
+                            nomenclature.selectedOptions[0].dataset['version'] = data['version'];
                         }
                     })
                 })
