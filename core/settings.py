@@ -110,6 +110,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'infrastructure.web.trade_point.context_processor.trade_point_context',
+                'infrastructure.web.payment.context_processor.payment_methods',
             ],
             'libraries': {
                 'custom_tags': 'infrastructure.web.template_tags.custom_tags'
@@ -214,8 +215,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_HOST = os.environ.get('REDIS_HOST')
-REDIS_PORT = os.environ.get('REDIS_PORT')
+REDIS_HOST = 'redis'
+REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ":" + REDIS_PORT + '/0'

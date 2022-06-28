@@ -4,6 +4,7 @@ function render(search, date, status, payment_status, page, limit) {
     $.ajax({
         url: `${locationHost}/org/1/tp/${tpID}/order/list/filter?search=${search}&date=${date}&status=${status}&payment_status=${payment_status}&page=${page}&limit=${limit}`,
         method: 'get',
+        async: false,
         success: (data) => {
             body.innerHTML = '';
             if (data.length != 0) {
@@ -18,28 +19,65 @@ function render(search, date, status, payment_status, page, limit) {
                     today = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
 
                     if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
-                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-primary">'
-                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-danger">' + item.payment.payment_status + '</span>' + '</td>' +
-                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
-                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
-                    }
-                    else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
-                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-primary">'
-                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-success">' + item.payment.payment_status + '</span>' + '</td>' +
-                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
-                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
-                    }
-                    else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
-                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-success">'
-                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-danger">' + item.payment.payment_status + '</span>' + '</td>' +
-                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
-                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
-                    }
-                    else {
-                        body.innerHTML += '<tr><td>' + item.id + '</td><td>' + today + '</td><td>' + '<span class="badge rounded-pill text-bg-success">'
-                        + item.status + '</span>' + '</td><td>' + '<span class="badge rounded-pill text-bg-success">' + item.payment.payment_status + '</span>' + '</td>' +
-                        '<td>' + item.contractor.name + '</td><td>' + item.own.number + '</td>' +
-                        '<td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/order/' + item.id + '/">Детали</a></td></tr>'
+                        body.innerHTML += `<tr data-id="${item.id}"><td>${item.id}</td><td>${today}</td>
+                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
+                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
+                        <td><button type="button" class="btn btn-primary modalbtn" 
+                        data-idorderclass=${encodeURIComponent(item.id)} 
+                        data-dayorder=${encodeURIComponent(today)} 
+                        data-statusorder=${encodeURIComponent(item.status)} 
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
+                        data-ownorder=${encodeURIComponent(item.own.number)} 
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
+                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
+
+                    } else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
+                        body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
+                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
+                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
+                        <td><button type="button" class="btn btn-primary modalbtn" 
+                        data-idorderclass=${encodeURIComponent(item.id)} 
+                        data-dayorder=${encodeURIComponent(today)} 
+                        data-statusorder=${encodeURIComponent(item.status)} 
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
+                        data-ownorder=${encodeURIComponent(item.own.number)} 
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
+                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
+
+                    } else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
+                        body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
+                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
+                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
+                        <td><button type="button" class="btn btn-primary modalbtn" 
+                        data-idorderclass=${encodeURIComponent(item.id)} 
+                        data-dayorder=${encodeURIComponent(today)} 
+                        data-statusorder=${encodeURIComponent(item.status)} 
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
+                        data-ownorder=${encodeURIComponent(item.own.number)} 
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
+                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
+
+                    } else {
+                        body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
+                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
+                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
+                        <td><button type="button" class="btn btn-primary modalbtn" 
+                        data-idorderclass=${encodeURIComponent(item.id)} 
+                        data-dayorder=${encodeURIComponent(today)} 
+                        data-statusorder=${encodeURIComponent(item.status)} 
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
+                        data-ownorder=${encodeURIComponent(item.own.number)} 
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
+                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
+
                     }
                 })
 
@@ -69,6 +107,57 @@ function render(search, date, status, payment_status, page, limit) {
         }
     })
 }
+
+
+$(function () {
+    var idClicked
+    $('.modalbtn').click(
+        function (e) {
+            e.preventDefault()
+            var idorderclass = decodeURIComponent($(this).attr('data-idorderclass'));
+            var dayorder = decodeURIComponent($(this).attr('data-dayorder'));
+            var statusorder = decodeURIComponent($(this).attr('data-statusorder'));
+            var paymentstatusorder = decodeURIComponent($(this).attr('data-paymentstatusorder'));
+            if (paymentstatusorder == 'Оплачено') {
+                $('.showForm').html(`<div class="alert alert-danger" role="alert">
+                Внимание заказ ОПЛАЧЕН, убедитесь что действительно хотите внести изменения!!!
+                </div>`)
+            } else if (paymentstatusorder == 'Не оплачено') (
+                $('.showForm').html(``)
+            )
+            var contractororder = decodeURIComponent($(this).attr('data-contractororder'));
+            var ownorder = decodeURIComponent($(this).attr('data-ownorder'));
+            $(".idorderclass").html(`<p><strong>ID</strong>: ${idorderclass} </p>`);
+            $(".dayorder").html(`<p><strong>Дата</strong>: ${dayorder}</p>`);
+            $(".statusorder").html(`<p><strong>Статус</strong>: <span class="badge rounded-pill text-bg-primary">${statusorder}</span>`);
+            $(".paymentstatusorder").html(`<p><strong>Статус оплаты</strong>: <span class="badge rounded-pill text-bg-danger"> ${paymentstatusorder}</span> </p>`);
+            $(".contractororder").html(`<p><strong>Заказ-наряд</strong>: ${contractororder}</p>`);
+            $(".ownorder").html(`<p><strong>Контрактор</strong>:  ${ownorder}</p>`);
+            let senId = document.getElementsByClassName('chosenID')
+            $('.sendId').html(`<input type="text" value="${idorderclass}" id="chosenID" class="chosenID" name="order_id" hidden >`)
+            idClicked = parseInt(e.target.dataset.idorderclass)
+            senId.value = idClicked
+            let formAction = document.getElementById('paymentForm')
+            formAction.action = `${tpID}/order/${idClicked}/payment/`
+            document.payment.action
+
+        })
+
+
+    $(function () {
+        $('#paymentForm').submit(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var data = $(this).serialize();
+
+            $.post(`${locationHost}/org/1/tp/${tpID}/order/${idClicked}/payment/`, data);
+
+        })
+    })
+
+});
+
+
 let orderDate = document.getElementById('order_date')
 let orderStatus = document.getElementById('order_status')
 let orderPaymentStatus = document.getElementById('payment_status')
