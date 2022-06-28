@@ -11,7 +11,7 @@
         </div>
         <div class="col">
             <label for="surname" class="form-label">Фамилия <span class="text-danger">*</span></label>
-            <input type="text" class="form-control border-secondary" id="surname" name="surname"
+            <input type="text" class="form-control border-secondary" id="surname" name="surname" maxlength=""
                    value="{{ form.surname.value|default:'' }}" required>
             <div class="form-text" style="color: red;">
                 {% for err in form.errors.surname %}{{ err }}{% endfor %}</div>

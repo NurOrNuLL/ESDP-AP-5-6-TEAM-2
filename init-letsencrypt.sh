@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose -f docker-compose.prod.yml)" ]; then
   exit 1
 fi
 
-domains=(testesdp.ddns.net)
+domains=(gservicegroup.top)
 rsa_key_size=4096
 data_path="./data/certbot"
 email="danilastolyarov97@gmail.com" # Adding a valid address is strongly recommended
