@@ -59,7 +59,10 @@ INSTALLED_APPS = [
 ASGI_APPLICATION = 'core.asgi.application'
 
 REST_FRAMEWORK = {
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ]
 }
 
 MIDDLEWARE = [
@@ -224,7 +227,6 @@ CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
 
 CELERY_IGNORE_RESULT = True
-
 
 CACHES = {
     'default': {

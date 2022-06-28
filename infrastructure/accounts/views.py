@@ -1,4 +1,3 @@
-import base64
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
@@ -10,12 +9,16 @@ from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
 from services.trade_point_services import TradePointServices
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
-class RegisterView(TemplateView):
+class RegisterView(UserPassesTestMixin, TemplateView):
     template_name = 'registration/register.html'
     register_form_class = RegisterForm
     employee_form_class = EmployeeForm
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)

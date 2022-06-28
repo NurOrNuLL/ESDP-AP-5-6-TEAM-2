@@ -13,11 +13,20 @@ from rest_framework.response import Response
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from services.employee_services import EmployeeServices
 
 
-class OwnCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class OwnCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     template_name = 'own/own_create.html'
     form_class = OwnForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -105,7 +114,7 @@ class OwnList(GenericAPIView):
         return Response(serializer.data)
 
 
-class OwnFullList(TemplateView):
+class OwnFullList(LoginRequiredMixin, TemplateView):
     template_name = 'own/owns.html'
 
     def get_context_data(self, **kwargs):
