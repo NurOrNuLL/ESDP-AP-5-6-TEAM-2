@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'models.payment_method',
     'models.payment',
     'models.order',
+    'models.queue',
     'rest_framework',
     'corsheaders',
     'django_filters',
