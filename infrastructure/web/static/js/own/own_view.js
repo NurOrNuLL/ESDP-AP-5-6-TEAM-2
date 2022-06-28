@@ -5,6 +5,8 @@ let back = document.getElementById('back');
 let page = document.getElementById('page');
 let search = document.getElementById('ownSearch');
 let isPart = document.getElementById('isPart');
+let numberTitle = document.getElementById('numberTitle');
+
 
 $.ajax({
     url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=&is_part=${isPart.value}`,
@@ -26,11 +28,12 @@ $.ajax({
             next.classList.remove('disabled')
             back.classList.remove('disabled')
         }
-
         data.results.forEach(function (item) {
-            console.log(item);
             if (item.comment == null) {
                 item.comment = '';
+            }
+            if (item.number == null) {
+                item.number = '';
             }
             body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали</a></td></tr>'
         })
@@ -65,8 +68,13 @@ back.addEventListener('click', (e) => {
             next.classList.remove('disabled')
             back.classList.remove('disabled')
         }
-
         data.results.forEach(function (item) {
+            if (item.comment == null) {
+                item.comment = '';
+            }
+            if (item.number == null) {
+                item.number = '';
+            }
             body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
         })
     },
@@ -101,8 +109,13 @@ next.addEventListener('click', (e) => {
             next.classList.remove('disabled')
             back.classList.remove('disabled')
         }
-
         data.results.forEach(function (item) {
+            if (item.comment == null) {
+                item.comment = '';
+            }
+            if (item.number == null) {
+                item.number = '';
+            }
             body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
         })
     },
@@ -138,6 +151,12 @@ search.addEventListener('input', (e) => {
 
             if(data.results.length) {
                 data.results.forEach(function (item) {
+                    if (item.comment == null) {
+                        item.comment = '';
+                    }
+                    if (item.number == null) {
+                        item.number = '';
+                    }
                     body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
                 })
             }
@@ -179,6 +198,18 @@ isPart.addEventListener('change', () => {
 
             if(data.results.length) {
                 data.results.forEach(function (item) {
+                    if (item.comment == null) {
+                        item.comment = '';
+                    }
+                    if (item.number == null) {
+                        item.number = '';
+                    }
+                    if (item.is_part === true) {
+                        numberTitle.innerText = ' ';
+                    }
+                    if (isPart.value === 'all' || item.is_part === false) {
+                        numberTitle.innerText = 'Номер';
+                    }
                     body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
                 })
             }
