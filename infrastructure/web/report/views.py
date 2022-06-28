@@ -5,11 +5,20 @@ from .forms import ReportDateForm
 from django.shortcuts import render
 import datetime
 import calendar
+from django.contrib.auth.mixins import UserPassesTestMixin
+from services.employee_services import EmployeeServices
 
 
-class ReportPreviewView(TemplateView):
+class ReportPreviewView(UserPassesTestMixin, TemplateView):
     template_name = 'report/report.html'
     form_class = ReportDateForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_default_date(self) -> List[str]:
         current_date = datetime.date.today()
@@ -55,3 +64,4 @@ class ReportPreviewView(TemplateView):
             context['form'] = form
 
             return render(request, self.template_name, context)
+

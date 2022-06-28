@@ -23,12 +23,20 @@ from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from django.core.cache import cache
 from rest_framework.generics import GenericAPIView
 from concurrency.exceptions import RecordModifiedError
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureImportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     """Импорт прайса для выбранной номенклатуры"""
     template_name = 'nomenclature/list.html'
     form_class = NomenclatureImportForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -71,7 +79,7 @@ class NomenclatureImportView(ResetOrderCreateFormDataMixin, TemplateView):
                 )
 
 
-class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'nomenclature/list.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -133,9 +141,16 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
         }
 
 
-class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
     form_class = NomenclatureForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
@@ -161,9 +176,16 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, TemplateView):
         return render(request, self.template_name, context)
 
 
-class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureExportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -185,10 +207,17 @@ class NomenclatureExportView(ResetOrderCreateFormDataMixin, TemplateView):
         )
 
 
-class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
     """При удачном выполнении задачи выдает загруженный файл"""
     template_name = 'nomenclature/list.html'
     services_file = ''
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
@@ -246,7 +275,7 @@ class NomenclatureFormForImpost(GenericAPIView):
         )
 
 
-class NomenclatureProgressView(ResetOrderCreateFormDataMixin, TemplateView):
+class NomenclatureProgressView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     """Для получения данных о 100% загрузке"""
     template_name = 'nomenclature/list.html'
 
