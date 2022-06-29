@@ -1,4 +1,4 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
@@ -11,12 +11,20 @@ from .forms import PaymentForm
 from models.payment_method.models import PaymentMethod
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from models.order.models import Order
+from services.employee_services import EmployeeServices
 
 
-class OrderPayment(LoginRequiredMixin, ResetOrderCreateFormDataMixin, TemplateView):
+class OrderPayment(LoginRequiredMixin, UserPassesTestMixin, ResetOrderCreateFormDataMixin, TemplateView):
     """Создание оплаты заказ-наряда"""
     template_name = 'home.html'
     form_class = PaymentForm
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> dict:
         order = OrderService.get_order_by_id(self.kwargs['ordID'])
