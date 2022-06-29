@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='employee',
             name='name',
-            field=models.CharField(max_length=50, validators=[validators.upper_name, validators.latin_validate, validators.number_validate], verbose_name='Имя'),
+            field=models.CharField(max_length=50, validators=[validators.latin_validate, validators.number_validate], verbose_name='Имя'),
         ),
         migrations.AlterField(
             model_name='employee',
@@ -24,6 +24,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='employee',
             name='surname',
-            field=models.CharField(max_length=50, validators=[validators.upper_surname, validators.latin_surname_validate, validators.number_surname_validate], verbose_name='Фамилия'),
+            field=models.CharField(max_length=50, validators=[validators.latin_surname_validate, validators.number_surname_validate], verbose_name='Фамилия'),
         ),
     ]

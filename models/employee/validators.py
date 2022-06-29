@@ -35,12 +35,6 @@ def validate_iin(iin: str) -> bool:
     return True
 
 
-def upper_name(name):
-    if re.match(r'\w', name):
-        raise ValidationError('Имя не должно начинаться с маленькой буквы. ')
-    return name
-
-
 def latin_validate(name):
     if re.search('[a-zA-Z]', name):
         raise ValidationError("Имя должен содержать только кирилицу. ")
@@ -61,14 +55,6 @@ def number_surname_validate(surname):
         raise ValidationError("В это поле нельзя вводить цифру. ")
 
 
-def upper_surname(surname):
-    if re.match(r'\w', surname):
-        raise ValidationError('Фамилия не должна начинаться с маленькой буквы. ')
-    return surname
-
-
 def len_phone_validate(phone):
     if len(phone) < 11:
-        raise ValidationError(f'Телефон должен содержать 11 символов. Вы ввели {len(phone)}. ')
-    else:
         raise ValidationError(f'Телефон должен содержать 11 символов. Вы ввели {len(phone)}. ')

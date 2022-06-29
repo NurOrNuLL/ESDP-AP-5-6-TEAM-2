@@ -2,6 +2,7 @@ import tablib
 from concurrency.api import disable_concurrency
 from django.views.generic import TemplateView
 from services.employee_services import EmployeeServices
+from services.trade_point_services import TradePointServices
 from .forms import NomenclatureForm, NomenclatureImportForm
 from django.shortcuts import render, redirect, reverse
 from services.nomenclature_services import NomenclatureService
@@ -86,7 +87,7 @@ class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, LoginRequiredM
         context = super().get_context_data(**kwargs)
         context['categories'] = CATEGORY_CHOICES
         context['marks'] = MARK_CHOICES
-        context['nomenclatures'] = NomenclatureService.get_all_nomenclatures()
+        context['nomenclatures'] = NomenclatureService.get_nomenclatures_by_tradepoint_id(self.kwargs['tpID'])
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
             self.request, self.request.user.uuid
         )
@@ -96,6 +97,10 @@ class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, LoginRequiredM
         self.delete_order_data_from_session(request)
 
         context = self.get_context_data()
+
+        if request.GET.get('nomID'):
+            context['nomID'] = int(request.GET.get('nomID'))
+
         if request.session.get('error'):
             context['error'] = request.session['error']
             del request.session['error']
@@ -163,9 +168,16 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Temp
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            NomenclatureService.create_nomenclature(form.cleaned_data)
+            nomenclature = NomenclatureService.create_nomenclature(form.cleaned_data)
             cache.delete('nomenclatures')
-            return redirect('home_redirect')
+
+            tradepoint = TradePointServices.get_trade_point_by_id({'tpID': self.kwargs['tpID']})
+            tradepoint.nomenclature.add(nomenclature)
+
+            response = redirect('nomenclature_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+            response['Location'] += f'?nomID={nomenclature.id}'
+
+            return response
 
         context = self.get_context_data()
         context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
@@ -323,9 +335,6 @@ class NomenclatureNameUpdateApiView(GenericAPIView):
                     'error': 'Наименование номенклатуры было изменено другим пользователем! Вы хотите повторно изменить наименование?'
                 })
             else:
-                nomenclature.name = serializer.data['name']
-                nomenclature.save()
-
                 return Response(serializer.data)
         return Response(serializer.errors)
 
@@ -340,4 +349,7 @@ class NomenclatureNameConcurrencyUpdateApiView(GenericAPIView):
             nomenclature.name = request.data['name']
             nomenclature.save()
 
-            return Response(request.data)
+            return Response({
+                'name': nomenclature.name,
+                'version': nomenclature.version
+            })
