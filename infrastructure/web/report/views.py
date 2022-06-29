@@ -5,11 +5,11 @@ from .forms import ReportDateForm
 from django.shortcuts import render
 import datetime
 import calendar
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from services.employee_services import EmployeeServices
 
 
-class ReportPreviewView(UserPassesTestMixin, TemplateView):
+class ReportPreviewView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'report/report.html'
     form_class = ReportDateForm
 
@@ -64,4 +64,3 @@ class ReportPreviewView(UserPassesTestMixin, TemplateView):
             context['form'] = form
 
             return render(request, self.template_name, context)
-

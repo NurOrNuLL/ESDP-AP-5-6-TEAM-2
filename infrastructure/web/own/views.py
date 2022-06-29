@@ -17,7 +17,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from services.employee_services import EmployeeServices
 
 
-class OwnCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class OwnCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'own/own_create.html'
     form_class = OwnForm
 
