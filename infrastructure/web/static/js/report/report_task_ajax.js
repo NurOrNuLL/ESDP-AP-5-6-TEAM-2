@@ -368,7 +368,7 @@ function renderReport(paidJobs, unpaidJobs, report) {
 reportForm.addEventListener('submit', e => {
     e.preventDefault();
 
-    reportSocket = new WebSocket(`ws://${window.location.host}/report/create`);
+    reportSocket = new WebSocket(`wss://${window.location.host}/report/create`);
 
     reportSocket.onopen = e => {
         reportSocket.send(JSON.stringify({
