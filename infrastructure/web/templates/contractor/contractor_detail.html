@@ -78,7 +78,7 @@
                 <th>Номер</th>
                 </thead>
                 {% for own in contractor.owns.all %}
-                    {% if own.is_part is False %}
+                    {% if own.is_part is False and own.is_deleted is False %}
                         <tr id="own_instance_{{ own.id }}">
                             <td scope="col">{{ own.name }}</td>
                                 <td>{% if own.number %}{{ own.number }}{% else %}Не указан{% endif %}</td>

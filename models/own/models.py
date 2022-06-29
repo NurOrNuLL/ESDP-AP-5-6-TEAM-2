@@ -24,6 +24,8 @@ class Own(models.Model):
     )
     is_part = models.BooleanField(default=False, verbose_name="Зап.часть")
 
+    is_deleted = models.BooleanField(default=False, verbose_name='Удалена')
+
     def __str__(self: object) -> str:
         return f'{self.name}'
 
