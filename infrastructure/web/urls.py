@@ -30,7 +30,7 @@ from .trade_point.views import (
 from .contractor.views import (
     ContractorCreate, ContractorList, ContractorDetail,
     ContractorUpdate, ContractorFilterApiView,
-    ContractorUpdateConcurrecnyView
+    ContractorUpdateConcurrecnyView, ContractorDetailOwnListApiView
 )
 from .employee.views import (
     EmployeeCreate,
@@ -92,7 +92,8 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path('contractor/<int:contrID>/',ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/', ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/own/list/filter/', ContractorDetailOwnListApiView.as_view()),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
     path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
