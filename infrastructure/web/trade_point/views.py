@@ -10,11 +10,15 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class TradePointCreate(ResetOrderCreateFormDataMixin, TemplateView):
+class TradePointCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'trade_point/trade_point_create.html'
     form_class = TradePointForm
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -42,7 +46,7 @@ class TradePointCreate(ResetOrderCreateFormDataMixin, TemplateView):
         })
 
 
-class TradePointList(ResetOrderCreateFormDataMixin, TemplateView):
+class TradePointList(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     template_name = 'trade_point/trade_points.html'
 
     def get_context_data(self, **kwargs: dict) -> dict:
@@ -56,9 +60,12 @@ class TradePointList(ResetOrderCreateFormDataMixin, TemplateView):
         return super().get(request, *args, **kwargs)
 
 
-class TradePointUpdate(ResetOrderCreateFormDataMixin, TemplateView):
+class TradePointUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'trade_point/trade_point_update.html'
     form_class = TradePointForm
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**self.kwargs)
@@ -108,7 +115,10 @@ class TradePointUpdate(ResetOrderCreateFormDataMixin, TemplateView):
             return render(request, template_name=self.template_name, context=context)
 
 
-class TradePointUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, View):
+class TradePointUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, View):
+
+    def test_func(self):
+        return self.request.user.is_staff
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict
              ) -> HttpResponse or HttpResponseRedirect:

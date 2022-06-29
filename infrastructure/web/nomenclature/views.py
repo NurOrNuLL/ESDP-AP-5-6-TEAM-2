@@ -27,7 +27,7 @@ from concurrency.exceptions import RecordModifiedError
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class NomenclatureImportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class NomenclatureImportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     """Импорт прайса для выбранной номенклатуры"""
     template_name = 'nomenclature/list.html'
     form_class = NomenclatureImportForm
@@ -146,7 +146,7 @@ class NomenclatureItemsFilterApiView(GenericAPIView):
         }
 
 
-class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
+class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'nomenclature/nomenclature_create.html'
     form_class = NomenclatureForm
 
@@ -188,7 +188,7 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Temp
         return render(request, self.template_name, context)
 
 
-class NomenclatureExportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class NomenclatureExportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
 
@@ -219,7 +219,7 @@ class NomenclatureExportView(ResetOrderCreateFormDataMixin, UserPassesTestMixin,
         )
 
 
-class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     """При удачном выполнении задачи выдает загруженный файл"""
     template_name = 'nomenclature/list.html'
     services_file = ''

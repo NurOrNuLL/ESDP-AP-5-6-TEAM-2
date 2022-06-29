@@ -9,10 +9,10 @@ from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
 from services.trade_point_services import TradePointServices
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class RegisterView(UserPassesTestMixin, TemplateView):
+class RegisterView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'registration/register.html'
     register_form_class = RegisterForm
     employee_form_class = EmployeeForm
