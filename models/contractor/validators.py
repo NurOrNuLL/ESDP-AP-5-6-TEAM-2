@@ -38,9 +38,3 @@ def validate_iin(iin: str) -> bool:
     if check_sum != int(iin[-1]):
         raise ValidationError("Введите корректный ИИН")
     return True
-
-
-def upper_word(name):
-    if re.match(r'\w', name):
-        raise ValidationError('Наименование не должно начинаться с маленькой буквы')
-    return name

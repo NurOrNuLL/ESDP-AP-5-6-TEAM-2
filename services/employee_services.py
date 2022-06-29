@@ -14,8 +14,8 @@ class EmployeeServices:
     @staticmethod
     def create_employee_without_image(data: dict) -> Employee:
         return Employee.objects.create(
-            name=data['name'],
-            surname=data['surname'],
+            name=data['name'].capitalize(),
+            surname=data['surname'].capitalize(),
             role=data['role'],
             IIN=data['IIN'],
             address=data['address'],
@@ -28,8 +28,8 @@ class EmployeeServices:
     def create_employee_with_uuid(uuid: str, data: dict) -> Employee:
         return Employee.objects.create(
             uuid=uuid,  # noqa E126
-            name=data['name'],
-            surname=data['surname'],
+            name=data['name'].capitalize(),
+            surname=data['surname'].capitalize(),
             role=data['role'],
             IIN=data['IIN'],
             address=data['address'],
@@ -88,8 +88,8 @@ class EmployeeServices:
     @staticmethod
     def update_employee_without_image(emp_uid: str, cleaned_data: dict) -> Employee:
         employee = Employee.objects.get(uuid=emp_uid)
-        employee.name = cleaned_data['name']
-        employee.surname = cleaned_data['surname']
+        employee.name = cleaned_data['name'].capitalize()
+        employee.surname = cleaned_data['surname'].capitalize()
         employee.role = cleaned_data['role']
         employee.IIN = cleaned_data['IIN']
         employee.address = cleaned_data['address']

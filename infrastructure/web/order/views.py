@@ -67,32 +67,59 @@ class OrderFilterBackend(filters.BaseFilterBackend):
         try:
             request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
         except ValueError:
-            return [order for order in queryset \
-                    if request.GET.get('payment_status') in order.payment.payment_status
-                    and (
-                            request.GET.get('search').lower() in order.contractor.name.lower()
-                            or request.GET.get('search').lower() in order.own.number.lower()
-                    )]
-        else:
-            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+            filtered_orders = []
 
-            return [order for order in queryset \
-                    if request.GET.get('payment_status') in order.payment.payment_status
-                    and (
-                            request.GET.get('search').lower() in order.contractor.name.lower()
-                            or request.GET.get('search').lower() in order.own.number.lower()
-                    )
-                    and request_date.day == order.created_at.day
-                    and request_date.month == order.created_at.month
-                    and request_date.year == order.created_at.year
-                    ]
+            for order in queryset:
+                if order.own.is_part:
+                    if (
+                        request.GET.get('payment_status') in order.payment.payment_status
+                        and request.GET.get('status') in order.status
+                        and request.GET.get('search').lower() in order.contractor.name.lower()
+                    ):
+                        filtered_orders.append(order)
+                else:
+                    if (
+                        request.GET.get('payment_status') in order.payment.payment_status
+                        and request.GET.get('status') in order.status
+                        and (request.GET.get('search').lower() in order.contractor.name.lower()
+                             or request.GET.get('search').lower() in order.own.number.lower())
+                    ):
+                        filtered_orders.append(order)
+
+            return filtered_orders
+        else:
+            filtered_orders = []
+
+            for order in queryset:
+                if order.own.is_part:
+                    if (
+                        request.GET.get('payment_status') in order.payment.payment_status
+                        and request.GET.get('status') in order.status
+                        and request.GET.get('search').lower() in order.contractor.name.lower()
+                        and request_date.day == order.created_at.day
+                        and request_date.month == order.created_at.month
+                        and request_date.year == order.created_at.year
+                    ):
+                        filtered_orders.append(order)
+                else:
+                    if (
+                        request.GET.get('payment_status') in order.payment.payment_status
+                        and request.GET.get('status') in order.status
+                        and (request.GET.get('search').lower() in order.contractor.name.lower()
+                             or request.GET.get('search').lower() in order.own.number.lower())
+                        and request_date.day == order.created_at.day
+                        and request_date.month == order.created_at.month
+                        and request_date.year == order.created_at.year
+                    ):
+                        filtered_orders.append(order)
+
+            return filtered_orders
 
 
 class OrderListApiView(generics.ListAPIView):
     serializer_class = OrderSerializer
     pagination_class = MyPagination
-    filter_backends = [DjangoFilterBackend, OrderFilterBackend]
-    filter_fields = ['status']
+    filter_backends = [OrderFilterBackend, ]
 
     def get_queryset(self):
         trade_point_id = self.kwargs.get('tpID')

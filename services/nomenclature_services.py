@@ -9,6 +9,8 @@ import json
 from urllib.parse import quote
 import datetime
 
+from models.trade_point.models import TradePoint
+
 File = str
 JSON = dict
 JSONSchema = dict
@@ -103,6 +105,10 @@ class NomenclatureService:
             data.append(i.values())
             file_data = data.export(file_extension)
         return file_data
+
+    @staticmethod
+    def get_nomenclatures_by_tradepoint_id(tpID: int) -> List[Nomenclature]:
+        return TradePoint.objects.get(id=tpID).nomenclature.all()
 
     @staticmethod
     def get_nomenclatures_by_organization(kwargs: dict) -> List['Nomenclature']:
