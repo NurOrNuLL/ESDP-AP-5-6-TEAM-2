@@ -31,7 +31,6 @@ from rest_framework import generics, filters
 from models.order.models import Order
 from infrastructure.web.order.serializers import OrderSerializer
 from rest_framework.pagination import PageNumberPagination
-from django_filters.rest_framework import DjangoFilterBackend
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
@@ -135,7 +134,7 @@ class HomeRedirectView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, View):
         ))
 
 
-class OrderCreateViewStage1(UserPassesTestMixin, TemplateView):
+class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage1.html'
     form_class = OrderCreateFormStage1
 
@@ -197,7 +196,7 @@ class OrderCreateViewStage1(UserPassesTestMixin, TemplateView):
             return render(request, self.template_name, context)
 
 
-class OrderCreateViewStage2(UserPassesTestMixin, TemplateView):
+class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage2.html'
     form_class = OrderCreateFormStage2
 
@@ -274,7 +273,7 @@ class OrderCreateViewStage2(UserPassesTestMixin, TemplateView):
             return render(request, self.template_name, context)
 
 
-class OrderCreateViewStage3(UserPassesTestMixin, TemplateView):
+class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage3.html'
     form_class = OrderCreateFormStage3
 
@@ -331,7 +330,7 @@ class OrderCreateViewStage3(UserPassesTestMixin, TemplateView):
             return render(request, self.template_name, context)
 
 
-class OrderCreateViewStage4(UserPassesTestMixin, TemplateView):
+class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage4.html'
 
     def test_func(self):
@@ -420,7 +419,7 @@ class OrderDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateVie
         return super().get(request, *args, **kwargs)
 
 
-class OrderUpdateView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/update.html'
     concurrency_template_name = 'order/concurrency_update.html'
     form_class = OrderUpdateForm
@@ -531,7 +530,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templa
             return render(request, self.template_name, context)
 
 
-class OrderUpdateConcurrencyView(UserPassesTestMixin, View):
+class OrderUpdateConcurrencyView(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
         if self.request.user.is_staff:

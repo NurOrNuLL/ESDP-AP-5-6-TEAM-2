@@ -19,7 +19,7 @@ from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class ContractorCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/contractor_create.html'
     form_class = ContractorForm
 
@@ -117,7 +117,7 @@ class ContractorDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Templa
         return super().get(request, *args, **kwargs)
 
 
-class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class ContractorUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/update.html'
     form_class = ContractorForm
 
@@ -187,7 +187,7 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
             return render(request, template_name=self.template_name, context=context)
 
 
-class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, View):
+class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
         if self.request.user.is_staff:

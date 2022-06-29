@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
-class EmployeeCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'employee/employee_create.html'
     form_class = EmployeeForm
     initial_data = {
@@ -153,7 +153,7 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Template
         return super().get(request, *args, **kwargs)
 
 
-class EmployeeUpdate(UserPassesTestMixin, TemplateView):
+class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'employee/employee_update.html'
     form_class = EmployeeForm
 
@@ -250,7 +250,7 @@ class EmployeeUpdate(UserPassesTestMixin, TemplateView):
             return render(request, self.template_name, context)
 
 
-class EmployeeConcurrencyUpdate(UserPassesTestMixin, View):
+class EmployeeConcurrencyUpdate(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
         if self.request.user.is_staff:
