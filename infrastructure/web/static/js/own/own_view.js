@@ -35,7 +35,9 @@ $.ajax({
             if (item.number == null) {
                 item.number = '';
             }
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали</a></td></tr>'
+            if (item.is_deleted === false) {
+                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали</a></td></tr>'
+            }
         })
     },
     error: (response) => {
@@ -75,8 +77,10 @@ back.addEventListener('click', (e) => {
             if (item.number == null) {
                 item.number = '';
             }
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
-        })
+            if (item.is_deleted === false) {
+                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+            }
+            })
     },
     error: (response) => {
         console.log(response)
@@ -116,8 +120,10 @@ next.addEventListener('click', (e) => {
             if (item.number == null) {
                 item.number = '';
             }
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
-        })
+            if (item.is_deleted === false) {
+                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+            }
+            })
     },
     error: (response) => {
         console.log(response)
@@ -157,8 +163,10 @@ search.addEventListener('input', (e) => {
                     if (item.number == null) {
                         item.number = '';
                     }
-                    body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
-                })
+                    if (item.is_deleted === false) {
+                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+                    }
+                    })
             }
             else {
                 body.innerHTML = '';
@@ -210,8 +218,10 @@ isPart.addEventListener('change', () => {
                     if (isPart.value === 'all' || item.is_part === false) {
                         numberTitle.innerText = 'Номер';
                     }
-                    body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
-                })
+                    if (item.is_deleted === false) {
+                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+                    }
+                    })
             }
             else {
                 body.innerHTML = '';
