@@ -7,7 +7,7 @@ function render(search, date, status, payment_status, page, limit) {
         async: false,
         success: (data) => {
             body.innerHTML = '';
-            if (data.length != 0) {
+            if (data.results.length != 0) {
                 beforeTableBlock.innerHTML = '';
                 data.results.forEach(function (item) {
                     var today = new Date(item.created_at);
@@ -23,61 +23,61 @@ function render(search, date, status, payment_status, page, limit) {
                         <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
                         <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
                         <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        <td class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary modalbtn me-2"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button>
+                        <a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
                     } else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
                         body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
                         <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></td>
                         <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        <td class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary modalbtn me-2"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button>
+                        <a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
                     } else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
                         body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
                         <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
                         <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        <td class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary modalbtn me-2"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button>
+                        <a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
                     } else {
                         body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></td>
                         <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        <td class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary modalbtn me-2"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}
+                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button>
+                        <a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
                     }
                 })
 
@@ -95,6 +95,7 @@ function render(search, date, status, payment_status, page, limit) {
                     back.classList.remove('disabled')
                 }
             } else {
+                console.log(data);
                 beforeTableBlock.innerHTML = '';
                 beforeTableBlock.innerHTML += '<h4 class="text-center">Ничего не найдено!</h4>';
             }
