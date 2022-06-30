@@ -159,7 +159,6 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
             'version': contractor.version,
             'name': contractor.name,
             'address': contractor.address,
-            'IIN_or_BIN': contractor.IIN_or_BIN,
             'IIC': contractor.IIC,
             'bank_name': contractor.bank_name,
             'BIC': contractor.BIC,
