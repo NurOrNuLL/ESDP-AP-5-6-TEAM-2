@@ -1,4 +1,5 @@
 import ast
+from typing import List
 from django.views.generic import TemplateView, View
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
@@ -79,8 +80,8 @@ class ContractorList(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Template
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['contractors'] = ContractorService.get_contractors(kwargs)
-        context['tpID'] = self.kwargs['tpID']
         context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        context['tpID'] = self.kwargs['tpID']
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -93,10 +94,24 @@ class MyPagination(PageNumberPagination):
     page_size = 100
 
 
+class ContractorFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request: HttpRequest, queryset: List[Contractor], view: View) -> List[Contractor]:
+        filtered_contractors = []
+        for contractor in queryset:
+            if (
+                request.GET['search'].lower() in contractor.name.lower()
+                or request.GET['search'].lower() in str(contractor.IIN_or_BIN)
+                or request.GET['search'].lower() in str(contractor.phone)
+            ):
+                filtered_contractors.append(contractor)
+
+        return filtered_contractors
+
+
 class ContractorFilterApiView(generics.ListAPIView):
     serializer_class = ContractorSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'IIN_or_BIN', 'phone']
+    filter_backends = [filters.OrderingFilter, ContractorFilterBackend]
+    search_fields = ['IIN_or_BIN', 'phone']
     ordering_fields = ['name']
     pagination_class = MyPagination
     queryset = Contractor.objects.all()
