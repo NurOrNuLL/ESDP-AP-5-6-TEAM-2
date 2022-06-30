@@ -15,6 +15,7 @@ from django.http.response import HttpResponse, HttpResponseRedirect, JsonRespons
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from services.employee_services import EmployeeServices
+from django.db.utils import IntegrityError
 
 
 class OwnCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -61,10 +62,17 @@ class OwnCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTes
                     return render(request, template_name=self.template_name, context=context)
 
 
-            own = OwnServices.create_own(
-                form.cleaned_data,
-                contractor_id=self.kwargs.get('contrID')
-            )
+            try:
+                own = OwnServices.create_own(
+                    form.cleaned_data,
+                    contractor_id=self.kwargs.get('contrID')
+                )
+            except IntegrityError:
+                form.errors.number = 'Номер должен быть уникальным!'
+
+                context = self.get_context_data(**kwargs)
+                context['form'] = form
+                return render(request, template_name=self.template_name, context=context)
 
             if request.GET.get('next'):
                 request.session['contractor'] = self.kwargs['contrID']
@@ -84,7 +92,8 @@ class OwnCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTes
                 )
 
         if not form.cleaned_data['is_part']:
-            form.errors.number = 'Обязательное поле!'
+            if not form.cleaned_data['number']:
+                form.errors.number = 'Обязательное поле!'
 
         context = self.get_context_data(**kwargs)
         context['form'] = form
