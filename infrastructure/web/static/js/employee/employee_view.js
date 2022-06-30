@@ -64,7 +64,7 @@ back.addEventListener('click', (e) => {
 
         data.results.forEach(function (item) {
             body.innerHTML += '<tr><td>' + item.name + '</td><td>'
-                + item.surname + '</td><td>' + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
+                + item.surname + '</td><td class="badge rounded-pill text-bg-primary">' + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
         })
     },
     error: (response) => {
@@ -100,7 +100,7 @@ next.addEventListener('click', (e) => {
         }
 
         data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
+            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td class="badge rounded-pill text-bg-primary">'
                 + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
                 + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
             })
@@ -138,7 +138,7 @@ search.addEventListener('input', (e) => {
             if(data.results.length) {
                 data.results.forEach(function (item) {
                     if (item) {
-                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td>'
+                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td class="badge rounded-pill text-bg-primary">'
                             + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
                             + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
                         }
