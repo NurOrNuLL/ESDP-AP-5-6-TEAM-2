@@ -1,8 +1,10 @@
 import ast
 from django.views.generic import TemplateView, View
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
 from models.contractor.models import Contractor
 from services.employee_services import EmployeeServices
+from services.own_services import OwnServices
 from .forms import ContractorForm
 from django.shortcuts import render, redirect
 from .serializers import ContractorSerializer
@@ -17,6 +19,7 @@ from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from ..own.serializer import OwnSerializer
 
 
 class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -115,6 +118,20 @@ class ContractorDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Templa
         self.delete_order_data_from_session(request)
 
         return super().get(request, *args, **kwargs)
+
+
+class ContractorDetailOwnListApiView(generics.ListAPIView):
+    serializer_class = OwnSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_part']
+    pagination_class = MyPagination
+
+    def get_object(self, **kwargs):
+        contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        return contractor
+
+    def get_queryset(self):
+        return OwnServices.get_own_by_contr_id((self.get_object()).id)
 
 
 class ContractorUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
