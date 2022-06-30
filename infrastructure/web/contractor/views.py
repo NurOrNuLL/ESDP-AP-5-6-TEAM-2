@@ -1,11 +1,7 @@
 import ast
-
-import kwargs as kwargs
 from django.views.generic import TemplateView, View
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from rest_framework.generics import get_object_or_404
-
 from models.contractor.models import Contractor
 from services.employee_services import EmployeeServices
 from services.own_services import OwnServices
@@ -23,7 +19,6 @@ from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
-
 from ..own.serializer import OwnSerializer
 
 
