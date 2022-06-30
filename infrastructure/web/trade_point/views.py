@@ -37,7 +37,7 @@ class TradePointCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
         form = self.form_class(request.POST)
         if form.is_valid():
             TradePointServices.create_trade_point(form.cleaned_data)
-            return redirect('nomenclature_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+            return redirect('trade_point_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
 
         return render(request, self.template_name, {
             'form': form,
