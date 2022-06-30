@@ -36,7 +36,7 @@ $.ajax({
                 item.number = '';
             }
             if (item.is_deleted === false) {
-                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали</a></td></tr>'
+                body.innerHTML += '<tr><td><a style="text-decoration: none" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">' + item.name + '</a></td><td>' + item.number + '</td><td>' + item.comment + '</td></tr>'
             }
         })
     },
