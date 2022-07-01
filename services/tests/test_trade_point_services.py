@@ -1,6 +1,6 @@
 from unittest import TestCase
 from models.trade_point.models import TradePoint
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from unittest.mock import Mock, patch
 
 
@@ -11,7 +11,7 @@ class TradePointServicesTest(TestCase):
         with patch('models.trade_point.models.TradePoint.objects.get') as get_trade_point:
             get_trade_point.return_value = trade_point
 
-            returned_trade_point = TradePointServices.get_trade_point_by_id(
+            returned_trade_point = TradePointService.get_trade_point_by_id(
                 kwargs={"tpID": trade_point.id}
             )
 

@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from models.nomenclature.models import Nomenclature
 from models.trade_point.models import TradePoint
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from unittest.mock import Mock, patch
 from concurrency.exceptions import RecordModifiedError
 
@@ -39,7 +39,7 @@ class TradePointTest(TestCase):
                 'nomenclature': [nomenclature1]
             }
 
-            returned_trade_point_version = TradePointServices.update_trade_point(trade_point, data).version
+            returned_trade_point_version = TradePointService.update_trade_point(trade_point, data).version
 
             trade_point.save_trade_point()
             with self.assertRaises(RecordModifiedError):
