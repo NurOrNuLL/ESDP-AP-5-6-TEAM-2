@@ -8,7 +8,9 @@
     <hr>
     <div class="d-flex mb-4">
         <a class="btn btn-secondary me-2" href="">К списку</a>
-        <a class="btn btn-secondary" href="{% url 'order_update' orgID=orgID tpID=tpID ordID=order.id %}">Редактировать заказ-наряд</a>
+        {% if request.user.is_staff or request_user_employee.role == 'Управляющий' and request_user_employee.tradepoint.id == tradepoint_id %}
+            <a class="btn btn-secondary" href="{% url 'order_update' orgID=orgID tpID=tpID ordID=order.id %}">Редактировать заказ-наряд</a>
+        {% endif %}
     </div>
     <div class="card mb-3">
         <div class="card-header bg-transparent">
