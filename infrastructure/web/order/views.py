@@ -21,7 +21,7 @@ from services.order_services import OrderService
 from services.payment_services import PaymentService
 from services.contractor_services import ContractorService
 from services.organization_services import OrganizationService
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from services.own_services import OwnServices
 from infrastructure.web.trade_point.context_processor import trade_point_context
 from typing import Dict, Any, List
@@ -42,9 +42,7 @@ class HomePageView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateVi
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['payment_statuses'] = PAYMENT_STATUS_CHOICES
         context['order_statuses'] = ORDER_STATUS_CHOICES
         context['order_dates'] = Order.objects.filter(trade_point_id=self.kwargs.get('tpID'))
@@ -129,9 +127,7 @@ class HomeRedirectView(LoginRequiredMixin, ResetOrderCreateFormDataMixin, View):
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
 
-        return redirect('home', orgID=1, tpID=EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        ))
+        return redirect('home', orgID=1, tpID=TradePointService.get_tradepoint_id_from_cookie(self.request))
 
 
 class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
@@ -149,8 +145,8 @@ class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         context = super().get_context_data(**kwargs)
         context['contractors'] = ContractorService.get_contractors(self.kwargs)
         context['nomenclatures'] = \
-            TradePointServices.get_trade_point_by_clean_id(self.kwargs['tpID']).nomenclature.all()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+            TradePointService.get_trade_point_by_clean_id(self.kwargs['tpID']).nomenclature.all()
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
 
         return context
 
@@ -219,11 +215,11 @@ class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['categories'] = CATEGORY_CHOICES
 
         employees = EmployeeServices.get_employee_by_tradepoint(
-                tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+                tradepoint=TradePointService.get_trade_point_by_id(self.kwargs)
             ).filter(role='Мастер')
         context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
 
@@ -286,7 +282,7 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['payment_methods'] = PaymentService.get_payment_methods()
 
         return context
@@ -342,7 +338,7 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
 
         return context
 
@@ -374,7 +370,7 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         prices = self.get_prices(request.session['jobs'])
 
         data = {
-            'trade_point': TradePointServices.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
+            'trade_point': TradePointService.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
             'contractor': ContractorService.get_contractor_by_id(request.session['contractor']),
             'nomenclature': NomenclatureService.get_nomenclature_by_id(request.session['nomenclature']),
             'own': OwnServices.get_own_by_id({'ownID': request.session['own']}),
@@ -406,7 +402,7 @@ class OrderDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateVie
 
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['trade_point'] = TradePointService.get_trade_point_by_id(self.kwargs)
         context['contractor'] = order.contractor
         context['own'] = order.own
         context['order'] = order
@@ -444,13 +440,13 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
     def get_context_data_for_GET(self, form: OrderUpdateForm, order: Order, request: HttpRequest) -> Dict[str, Any]:
         context = self.get_context_data()
         context['form'] = form
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['ordID'] = order.id
         context['categories'] = CATEGORY_CHOICES
         context['services'] = self.get_services(order)
 
         employees = EmployeeServices.get_employee_by_tradepoint(
-                tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+                tradepoint=TradePointService.get_trade_point_by_id(self.kwargs)
             ).filter(role='Мастер')
 
         context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
@@ -478,7 +474,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
                 if not job['Мастера']:
                     form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
                     employees = EmployeeServices.get_employee_by_tradepoint(
-                                    tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+                                    tradepoint=TradePointService.get_trade_point_by_id(self.kwargs)
                                 ).filter(role='Мастер')
 
                     context = self.get_context_data()
@@ -486,7 +482,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
                     context['categories'] = CATEGORY_CHOICES
                     context['employees'] = [{"IIN": employee.IIN, "name": employee.name, "surname": employee.surname} for employee in employees]
                     context['form'] = form
-                    context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+                    context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
                     context['ordID'] = order.id
 
                     return render(request, self.template_name, context)
@@ -499,7 +495,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
                 order.save()
             except RecordModifiedError:
                 context = self.get_context_data()
-                context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+                context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
                 context['ordID'] = order.id
                 context['current_data'] = OrderService.get_order_by_id(self.kwargs['ordID'])
                 context['new_data'] = form.cleaned_data
@@ -516,12 +512,12 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
         else:
             form.errors['jobs'] = 'Вы не выбрали услуги!!!'
             employees = EmployeeServices.get_employee_by_tradepoint(
-                tradepoint=TradePointServices.get_trade_point_by_id(self.kwargs)
+                tradepoint=TradePointService.get_trade_point_by_id(self.kwargs)
             ).filter(role='Мастер')
 
             context = self.get_context_data()
             context['form'] = form
-            context['tpID'] = EmployeeServices.get_attached_tradepoint_id(request, request.user.uuid)
+            context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
             context['ordID'] = order.id
             context['categories'] = CATEGORY_CHOICES
             context['services'] = self.get_services(order)

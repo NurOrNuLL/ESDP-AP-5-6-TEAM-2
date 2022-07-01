@@ -11,7 +11,7 @@ from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
 from models.employee.models import Employee
 from services.organization_services import OrganizationService
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
 from .serializers import EmployeeSerializer, EmployeeImageSerializer
@@ -142,7 +142,7 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Template
         if employee.image:
             context['emp_image'] = ast.literal_eval(employee.image)[0]
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['trade_point'] = TradePointService.get_trade_point_by_id(self.kwargs)
         context['employee'] = employee
         context['empUID'] = employee.uuid
         return context
@@ -199,7 +199,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context['form'] = self.get_file_form()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['orgID'] = self.kwargs['orgID']
 
         return render(request=request, template_name=self.template_name, context=context)
@@ -245,7 +245,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             context['form'] = form
             context['roles'] = {'role': 'Мастер'}
             context['tradepoints'] = EmployeeServices.get_tradepoint()
-            context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+            context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
             context['orgID'] = self.kwargs['orgID']
             return render(request, self.template_name, context)
 
@@ -267,7 +267,7 @@ class EmployeeConcurrencyUpdate(LoginRequiredMixin, UserPassesTestMixin, View):
             employee.IIN = request.POST.get('IIN')
             employee.address = request.POST.get('address')
             employee.phone = request.POST.get('phone')
-            employee.tradepoint = TradePointServices.get_trade_point_by_id(self.kwargs)
+            employee.tradepoint = TradePointService.get_trade_point_by_id(self.kwargs)
             employee.role = request.POST.get('role')
             employee.birthdate = request.POST.get('birthdate')
             employee.image = request.POST.get('image')

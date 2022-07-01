@@ -8,7 +8,7 @@ from services.employee_services import EmployeeServices
 from .forms import RegisterForm
 from infrastructure.web.employee.forms import EmployeeForm
 from typing import Dict, Any
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 
 
@@ -23,10 +23,8 @@ class RegisterView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['roles'] = [('Управляющий', 'Управляющий'), ('Менеджер', 'Менеджер')]
-        context['tradepoints'] = TradePointServices.get_trade_points(self.kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tradepoints'] = TradePointService.get_trade_points(self.kwargs)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
 
         return context
 
