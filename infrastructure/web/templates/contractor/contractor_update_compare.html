@@ -64,26 +64,6 @@
         <div class="card-header bg-transparent">
             <div class="row">
                 <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
-                    {% if contractor.IIN_or_BIN != form.IIN_or_BIN %}
-                        <span class="text-danger">{{ contractor.IIN_or_BIN }}</span>
-                    {% else %}
-                        <span>{{ contractor.IIN_or_BIN }}</span>
-                    {% endif %}
-                </div>
-                <div class="col-md-6">
-                    <span class="text" style="font-weight: bold">ИИН/БИН:</span>
-                    {% if contractor.IIN_or_BIN != form.IIN_or_BIN %}
-                        <span class="text-success">{{ form.IIN_or_BIN }}</span>
-                    {% else %}
-                        <span>{{ form.IIN_or_BIN }}</span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-        <div class="card-header bg-transparent">
-            <div class="row">
-                <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Телефон:</span>
                     {% if contractor.phone != form.phone %}
                         <span class="text-danger">{{ contractor.phone }}</span>

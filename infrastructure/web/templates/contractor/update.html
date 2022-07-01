@@ -15,9 +15,9 @@
             <input type="hidden" class="d-none" name="version" value="{{ form.version.value }}"><br>
             <div>
                 {% if form.IIC.value or form.BIC.value or form.bank_name.value %}
-                    <h2 class="my-3">Юридическое лицо</h2>
+                    <h2 class="my-3">Юридическое лицо</h2><span>БИН: {{ contractor.IIN_or_BIN }}</span>
                 {% else %}
-                    <h2 class="my-3">Физическое лицо</h2>
+                    <h2 class="my-3">Физическое лицо</h2><span>ИИН: {{ contractor.IIN_or_BIN }}</span>
                 {% endif %}
                 <hr>
                 <div class="row">
@@ -27,17 +27,12 @@
                         <div class="form-text text-danger">{% for err in form.name.errors %}{{ err }}{% endfor %}</div><br>
                     </div>
                     <div class="col">
-                        <label for="contractor_IIN_or_BIN" class="form-label">ИИН/БИН <span class="text-danger">*</span></label><br>
-                        <input type="number" class="form-control border-secondary" id="contractor_IIN_or_BIN" name="IIN_or_BIN" value="{{ form.IIN_or_BIN.value|default:'' }}">
-                        <div class="form-text text-danger">{% for err in form.IIN_or_BIN.errors %}{{ err }}{% endfor %}</div><br>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
                         <label for="contractor_phone" class="form-label">Контакты <span class="text-danger">*</span></label><br>
                         <input type="phone" class="form-control border-secondary" id="contractor_phone" name="phone" value="{{ form.phone.value|default:'' }}">
                         <div class="form-text text-danger">{% for err in form.phone.errors %}{{ err }}{% endfor %}</div><br>
                     </div>
+                </div>
+                <div class="row">
                     <div class="col">
                         <label for="contractor_address" class="form-label">Адрес</label><br>
                         <input type="text" class="form-control border-secondary" id="contractor_address" name="address" value="{{ form.address.value|default:'' }}">
