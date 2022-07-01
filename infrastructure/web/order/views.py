@@ -45,7 +45,7 @@ class HomePageView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateVi
         context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['payment_statuses'] = PAYMENT_STATUS_CHOICES
         context['order_statuses'] = ORDER_STATUS_CHOICES
-        context['order_dates'] = Order.objects.filter(trade_point_id=self.kwargs.get('tpID'))
+        context['order_dates'] = OrderService.get_orders_by_trade_point(self.kwargs)
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -363,6 +363,8 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         context['mileage'] = request.session['mileage']
         context['note'] = request.session['note']
         context['price_for_pay'], context['full_price'] = self.get_prices(request.session['jobs'])
+        print(request.session)
+        print(request.session['jobs'])
 
         return render(request, self.template_name, context)
 
@@ -535,6 +537,19 @@ class OrderUpdateConcurrencyView(LoginRequiredMixin, UserPassesTestMixin, View):
             employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
             return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
+    def get_prices(self, jobs: List[Dict[Any, Any]]) -> List[int]:
+        price_for_pay = 0
+        full_price = 0
+
+        for job in jobs:
+            if job['Гарантия']:
+                full_price += job['Цена услуги']
+            else:
+                price_for_pay += job['Цена услуги']
+                full_price += job['Цена услуги']
+
+        return [price_for_pay, full_price]
+
     def post(self, request: HttpRequest, *args: list, **kwargs: dict):
         order = OrderService.get_order_by_id(self.kwargs['ordID'])
 
@@ -542,6 +557,9 @@ class OrderUpdateConcurrencyView(LoginRequiredMixin, UserPassesTestMixin, View):
             order.jobs = ast.literal_eval(request.POST['jobs'])
             order.mileage = request.POST.get('mileage')
             order.note = request.POST.get('note')
+            prices = self.get_prices(order.jobs)
+            order.price_for_pay = prices[0]
+            order.full_price = prices[1]
 
             order.save()
 
