@@ -111,6 +111,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'infrastructure.web.trade_point.context_processor.trade_point_context',
                 'infrastructure.web.payment.context_processor.payment_methods',
+                'infrastructure.web.employee.context_processor.request_user_employee',
+                'infrastructure.web.employee.context_processor.trade_point_id'
             ],
             'libraries': {
                 'custom_tags': 'infrastructure.web.template_tags.custom_tags'
