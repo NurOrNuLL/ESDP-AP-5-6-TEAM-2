@@ -1,3 +1,5 @@
+import ast
+
 from services.employee_services import EmployeeServices
 
 
@@ -19,5 +21,5 @@ def request_user_employee(request):
 
 def trade_point_id(request):
     return {
-        'tradepoint_id': request.COOKIES.get('tradepointID')
+        'tradepoint_id': ast.literal_eval(request.COOKIES.get('tradepointID'))
     }

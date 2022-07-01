@@ -37,7 +37,7 @@ class NomenclatureImportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, 
             return True
         else:
             employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
-            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+            return employee.role == 'Управляющий'
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
@@ -182,16 +182,9 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, User
         return render(request, self.template_name, context)
 
 
-class NomenclatureExportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class NomenclatureExportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
-
-    def test_func(self):
-        if self.request.user.is_staff:
-            return True
-        else:
-            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
-            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
