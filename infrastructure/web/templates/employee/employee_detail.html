@@ -14,7 +14,7 @@
                href="{% url 'employee_update' orgID tpID employee.uuid %}">Редактировать</a>
         {% endif %}
         {% if request.user.is_staff or request_user_employee.role == 'Управляющий' and request_user_employee.tradepoint.id == tradepoint_id %}
-            {% if employee.image.url %}
+            {% if employee.role == 'Мастер' %}
                 <a class="btn btn-primary me-2" id="down" href="{{ emp_image }}">Скачать удостоверение</a>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#imageModal">
                     Посмотреть удостоверение
