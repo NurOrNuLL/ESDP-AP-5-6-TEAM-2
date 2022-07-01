@@ -39,16 +39,21 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['tpID'] = self.kwargs['tpID']
+        context['roles'] = [('Мастер', 'Мастер')]
         return context
 
     def get(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
+        self.initial_data['tradepoint'] = TradePointService.get_trade_point_by_clean_id(self.kwargs['tpID'])
+
+        form = self.form_class(initial=self.initial_data)
+
         self.delete_order_data_from_session(request)
         context = self.get_context_data(**kwargs)
         context['tradepoints'] = EmployeeServices.get_tradepoint()
+        context['form'] = form
 
-        context['roles'] = self.initial_data
         return render(request, self.template_name, context)
 
     def post(
@@ -85,7 +90,7 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
                     empUID=employee.uuid
                 )
         else:
-            print('else 2')
+            print(form.errors.as_json())
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data
