@@ -28,7 +28,7 @@ function render(search, date, status, payment_status, page, limit) {
                         data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
                         data-contractororder=${encodeURIComponent(item.contractor.name)}
                         data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal"><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
-                        <td><a class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td></tr>`
+                        <td><a class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td></tr>`
                     } else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
                         body.innerHTML += `<tr><td><a class="btn rounded-pill btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td><td>${today}</td>
                         <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
@@ -40,7 +40,7 @@ function render(search, date, status, payment_status, page, limit) {
                         data-contractororder=${encodeURIComponent(item.contractor.name)}
                         data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
                         <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
-                        <td><a class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td>
+                        <td><a class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td>
                         <td class="d-flex justify-content-end"></tr>`
                     } else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
                         body.innerHTML += `<tr><td><a class="btn rounded-pill btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td><td>${today}</td>
@@ -53,12 +53,12 @@ function render(search, date, status, payment_status, page, limit) {
                         data-contractororder=${encodeURIComponent(item.contractor.name)}
                         data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
                         <span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
-                        <td><a class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td>
+                        <td><a class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td>
                         <td class="d-flex justify-content-end"></tr>`
                     } else {
                         body.innerHTML += `<tr><td><a class="btn rounded-pill btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a>
                         </td><td>${today}</td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
                         <td><a  class="modalbtn" type="button" data-bs-toggle="modal"  
                         data-idorderclass=${encodeURIComponent(item.id)}
                         data-dayorder=${encodeURIComponent(today)}
@@ -66,8 +66,8 @@ function render(search, date, status, payment_status, page, limit) {
                         data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
                         data-contractororder=${encodeURIComponent(item.contractor.name)}
                         data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
-                        <span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
-                        <td><a class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td>
+                        <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
+                        <td><a class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td><td>${item.own.number}</td>
                         <td class="d-flex justify-content-end"></tr>`
                     }
                 })
