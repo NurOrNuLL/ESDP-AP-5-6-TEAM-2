@@ -111,7 +111,7 @@
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Фото документа:</span>
-                    <div class="drop-zone" style="background-image: url(data:image/png;base64,{{image_1}});"></div>
+                    <div class="drop-zone" style="background-image: url({% if image_1 %}data:image/png;base64,{{image_1}}{% else %}{{ image_0 }}{% endif %});"></div>
                 </div>
             </div>
         </div>
@@ -135,7 +135,7 @@
                     <input type="hidden" name="role" value="{{ form.role }}">
 
                     <a type="button" href="{% url 'employee_detail' orgID tpID employee.uuid %}" class="btn btn-secondary" style="width: 15%" id="noChange">Нет</a>
-                    <button type="submit" class="btn btn-primary" style="width: 15%">Применить изменения</button>
+                    <button type="submit" class="btn btn-primary">Применить изменения</button>
                 </form><br>
             </div>
         </div>
