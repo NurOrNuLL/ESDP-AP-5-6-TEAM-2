@@ -90,7 +90,6 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
                     empUID=employee.uuid
                 )
         else:
-            print(form.errors.as_json())
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data

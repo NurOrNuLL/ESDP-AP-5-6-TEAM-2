@@ -25,11 +25,11 @@ class OrderCreateFormStage1(forms.ModelForm):
         fields = ['contractor', 'own']
 
 
-class OrderCreateFormStage2(forms.Form):
+class OrderCreateFormStage3(forms.Form):
     jobs = forms.JSONField(required=True, validators=[JSONSchemaValidator(limit_value=JOBS_JSON_SCHEMA)])
 
 
-class OrderCreateFormStage3(forms.ModelForm):
+class OrderCreateFormStage2(forms.ModelForm):
     class Meta:
         model = Order
         fields = ['mileage', 'note']

@@ -19,12 +19,12 @@
         <div class="card-body">
             <div>
                 <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
-                <select class="form-control selectpicker" id="service" name="service" multiple data-live-search="true" title="Нажмите для выбора услуги" data-selected-text-format="static" required>
+                <select class="form-control selectpicker service" id="service" name="service" multiple data-live-search="true" title="Нажмите для выбора услуги" data-selected-text-format="static" required>
                     {% for category in categories %}
                         {% if services|get_item:category.0 %}
                             <optgroup label="{{ category.0 }}">
                                 {% for service in services|get_item:category.0 %}
-                                    <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                                    <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-service-count="1" data-total="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
                                 {% endfor %}
                             </optgroup>
                         {% endif %}
@@ -36,18 +36,20 @@
             <table class="table mb-2">
                 <thead>
                     <tr>
+                        <th scope="col"></th>
                         <th scope="col">Название услуги</th>
                         <th scope="col">Категория</th>
                         <th scope="col">Марка</th>
                         <th scope="col" style="width: 175px">Выбор мастеров</th>
                         <th scope="col" style="width: 240px">Мастера</th>
+                        <th scope="col">Количество</th>
                         <th scope="col">Гарантия</th>
                         <th scope="col">Цена</th>
                     </tr>
                 </thead>
                 <tbody id="selectedServicesTable"></tbody>
             </table>
-            <h6 class="text-center" id="nothingSelected">Ничего не выбрано!</h6>
+            <h5 class="text-center" id="nothingSelected">Ничего не выбрано!</h5>
             <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span id="totalPrice" style="font-weight: bold;">0 &#8376;</span></div>
             <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
                 {% csrf_token %}
