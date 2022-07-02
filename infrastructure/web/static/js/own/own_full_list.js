@@ -38,7 +38,7 @@ $.ajax({
             if (item.is_deleted === false) {
                 body.innerHTML += ` <tr>
                                         <td>
-                                            <a href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
                                         </td>
                                         <td>${item.number}</td>
                                         <td>${item.comment}</td>
@@ -86,7 +86,7 @@ back.addEventListener('click', (e) => {
             if (item.is_deleted === false) {
                 body.innerHTML += ` <tr>
                                         <td>
-                                            <a href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
                                         </td>
                                         <td>${item.number}</td>
                                         <td>${item.comment}</td>
@@ -135,7 +135,7 @@ next.addEventListener('click', (e) => {
             if (item.is_deleted === false) {
                 body.innerHTML += ` <tr>
                                         <td>
-                                            <a href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
                                         </td>
                                         <td>${item.number}</td>
                                         <td>${item.comment}</td>
@@ -184,7 +184,7 @@ search.addEventListener('input', (e) => {
                     if (item.is_deleted === false) {
                         body.innerHTML += ` <tr>
                                         <td>
-                                            <a href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                            <a style="text-decoration: none; color: #566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
                                         </td>
                                         <td>${item.number}</td>
                                         <td>${item.comment}</td>
@@ -237,7 +237,7 @@ isPart.addEventListener('change', () => {
                         item.number = '';
                     }
                     if (item.is_part === true) {
-                        numberTitle.innerText = ' ';
+                        numberTitle.innerText = '';
                     }
                     if (isPart.value === 'all' || item.is_part === false) {
                         numberTitle.innerText = 'Номер';
@@ -245,7 +245,7 @@ isPart.addEventListener('change', () => {
                     if (item.is_deleted === false) {
                         body.innerHTML += ` <tr>
                                         <td>
-                                            <a href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                            <a style="text-decoration: none; color: #566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
                                         </td>
                                         <td>${item.number}</td>
                                         <td>${item.comment}</td>

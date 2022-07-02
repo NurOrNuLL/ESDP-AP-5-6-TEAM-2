@@ -14,7 +14,8 @@ window.addEventListener('load', () => {
             var ownIdInput = document.getElementById('own_id');
             isNotPart.checked = true;
             isPart.checked = false;
-            tableHead.innerHTML = '<tr><td>Наименование</td><td>Номер</td><td>Комментарий</td></tr>'
+            tableHead.innerHTML = '';
+            tableHead.innerHTML += '<tr><th class="col-2">Наименование</th><th class="col-2">Номер</th><th class="col-6">Комментарий</th><th class="col-2"></th></tr>'
             tableBody.innerHTML = '';
             emptyBody.innerHTML = '';
 
@@ -79,7 +80,7 @@ isPart.addEventListener('click', () => {
             tableHead.innerHTML = '';
             tableBody.innerHTML = '';
             emptyBody.innerHTML = '';
-            tableHead.innerHTML = '<tr><td>Наименование</td><td>Комментарий</td></tr>'
+            tableHead.innerHTML += '<tr><th class="col-2">Наименование</th><th class="col-2"></th><th class="col-6">Комментарий</th><th class="col-2"></th></tr>'
             if (data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {
@@ -142,7 +143,7 @@ isNotPart.addEventListener('click', () => {
             tableHead.innerHTML = '';
             tableBody.innerHTML = '';
             emptyBody.innerHTML = '';
-            tableHead.innerHTML = '<tr><td>Наименование</td><td>Номер</td><td>Комментарий</td></tr>'
+            tableHead.innerHTML += '<tr><th class="col-2">Наименование</th><th class="col-2">Номер</th><th class="col-6">Комментарий</th><th class="col-2"></th></tr>'
             if (data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {
