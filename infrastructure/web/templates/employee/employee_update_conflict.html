@@ -107,11 +107,11 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Фото документа:</span>
-                    <span style="padding-left: 5px">{{ employee.image }}</span>
+                    <div class="drop-zone" style="background-image: url({{ image }});"></div>
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Фото документа:</span>
-                    <span style="padding-left: 5px">{{ form.image }}</span>
+                    <div class="drop-zone" style="background-image: url(data:image/png;base64,{{image_1}});"></div>
                 </div>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import ast
-import base64
+import base64, io
 from concurrency.api import disable_concurrency
 from concurrency.exceptions import RecordModifiedError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -171,6 +171,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
+        context['image'] = ast.literal_eval(self.object.image)[0]
         context['employee'] = self.object
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
@@ -182,7 +183,6 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         form_kwargs = {'instance': EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])}
         if self.request.method == 'POST':
             form_kwargs['data'] = self.request.POST
-            form_kwargs['files'] = self.request.FILES
         return EmployeeForm(**form_kwargs)
 
     def get_inital(self, emp_uid: str) -> dict:
@@ -217,6 +217,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             encoded_image = base64.b64encode(image)
             request.session['image'] = encoded_image.decode('utf-8')
 
+
         if form.is_valid():
             try:
                 iin = list(form.cleaned_data['IIN'])
@@ -241,6 +242,10 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
                     )
             except RecordModifiedError:
+                encoded_image = request.session.get('image')
+                byte_image = io.BytesIO(base64.b64decode(encoded_image))
+                image_1 = base64.b64encode(byte_image.getvalue()).decode()
+                context['image_1'] = image_1
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
                 context['tpID'] = self.kwargs['tpID']
