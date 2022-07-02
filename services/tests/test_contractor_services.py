@@ -40,7 +40,6 @@ class ContractorServicesTest(TestCase):
             spec=Contractor,
             name='Данил',
             address='Какой-то адрес',
-            IIN_or_BIN=123123123123,
             IIC='',
             bank_name='',
             BIC='',
@@ -54,7 +53,6 @@ class ContractorServicesTest(TestCase):
         data = {
             'name': 'Данилaaaaaaaaa',  # noqa E126
             'address': 'Новый адрес',
-            'IIN_or_BIN': 111111111111,
             'IIC': contractor.IIC,
             'bank_name': contractor.bank_name,
             'BIC': contractor.BIC,
@@ -70,7 +68,6 @@ class ContractorServicesTest(TestCase):
             self.assertDictEqual(data, {
                 'name': returned_contractor.name,
                 'address': returned_contractor.address,
-                'IIN_or_BIN': returned_contractor.IIN_or_BIN,
                 'IIC': returned_contractor.IIC,
                 'bank_name': returned_contractor.bank_name,
                 'BIC': returned_contractor.BIC,

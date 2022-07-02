@@ -36,7 +36,13 @@ $.ajax({
                 item.number = '';
             }
             if (item.is_deleted === false) {
-                body.innerHTML += '<tr><td><a style="text-decoration: none" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">' + item.name + '</a></td><td>' + item.number + '</td><td>' + item.comment + '</td></tr>'
+                body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                    </tr>`
             }
         })
     },
@@ -78,7 +84,13 @@ back.addEventListener('click', (e) => {
                 item.number = '';
             }
             if (item.is_deleted === false) {
-                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+                body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                    </tr>`
             }
             })
     },
@@ -121,7 +133,13 @@ next.addEventListener('click', (e) => {
                 item.number = '';
             }
             if (item.is_deleted === false) {
-                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+                body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                    </tr>`
             }
             })
     },
@@ -164,7 +182,13 @@ search.addEventListener('input', (e) => {
                         item.number = '';
                     }
                     if (item.is_deleted === false) {
-                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+                        body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color: #566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                    </tr>`
                     }
                     })
             }
@@ -213,13 +237,19 @@ isPart.addEventListener('change', () => {
                         item.number = '';
                     }
                     if (item.is_part === true) {
-                        numberTitle.innerText = ' ';
+                        numberTitle.innerText = '';
                     }
                     if (isPart.value === 'all' || item.is_part === false) {
                         numberTitle.innerText = 'Номер';
                     }
                     if (item.is_deleted === false) {
-                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.number + '</td><td>' + item.comment + '</td><td><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.contractor + '/">Детали контрагента</a></td></tr>'
+                        body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color: #566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                    </tr>`
                     }
                     })
             }

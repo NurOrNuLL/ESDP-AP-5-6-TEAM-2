@@ -27,8 +27,15 @@ $.ajax({
         }
 
         data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>'
-                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/contractor/' + item.id + '/">Детали</a></td></tr>'
+            body.innerHTML += ` <tr>
+                                    <td>
+                                        <a class="link-primary" href="/org/1/tp/${tpID}/contractor/${item.id}/">
+                                            ${item.name}
+                                        </a>
+                                    </td>
+                                    <td>${item.IIN_or_BIN}</td>
+                                    <td>${item.phone}</td>
+                                </tr>`
         })
     },
     error: (response) => {
@@ -63,8 +70,15 @@ back.addEventListener('click', (e) => {
         }
 
         data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>'
-                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td></tr>'
+            body.innerHTML += ` <tr>
+                                    <td>
+                                        <a class="link-primary" href="/org/1/tp/${tpID}/contractor/${item.id}/">
+                                            ${item.name}
+                                        </a>
+                                    </td>
+                                    <td>${item.IIN_or_BIN}</td>
+                                    <td>${item.phone}</td>
+                                </tr>`
         })
     },
     error: (response) => {
@@ -100,8 +114,15 @@ next.addEventListener('click', (e) => {
         }
 
         data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>'
-                + item.IIN_or_BIN + '</td><td>' + item.phone + '</td></tr>'
+            body.innerHTML += ` <tr>
+                                    <td>
+                                        <a class="link-primary" href="/org/1/tp/${tpID}/contractor/${item.id}/">
+                                            ${item.name}
+                                        </a>
+                                    </td>
+                                    <td>${item.IIN_or_BIN}</td>
+                                    <td>${item.phone}</td>
+                                </tr>`
         })
     },
     error: (response) => {
@@ -136,8 +157,15 @@ search.addEventListener('input', (e) => {
 
             if(data.results.length) {
                 data.results.forEach(function (item) {
-                    body.innerHTML += '<tr><td>' + item.name + '</td><td>'
-                        + item.IIN_or_BIN + '</td><td>' + item.phone + '</td></tr>'
+                    body.innerHTML += ` <tr>
+                                    <td>
+                                        <a class="link-primary" href="/org/1/tp/${tpID}/contractor/${item.id}/">
+                                            ${item.name}
+                                        </a>
+                                    </td>
+                                    <td>${item.IIN_or_BIN}</td>
+                                    <td>${item.phone}</td>
+                                </tr>`
                 })
             }
             else {
