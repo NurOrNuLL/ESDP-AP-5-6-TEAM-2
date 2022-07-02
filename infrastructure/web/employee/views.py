@@ -217,7 +217,6 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             encoded_image = base64.b64encode(image)
             request.session['image'] = encoded_image.decode('utf-8')
 
-
         if form.is_valid():
             try:
                 iin = list(form.cleaned_data['IIN'])
@@ -242,10 +241,13 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
                     )
             except RecordModifiedError:
-                encoded_image = request.session.get('image')
-                byte_image = io.BytesIO(base64.b64decode(encoded_image))
-                image_1 = base64.b64encode(byte_image.getvalue()).decode()
-                context['image_1'] = image_1
+                if request.session.get('image'):
+                    encoded_image = request.session.get('image')
+                    byte_image = io.BytesIO(base64.b64decode(encoded_image))
+                    image_1 = base64.b64encode(byte_image.getvalue()).decode()
+                    context['image_1'] = image_1
+                else:
+                    context['image_0'] = ast.literal_eval(self.object.image)[0]
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
                 context['tpID'] = self.kwargs['tpID']
@@ -279,7 +281,8 @@ class EmployeeConcurrencyUpdate(LoginRequiredMixin, UserPassesTestMixin, View):
             employee.tradepoint = TradePointService.get_trade_point_by_id(self.kwargs)
             employee.role = request.POST.get('role')
             employee.birthdate = request.POST.get('birthdate')
-            employee.image = request.POST.get('image')
+            if request.POST.get('image'):
+                employee.image = request.POST.get('image')
             employee.save()
             return redirect('employee_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
                             empUID=self.kwargs['empUID'])
