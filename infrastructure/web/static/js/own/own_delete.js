@@ -4,7 +4,6 @@ var modalString = document.getElementById('ownModalQuestion')
 
 ownDeleteForm.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log('Удалить')
     var ownIdInput = document.getElementById('own_id');
     $.ajax({
         url: `${locationHost}/org/${ownIdInput.dataset['orgId']}/tp/${tpID}/contractor/${ownIdInput.dataset['contrId']}/own/${ownIdInput.value}/delete/`,

@@ -6,17 +6,17 @@ let isNotPart = document.getElementById('isNotPart');
 var buttonColection = document.getElementsByClassName('buttonDelete')
 
 
+
 window.addEventListener('load', () => {
     $.ajax({
         url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=false`,
         method: 'GET',
         success: (data) => {
             var ownIdInput = document.getElementById('own_id');
-            console.log(data);
-            console.log('onload');
             isNotPart.checked = true;
             isPart.checked = false;
-            tableHead.innerHTML += '<tr><td>Наименование</td><td>Номер</td><td>Комментарий</td></tr>'
+            tableHead.innerHTML = '';
+            tableHead.innerHTML += '<tr><th class="col-2">Наименование</th><th class="col-2">Номер</th><th class="col-6">Комментарий</th><th class="col-2"></th></tr>'
             tableBody.innerHTML = '';
             emptyBody.innerHTML = '';
 
@@ -37,11 +37,7 @@ window.addEventListener('load', () => {
                     }
                 })
                 Array.from(buttonColection).forEach(function(element) {
-                    console.log(element)
-                    console.log('is a function now');
                     element.addEventListener('click', (e) => {
-                        console.log('iterated')
-                        console.log(ownIdInput);
                         var ownId = element.dataset['own_id'];
                         var ownName = element.dataset['own_name'];
                         var ownAutoNumber = element.dataset['own_auto_number'];
@@ -70,14 +66,13 @@ isPart.addEventListener('click', () => {
         url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=true`,
         method: 'GET',
         success: (data) => {
-            console.log('isPart clicked');
             var ownIdInput = document.getElementById('own_id');
             isPart.checked = true;
             isNotPart.checked = false;
             tableHead.innerHTML = '';
             tableBody.innerHTML = '';
             emptyBody.innerHTML = '';
-            tableHead.innerHTML += '<tr><td>Наименование</td><td>Комментарий</td></tr>'
+            tableHead.innerHTML += '<tr><th class="col-2">Наименование</th><th class="col-2"></th><th class="col-6">Комментарий</th><th class="col-2"></th></tr>'
             if (data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {
@@ -98,13 +93,8 @@ isPart.addEventListener('click', () => {
                     }
                 })
                 Array.from(buttonColection).forEach(function(element) {
-                    console.log(element)
-                    console.log('part is to delete');
                     element.addEventListener('click', (e) => {
-                        console.log('iterated')
-                        console.log(ownIdInput, 55585858);
                         var ownId = element.dataset['own_id'];
-                        console.log(ownId, 95959595959)
                         var ownName = element.dataset['own_name'];
                         ownIdInput.value = ownId;
 
@@ -131,14 +121,13 @@ isNotPart.addEventListener('click', () => {
         url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=false`,
         method: 'GET',
         success: (data) => {
-            console.log('isNotPart clicked');
             var ownIdInput = document.getElementById('own_id');
             isNotPart.checked = true;
             isPart.checked = false;
             tableHead.innerHTML = '';
             tableBody.innerHTML = '';
             emptyBody.innerHTML = '';
-            tableHead.innerHTML += '<tr><td>Наименование</td><td>Номер</td><td>Комментарий</td></tr>'
+            tableHead.innerHTML += '<tr><th class="col-2">Наименование</th><th class="col-2">Номер</th><th class="col-6">Комментарий</th><th class="col-2"></th></tr>'
             if (data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {
@@ -156,11 +145,7 @@ isNotPart.addEventListener('click', () => {
                     }
                 })
                 Array.from(buttonColection).forEach(function(element) {
-                    console.log(element)
-                    console.log('is a function now');
                     element.addEventListener('click', (e) => {
-                        console.log('iterated')
-                        console.log(ownIdInput);
                         var ownId = element.dataset['own_id'];
                         var ownName = element.dataset['own_name'];
                         var ownAutoNumber = element.dataset['own_auto_number'];
