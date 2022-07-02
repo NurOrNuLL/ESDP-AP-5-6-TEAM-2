@@ -27,6 +27,14 @@ JOBS_JSON_SCHEMA = {
                 'type': 'integer',
                 'minimum': 1
             },
+            'Сумма услуг': {
+                'type': 'integer',
+                'minimum': 1
+            },
+            'Количество услуг': {
+                'type': 'integer',
+                'minimum': 1
+            },
             'Гарантия': {
                 'type': 'boolean',
                 'default': False
@@ -52,7 +60,7 @@ JOBS_JSON_SCHEMA = {
         },
         'required': ['Название услуги', 'Категория услуги', 'Марка услуги', 'Цена услуги', 'Гарантия', 'Мастера'],
         'additionalProperties': {'type': 'integer', 'minimum': 0, 'maximum': 10000},
-        'maxProperties': 7
+        'maxProperties': 9
     }
 }
 

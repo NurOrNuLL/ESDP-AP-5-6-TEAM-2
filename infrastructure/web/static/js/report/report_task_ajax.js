@@ -1,6 +1,6 @@
 let reportForm = document.getElementById('reportForm');
 let bodyBlock = document.getElementById('bodyBlock');
-
+let downloadData = document.getElementById('downloadData');
 
 function renderReport(paidJobs, unpaidJobs, report) {
     if (paidJobs === true) {
@@ -387,6 +387,9 @@ reportForm.addEventListener('submit', e => {
 
     reportSocket.onmessage = e => {
         let report = JSON.parse(e.data);
+
+        downloadData.value = JSON.stringify(report);
+        downloadData.innerText = JSON.stringify(report);
 
         if (report['paidJobs'].length != 0) {
             if (report['unpaidJobs'].length != 0) {

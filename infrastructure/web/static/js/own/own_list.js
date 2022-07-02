@@ -1,10 +1,9 @@
-let tableBody = document.getElementById('tableBody');
-let tableHead = document.getElementById('tableHead');
-let emptyBody = document.getElementById('emptyBody');
-let isPart = document.getElementById('isPart');
-let isNotPart = document.getElementById('isNotPart');
+tableBody = document.getElementById('tableBody');
+tableHead = document.getElementById('tableHead');
+emptyBody = document.getElementById('emptyBody');
+isPart = document.getElementById('isPart');
+isNotPart = document.getElementById('isNotPart');
 var buttonColection = document.getElementsByClassName('buttonDelete')
-
 
 
 window.addEventListener('load', () => {
@@ -25,15 +24,24 @@ window.addEventListener('load', () => {
                     if (item.comment == null) {
                         item.comment = '';
                     }
-                    if (item.contractor === contrID && item.is_deleted === false) {
-                        tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
-                        <td>${item.number}</td><td>${item.comment}</td><td class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger buttonDelete" data-bs-toggle="modal"
-                        data-own_name=${item.name} data-own_auto_number=${item.number}
-                        data-own_id=${item.id} data-contr_id=${contrID}
-                        data-org_id=${orgID} data-bs-target="#own_modal">Удалить</button>
-                        <a class="btn btn-secondary" style="margin-left: 15px"
-                        href="${locationHost}/org/${orgID}/tp/${tpID}/order/create/stage/1/?contractor=${contrID}&own=${item.id}">Заказ-наряд</a></td></tr>`
+
+                    if (requestUserIsStaff === true || requestUserEmployeeRole === 'Управляющий' && requestUserEmployeeTpID === tradepointID) {
+                         if (item.contractor === contrID && item.is_deleted === false) {
+                            tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
+                            <td>${item.number}</td><td>${item.comment}</td><td class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-danger buttonDelete" data-bs-toggle="modal"
+                            data-own_name=${item.name} data-own_auto_number=${item.number}
+                            data-own_id=${item.id} data-contr_id=${contrID}
+                            data-org_id=${orgID} data-bs-target="#own_modal">Удалить</button>
+                            <a class="btn btn-secondary" style="margin-left: 15px"
+                            href="${locationHost}/org/${orgID}/tp/${tpID}/order/create/stage/1/?contractor=${contrID}&own=${item.id}">Заказ-наряд</a></td></tr>`
+                        }
+                    }
+                    else {
+                        if (item.contractor === contrID && item.is_deleted === false) {
+                            tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
+                            <td>${item.number}</td><td>${item.comment}</td>`
+                        }
                     }
                 })
                 Array.from(buttonColection).forEach(function(element) {
@@ -81,15 +89,23 @@ isPart.addEventListener('click', () => {
                     if (item.number == null) {
                         item.number = '';
                     }
-                    if (item.contractor === contrID && item.is_deleted === false && item.is_part) {
-                        tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
-                        <td>${item.number}</td><td>${item.comment}</td><td class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger buttonDelete" data-bs-toggle="modal"
-                        data-own_name=${item.name}
-                        data-own_id=${item.id} data-contr_id=${contrID}
-                        data-org_id=${orgID} data-bs-target="#own_modal">Удалить</button>
-                        <a class="btn btn-secondary" style="margin-left: 15px"
-                        href="${locationHost}/org/${orgID}/tp/${tpID}/order/create/stage/1/?contractor=${contrID}&own=${item.id}">Заказ-наряд</a></td></tr>`
+                    if (requestUserIsStaff === true || requestUserEmployeeRole === 'Управляющий' && requestUserEmployeeTpID === tradepointID) {
+                        if (item.contractor === contrID && item.is_deleted === false && item.is_part) {
+                            tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
+                            <td>${item.number}</td><td>${item.comment}</td><td class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-danger buttonDelete" data-bs-toggle="modal"
+                            data-own_name=${item.name}
+                            data-own_id=${item.id} data-contr_id=${contrID}
+                            data-org_id=${orgID} data-bs-target="#own_modal">Удалить</button>
+                            <a class="btn btn-secondary" style="margin-left: 15px"
+                            href="${locationHost}/org/${orgID}/tp/${tpID}/order/create/stage/1/?contractor=${contrID}&own=${item.id}">Заказ-наряд</a></td></tr>`
+                        }
+                    }
+                    else {
+                        if (item.contractor === contrID && item.is_deleted === false && item.is_part) {
+                            tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
+                            <td>${item.number}</td><td>${item.comment}</td>`
+                        }
                     }
                 })
                 Array.from(buttonColection).forEach(function(element) {
@@ -133,15 +149,23 @@ isNotPart.addEventListener('click', () => {
                     if (item.comment == null) {
                         item.comment = '';
                     }
-                    if (item.contractor === contrID && item.is_deleted === false) {
-                        tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
-                        <td>${item.number}</td><td>${item.comment}</td><td class="d-flex justify-content-end">
-                        <button type="button" class="btn btn-danger buttonDelete" data-bs-toggle="modal"
-                        data-own_name=${item.name} data-own_auto_number=${item.number}
-                        data-own_id=${item.id} data-contr_id=${contrID}
-                        data-org_id=${orgID} data-bs-target="#own_modal">Удалить</button>
-                        <a class="btn btn-secondary" style="margin-left: 15px"
-                        href="${locationHost}/org/${orgID}/tp/${tpID}/order/create/stage/1/?contractor=${contrID}&own=${item.id}">Заказ-наряд</a></td></tr>`
+                    if (requestUserIsStaff === true || requestUserEmployeeRole === 'Управляющий' && requestUserEmployeeTpID === tradepointID) {
+                        if (item.contractor === contrID && item.is_deleted === false) {
+                            tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
+                            <td>${item.number}</td><td>${item.comment}</td><td class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-danger buttonDelete" data-bs-toggle="modal"
+                            data-own_name=${item.name} data-own_auto_number=${item.number}
+                            data-own_id=${item.id} data-contr_id=${contrID}
+                            data-org_id=${orgID} data-bs-target="#own_modal">Удалить</button>
+                            <a class="btn btn-secondary" style="margin-left: 15px"
+                            href="${locationHost}/org/${orgID}/tp/${tpID}/order/create/stage/1/?contractor=${contrID}&own=${item.id}">Заказ-наряд</a></td></tr>`
+                        }
+                    }
+                    else {
+                        if (item.contractor === contrID && item.is_deleted === false) {
+                            tableBody.innerHTML += `<tr id="own_instance_${item.id}"><td>${item.name}</td>
+                            <td>${item.number}</td><td>${item.comment}</td>`
+                        }
                     }
                 })
                 Array.from(buttonColection).forEach(function(element) {

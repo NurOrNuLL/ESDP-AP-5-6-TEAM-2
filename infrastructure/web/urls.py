@@ -39,7 +39,7 @@ from .employee.views import (
     EmployeeConcurrencyUpdate, EmployeeImageUpdateView
 )
 from infrastructure.accounts.views import RegisterView
-from infrastructure.web.report.views import ReportPreviewView
+from infrastructure.web.report.views import ReportPreviewView, ReportDownloadView
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
 
@@ -138,6 +138,7 @@ order_urls = [
 
 report_urls = [
 	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+    path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
 ]
 
 report_websocket_urls = [

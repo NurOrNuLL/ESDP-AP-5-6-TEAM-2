@@ -159,7 +159,7 @@ if (contractor.value != '' && own.value === '') {
                 if (own.attributes.getNamedItem('disabled')) {
                     own.attributes.removeNamedItem('disabled')
 
-                    ownLinks.innerHTML = `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}/own/create/" class="link-primary">Создать собственность</a>`
+                    ownLinks.innerHTML = `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}/own/create?next=order_create_stage1" class="link-primary">Создать собственность</a>`
                 }
                 data.forEach(element => {
                     own.innerHTML += `<option value="${element.id}" data-number="${element.number}" data-is-part="${element.is_part}" data-comment="${element.comment}">${element.name}</option>`
@@ -288,7 +288,7 @@ contractor.addEventListener('change', (e) => {
                 if (own.attributes.getNamedItem('disabled')) {
                     own.attributes.removeNamedItem('disabled')
 
-                    ownLinks.innerHTML = `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}/own/create/" class="link-primary">Создать собственность</a>`
+                    ownLinks.innerHTML = `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}/own/create?next=order_create_stage1" class="link-primary">Создать собственность</a>`
                 }
                 data.forEach(element => {
                     own.innerHTML += `<option value="${element.id}" data-number="${element.number}" data-is-part="${element.is_part}" data-comment="${element.comment}">${element.name}</option>`
@@ -413,15 +413,15 @@ own.addEventListener('change', e => {
         }
         else {
             ownInfo.innerHTML = `<div class="d-flex">
-                                <div class="me-5" style="width: 250px;">
-                                    <div><strong>Наименование:</strong></div>
-                                    <div><strong>Доп. информация:</strong></div>
-                                </div>
-                                <div>
-                                    <div>${own.selectedOptions[0].innerText}</div>
-                                    <div>Не указано</div>
-                                </div>
-                            </div>`
+                                    <div class="me-5" style="width: 250px;">
+                                        <div><strong>Наименование:</strong></div>
+                                        <div><strong>Доп. информация:</strong></div>
+                                    </div>
+                                    <div>
+                                        <div>${own.selectedOptions[0].innerText}</div>
+                                        <div>Не указано</div>
+                                    </div>
+                                </div>`
         }
     }
 })

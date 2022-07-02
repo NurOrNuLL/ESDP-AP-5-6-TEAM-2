@@ -6,12 +6,10 @@ let tableBody = document.getElementById('selectedServicesTable');
 let nothingSelected = document.getElementById('nothingSelected');
 let serviceEmployeeForm = document.getElementById('serviceEmployeeForm');
 let employees = eval(document.getElementById('employees').innerText.trim());
-let sessionJobs = eval(document.getElementById('initialJobs').innerText.trim());
+let sessionJobs = eval(document.getElementById('session_jobs').innerText.trim());
 let serviceOptions = document.getElementsByClassName('service-option');
 let serviceList = document.getElementById('service-list');
 let employeeList = document.getElementById('employee-list');
-let fullPrice = document.getElementById('fullPrice');
-let priceForPay = document.getElementById('priceForPay');
 
 
 if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
@@ -20,44 +18,44 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
 
     // Основной цикл для отрисовки session_data или form.cleaned_data
     for (let i = 0; i < sessionJobs.length; i++) {
-        const initialJob = sessionJobs[i];
+        const sessionJob = sessionJobs[i];
 
         let employeesIINs = [];
-        for (employee of initialJob['Мастера']) {
+        for (employee of sessionJob['Мастера']) {
             employeesIINs.push(employee['ИИН']);
         }
 
         // Индексирование и отслеживание выбранных услуг
         for (serviceOption of serviceOptions) {
-            if (serviceOption == serviceOptions[initialJob['Индекс']]) {
+            if (serviceOption == serviceOptions[sessionJob['Индекс']]) {
                 serviceOption.selected = true;
                 serviceOption.dataset['serviceEmployees'] = employeesIINs;
-                serviceOption.dataset['serviceGaranty'] = initialJob['Гарантия'];
-                serviceOption.dataset['serviceCount'] = initialJob['Количество услуг'];
-                serviceOption.dataset['total'] = initialJob['Сумма услуг'];
+                serviceOption.dataset['serviceGaranty'] = sessionJob['Гарантия'];
+                serviceOption.dataset['serviceCount'] = sessionJob['Количество услуг'];
+                serviceOption.dataset['total'] = sessionJob['Сумма услуг'];
             }
         }
 
         // Начальная отрисовка строчек таблицы
         tableBody.innerHTML += `<tr class="service-row"
-                                    data-service-index="${initialJob['Индекс']}"
-                                    data-service-name="${initialJob['Название услуги']}"
-                                    data-service-category="${initialJob['Категория услуги']}"
-                                    data-service-mark="${initialJob['Марка услуги']}"
+                                    data-service-index="${sessionJob['Индекс']}"
+                                    data-service-name="${sessionJob['Название услуги']}"
+                                    data-service-category="${sessionJob['Категория услуги']}"
+                                    data-service-mark="${sessionJob['Марка услуги']}"
                                     data-service-employees="${employeesIINs}"
-                                    data-service-count="${initialJob['Количество услуг']}"
-                                    data-service-garanty="${initialJob['Гарантия']}"
-                                    data-service-price="${initialJob['Цена услуги']}"
-                                    data-total="${initialJob['Сумма услуг']}">
+                                    data-service-count="${sessionJob['Количество услуг']}"
+                                    data-service-garanty="${sessionJob['Гарантия']}"
+                                    data-service-price="${sessionJob['Цена услуги']}"
+                                    data-total="${sessionJob['Сумма услуг']}">
 
                                     <td>
                                         <div class="d-flex justify-content-center align-items-center">
                                             <button type="button" class="btn-close removeService"></button>
                                         </div>
                                     </td>
-                                    <td>${initialJob['Название услуги']}</td>
-                                    <td>${initialJob['Категория услуги']}</td>
-                                    <td>${initialJob['Марка услуги']}</td>
+                                    <td>${sessionJob['Название услуги']}</td>
+                                    <td>${sessionJob['Категория услуги']}</td>
+                                    <td>${sessionJob['Марка услуги']}</td>
                                     <td>
                                         <select multiple required
                                             class="form-control selectpicker employee-select"
@@ -76,7 +74,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                                     <path fill-rule="evenodd" d="M2 8a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11A.5.5 0 0 1 2 8Z"/>
                                                 </svg>
                                             </button>
-                                            <span class="mx-3 count">${initialJob['Количество услуг']}</span>
+                                            <span class="mx-3 count">${sessionJob['Количество услуг']}</span>
                                             <button type="button" class="btn btn-success btn-sm plusCount">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                                                     <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2Z"/>
@@ -89,7 +87,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                             <input class="form-check-input garanty" type="checkbox" role="switch">
                                         </div>
                                     </td>
-                                    <th><span class="Price">${initialJob['Сумма услуг']}</span></th>
+                                    <th><span class="Price">${sessionJob['Сумма услуг']}</span></th>
                                 </tr>`;
     }
 
@@ -103,8 +101,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
     let plusCounts = document.getElementsByClassName('plusCount');
     let totalPrice = document.getElementById('totalPrice');
     let removeServices = document.getElementsByClassName('removeService');
-    let total = 0;
-    let totalWithoutGaranty = 0;
+    var total = 0;
 
     for (let i = 0; i < serviceRows.length; i++) {
         const serviceRow = serviceRows[i];
@@ -118,8 +115,6 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
         const price = prices[i];
         const removeService = removeServices[i];
         let employeesIINs = [];
-
-        totalWithoutGaranty += eval(price.innerText);
 
         for (employee of sessionJob['Мастера']) {
             employeesIINs.push(employee['ИИН']);
@@ -167,13 +162,8 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
 
         // Событие на удаление строчки кнопкой
         removeService.onclick = e => {
-            if (eval(serviceRow.dataset['serviceGaranty']) != true) {
-                total -= eval(serviceRow.dataset['total']);
-            }
-            totalWithoutGaranty -= eval(serviceRow.dataset['total']);
+            total -= eval(serviceRow.dataset['total']);
             totalPrice.innerText = total;
-            priceForPay.value = total;
-            fullPrice.value = totalWithoutGaranty;
             serviceOptions[eval(serviceRow.dataset['serviceIndex'])].selected = false;
             serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceGaranty'] = false;
             serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceEmployees'] = '[]';
@@ -201,10 +191,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                 serviceRow.dataset['total'] = price.innerText;
                 total -= eval(serviceRow.dataset['servicePrice']);
                 totalPrice.innerText = total;
-                priceForPay.innerText = total;
             }
-            totalWithoutGaranty -= eval(serviceRow.dataset['servicePrice']);
-            fullPrice.value = totalWithoutGaranty;
 
             if (eval(count.innerText) === 1) {
                 minusCount.disabled = true;
@@ -223,10 +210,7 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                 serviceRow.dataset['total'] = price.innerText;
                 total += eval(serviceRow.dataset['servicePrice']);
                 totalPrice.innerText = total;
-                priceForPay.value = total;
             }
-            totalWithoutGaranty += eval(serviceRow.dataset['servicePrice']);
-            fullPrice.value = totalWithoutGaranty;
 
             minusCount.disabled = false;
         };
@@ -249,7 +233,6 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                 price.style.cssText = 'text-decoration: line-through;';
                 total -= eval(price.innerHTML);
                 totalPrice.innerText = total;
-                priceForPay.value = total;
             }
             else {
                 serviceRow.dataset['serviceGaranty'] = 'false';
@@ -257,7 +240,6 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                 price.style.cssText = 'text-decoration: none;';
                 total += eval(price.innerHTML);
                 totalPrice.innerText = total;
-                priceForPay.value = total;
             }
         })
 
@@ -268,8 +250,6 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
     }
 
     totalPrice.innerText = total;
-    priceForPay.value = total;
-    fullPrice.value = totalWithoutGaranty;
 
     $('.selectpicker').selectpicker('render');
 }
@@ -355,7 +335,6 @@ service.addEventListener('change', e => {
         let totalPrice = document.getElementById('totalPrice');
         let removeServices = document.getElementsByClassName('removeService');
         let total = 0;
-        let totalWithoutGaranty = 0;
 
         // Основной цикл для заполнения данными строчек таблицы
         for (let i = 0; i < serviceRows.length; i++) {
@@ -369,9 +348,9 @@ service.addEventListener('change', e => {
             const garantyBtn = garantyBtns[i];
             const price = prices[i];
 
-            totalWithoutGaranty += eval(price.innerText);
-
-            checkedEmployee.innerHTML = '';
+            if (serviceRow.dataset['serviceEmployees'] != '[]') {
+                checkedEmployee.innerHTML = '';
+            }
 
             if (eval(count.innerText) != 1) {
                 minusCount.disabled = false;
@@ -425,13 +404,8 @@ service.addEventListener('change', e => {
 
             // Событие на удаление строчки кнопкой
             removeService.onclick = e => {
-                if (eval(serviceRow.dataset['serviceGaranty']) != true) {
-                    total -= eval(serviceRow.dataset['total']);
-                }
-                totalWithoutGaranty -= eval(serviceRow.dataset['total']);
+                total -= eval(serviceRow.dataset['total']);
                 totalPrice.innerText = total;
-                priceForPay.value = total;
-                fullPrice.value = totalWithoutGaranty;
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].selected = false;
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceGaranty'] = false;
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceEmployees'] = '[]';
@@ -459,10 +433,7 @@ service.addEventListener('change', e => {
                     serviceRow.dataset['total'] = price.innerText;
                     total -= eval(serviceRow.dataset['servicePrice']);
                     totalPrice.innerText = total;
-                    priceForPay.value = total;
                 }
-                totalWithoutGaranty -= eval(serviceRow.dataset['servicePrice']);
-                fullPrice.value = totalWithoutGaranty
 
                 if (eval(count.innerText) === 1) {
                     minusCount.disabled = true;
@@ -481,10 +452,7 @@ service.addEventListener('change', e => {
                     serviceRow.dataset['total'] = price.innerText;
                     total += eval(serviceRow.dataset['servicePrice']);
                     totalPrice.innerText = total;
-                    priceForPay.value = total;
                 }
-                totalWithoutGaranty += eval(serviceRow.dataset['servicePrice']);
-                fullPrice.value = totalWithoutGaranty;
 
                 minusCount.disabled = false;
             };
@@ -508,7 +476,6 @@ service.addEventListener('change', e => {
                     price.style.cssText = 'text-decoration: line-through;';
                     total -= eval(price.innerHTML);
                     totalPrice.innerText = total;
-                    priceForPay.value = total;
                 }
                 else {
                     serviceRow.dataset['serviceGaranty'] = 'false';
@@ -516,7 +483,6 @@ service.addEventListener('change', e => {
                     price.style.cssText = 'text-decoration: none;';
                     total += eval(price.innerHTML);
                     totalPrice.innerText = total;
-                    priceForPay.value = total;
                 }
             });
 
@@ -524,8 +490,6 @@ service.addEventListener('change', e => {
         }
 
         totalPrice.innerText = total;
-        priceForPay.value = total;
-        fullPrice.value = totalWithoutGaranty;
 
         $('.selectpicker').selectpicker('render');
     }

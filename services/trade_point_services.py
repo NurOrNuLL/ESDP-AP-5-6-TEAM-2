@@ -1,12 +1,20 @@
+from django.http import HttpRequest
 from models.trade_point.models import TradePoint
 from models.organization.models import Organization
 from django.shortcuts import get_object_or_404
 from typing import List
 
-from services.nomenclature_services import NomenclatureService
 
+class TradePointService:
+    @staticmethod
+    def get_tradepoint_id_from_cookie(request: HttpRequest) -> int:
+        tradepointID = request.COOKIES.get('tradepointID')
 
-class TradePointServices:
+        if tradepointID:
+            return int(tradepointID)
+        else:
+            return TradePoint.objects.first().id
+
     @staticmethod
     def create_trade_point(data: dict) -> None:
         trade_point = TradePoint.objects.create(
