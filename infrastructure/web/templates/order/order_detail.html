@@ -119,27 +119,12 @@
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Детали платежа:</span>
                     {% if order.payment.details %}
-                        {% if order.payment.details.cash %}
-                            <span class="card-text">
-                                {% if order.payment.details.cash %}{{ order.payment.details.cash }}{% else %}
-                                    Не указан{% endif %}
-                            </span>
-                        {% elif order.payment.details.cashless %}
+                        <span class="card-text">{{ order.payment.details.kaspi }}</span>
+                        {% if order.payment.details.cashless.consignment or order.payment.details.cashless.invoice %}
                             <br><span class="card-text">Накладная #
                             {{ order.payment.details.cashless.consignment }}</span><br>
                             <span>Счёт-фактура #
                                 {{ order.payment.details.cashless.invoice }}</span>
-                        {% elif order.payment.details.kaspi %}
-                            {% if order.payment.details.kaspi.qr %}
-                                <span
-                                      class="card-text">{{ order.payment.details.kaspi.qr }}</span>
-                            {% elif order.payment.details.kaspi.red %}
-                                <span
-                                      class="card-text">{{ order.payment.details.kaspi.red }}</span>
-                            {% elif order.payment.details.kaspi.transfer %}
-                                <span
-                                      class="card-text">{{ order.payment.details.kaspi.transfer }}</span>
-                            {% endif %}
                         {% endif %}
                     {% else %}
                         <span class="card-text">Не указаны</span>

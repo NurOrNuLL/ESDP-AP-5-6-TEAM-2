@@ -59,7 +59,7 @@ function render(search, date, status, payment_status, page, limit) {
                         body.innerHTML += `<tr><td><a class="btn rounded-pill btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a>
                         </td><td>${today}</td>
                         <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
-                        <td><a  class="modalbtn" type="button" data-bs-toggle="modal"  
+                        <td><a  class="modalbtn" type="button"  
                         data-idorderclass=${encodeURIComponent(item.id)}
                         data-dayorder=${encodeURIComponent(today)}
                         data-statusorder=${encodeURIComponent(item.status)}
