@@ -1,5 +1,5 @@
 import ast
-import base64
+import base64, io
 from concurrency.api import disable_concurrency
 from concurrency.exceptions import RecordModifiedError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -11,7 +11,7 @@ from rest_framework import generics, filters
 from rest_framework.pagination import PageNumberPagination
 from models.employee.models import Employee
 from services.organization_services import OrganizationService
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from .forms import EmployeeForm
 from services.employee_services import EmployeeServices
 from .serializers import EmployeeSerializer, EmployeeImageSerializer
@@ -39,16 +39,21 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['tpID'] = self.kwargs['tpID']
+        context['roles'] = [('Мастер', 'Мастер')]
         return context
 
     def get(
             self, request: HttpRequest, *args: list, **kwargs: dict
     ) -> HttpResponseRedirect or HttpResponse:
+        self.initial_data['tradepoint'] = TradePointService.get_trade_point_by_clean_id(self.kwargs['tpID'])
+
+        form = self.form_class(initial=self.initial_data)
+
         self.delete_order_data_from_session(request)
         context = self.get_context_data(**kwargs)
         context['tradepoints'] = EmployeeServices.get_tradepoint()
+        context['form'] = form
 
-        context['roles'] = self.initial_data
         return render(request, self.template_name, context)
 
     def post(
@@ -85,7 +90,6 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
                     empUID=employee.uuid
                 )
         else:
-            print('else 2')
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data
@@ -142,7 +146,7 @@ class EmployeeDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Template
         if employee.image:
             context['emp_image'] = ast.literal_eval(employee.image)[0]
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['trade_point'] = TradePointService.get_trade_point_by_id(self.kwargs)
         context['employee'] = employee
         context['empUID'] = employee.uuid
         return context
@@ -167,6 +171,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
+        context['image'] = ast.literal_eval(self.object.image)[0]
         context['employee'] = self.object
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
@@ -178,7 +183,6 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         form_kwargs = {'instance': EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])}
         if self.request.method == 'POST':
             form_kwargs['data'] = self.request.POST
-            form_kwargs['files'] = self.request.FILES
         return EmployeeForm(**form_kwargs)
 
     def get_inital(self, emp_uid: str) -> dict:
@@ -199,7 +203,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
         context['form'] = self.get_file_form()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['orgID'] = self.kwargs['orgID']
 
         return render(request=request, template_name=self.template_name, context=context)
@@ -237,6 +241,13 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
                     )
             except RecordModifiedError:
+                if request.session.get('image'):
+                    encoded_image = request.session.get('image')
+                    byte_image = io.BytesIO(base64.b64decode(encoded_image))
+                    image_1 = base64.b64encode(byte_image.getvalue()).decode()
+                    context['image_1'] = image_1
+                else:
+                    context['image_0'] = ast.literal_eval(self.object.image)[0]
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
                 context['tpID'] = self.kwargs['tpID']
@@ -245,7 +256,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             context['form'] = form
             context['roles'] = {'role': 'Мастер'}
             context['tradepoints'] = EmployeeServices.get_tradepoint()
-            context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+            context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
             context['orgID'] = self.kwargs['orgID']
             return render(request, self.template_name, context)
 
@@ -267,10 +278,11 @@ class EmployeeConcurrencyUpdate(LoginRequiredMixin, UserPassesTestMixin, View):
             employee.IIN = request.POST.get('IIN')
             employee.address = request.POST.get('address')
             employee.phone = request.POST.get('phone')
-            employee.tradepoint = TradePointServices.get_trade_point_by_id(self.kwargs)
+            employee.tradepoint = TradePointService.get_trade_point_by_id(self.kwargs)
             employee.role = request.POST.get('role')
             employee.birthdate = request.POST.get('birthdate')
-            employee.image = request.POST.get('image')
+            if request.POST.get('image'):
+                employee.image = request.POST.get('image')
             employee.save()
             return redirect('employee_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
                             empUID=self.kwargs['empUID'])

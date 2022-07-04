@@ -22,7 +22,6 @@ class ContractorService:
     def update_contractor(contractor: Contractor, data: dict) -> Contractor:
         contractor.name = data['name']
         contractor.address = data['address']
-        contractor.IIN_or_BIN = data['IIN_or_BIN']
         contractor.IIC = data['IIC']
         contractor.bank_name = data['bank_name']
         contractor.BIC = data['BIC']

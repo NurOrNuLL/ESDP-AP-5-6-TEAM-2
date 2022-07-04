@@ -17,7 +17,8 @@ class OwnServices:
     @staticmethod
     def delete_own(own_id: int) -> None:
         own = Own.objects.get(id=own_id)
-        own.delete()
+        own.is_deleted = True
+        own.save()
 
     @staticmethod
     def get_own_by_id(kwargs: dict) -> Own:

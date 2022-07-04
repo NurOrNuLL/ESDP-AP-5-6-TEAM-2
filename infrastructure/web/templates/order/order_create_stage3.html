@@ -6,59 +6,74 @@
 
     <h1>Создание заказ-наряда</h1>
     <hr>
-    <div class="row m-0">
-        <div class="card border-secondary col me-2">
-            <div class="card-header bg-transparent">
-                <h3 class="my-2">Шаг 3/4</h3>
-            </div>
-            <div class="card-body">
-                <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {% if not own.is_part %}
-                        <div class="col">
-                            <label for="mileage" class="form-label">Пробег</label>
-                            <div class="input-group">
-                                <input type="number" class="form-control" value="{{ session_mileage }}" id="mileage" name="mileage">
-                                <span class="input-group-text" id="basic-addon2">km</span>
-                            </div>
-                            <div class="form-text" style="color: red;">
-                                {% for err in order_form.errors.mileage %}{{ err }}{% endfor %}</div>
-                        </div>
-                        <br>
-                    {% endif %}
-                    <div>
-                        <label for="note" class="form-label">Примечание</label>
-                        <textarea class="form-control" id="note" name="note" rows="3">{{ session_note|default:'' }}</textarea>
-                        <div class="form-text" style="color: red;">
-                            {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
-                    </div>
-                    <br>
-                    <a href="{% url 'order_create_stage2' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
-                    <button type="submit" class="btn btn-primary">Далее</button>
-                </form>
-            </div>
+    {% if form.errors %}
+        <div class="alert alert-danger alert-dismissible fade show mt-4 w-50" role="alert">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+                <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+                <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+            </svg>
+            {{ form.errors.jobs }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
-        <div class="card border-secondary col-4 ms-2 d-flex flex-column">
-            <div class="card-header bg-transparent">
-                <h3 class="my-2">Выбранная собственность</h3>
+    {% endif %}
+    <div class="card border-secondary">
+        <div class="card-header bg-transparent">
+            <h3 class="my-2">Шаг 3/4</h3>
+        </div>
+        <div class="card-body">
+            <div>
+                <label for="service" class="form-label">Услуги <span style="color: red;">*</span></label>
+                <select class="form-control selectpicker service" id="service" name="service" multiple data-live-search="true" title="Нажмите для выбора услуги" data-selected-text-format="static" required>
+                    {% for category in categories %}
+                        {% if services|get_item:category.0 %}
+                            <optgroup label="{{ category.0 }}">
+                                {% for service in services|get_item:category.0 %}
+                                    <option class="service-option" data-tokens="{{ category.0 }}" data-service-name="{{ service|get_item:'Название' }}" data-service-garanty="false" data-service-employees="[]" data-service-price="{{ service|get_item:'Цена' }}" data-service-count="1" data-total="{{ service|get_item:'Цена' }}" data-subtext="{{ service|get_item:'Марка' }}">{{ service|get_item:'Название' }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                    {% endfor %}
+                </select>
             </div>
-            <div class="card-body" style="flex: 0 0">
-                <div class="d-flex">
-                    <div class="me-2" style="width: 250px;">
-                        <div><strong>Наименование:</strong></div>
-                        <div><strong>Тип:</strong></div>
-                        {% if not own.is_part %}<div><strong>Номер:</strong></div>{% endif %}
-                        <div><strong>Доп. информация:</strong></div>
-                    </div>
-                    <div>
-                        <div>{{ own.name }}</div>
-                        <div>{% if not own.is_part %}Автомобиль{% else %}Запчасть{% endif %}</div>
-                        {% if not own.is_part %}<div>{{ own.number }}</div>{% endif %}
-                        <div>{{ own.comment|default:'Не указано' }}</div>
-                    </div>
-                </div>
-            </div>
+            <br>
+            <h5>Выбранные услуги:</h5>
+            <table class="table mb-2">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Название услуги</th>
+                        <th scope="col">Категория</th>
+                        <th scope="col">Марка</th>
+                        <th scope="col" style="width: 175px">Выбор мастеров</th>
+                        <th scope="col" style="width: 240px">Мастера</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Гарантия</th>
+                        <th scope="col">Цена</th>
+                    </tr>
+                </thead>
+                <tbody id="selectedServicesTable"></tbody>
+            </table>
+            <h5 class="text-center" id="nothingSelected">Ничего не выбрано!</h5>
+            <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span id="totalPrice" style="font-weight: bold;">0 &#8376;</span></div>
+            <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="hidden" name="jobs" id="resultServices">
+                <br>
+                <a href="{% url 'order_create_stage2' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
+                <button type="submit" class="btn btn-primary">Далее</button>
+            </form>
         </div>
     </div>
-
+    <p class="d-none" id="employees">
+        {{ employees }}
+    </p>
+    <p class="d-none" id="session_jobs">
+        {{ session_jobs }}
+    </p>
 {% endblock content %}
+
+{% block js_block %}
+
+    <script src="{% static 'js/order/order_create_stage3.js' %}"></script>
+
+{% endblock js_block %}

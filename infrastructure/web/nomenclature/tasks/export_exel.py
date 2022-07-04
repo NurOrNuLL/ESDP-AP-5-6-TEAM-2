@@ -1,5 +1,3 @@
-from time import sleep
-
 from celery_progress.backend import ProgressRecorder
 from core import celery_app
 from .base import BaseTask

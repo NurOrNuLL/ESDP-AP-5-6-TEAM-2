@@ -13,7 +13,7 @@
                             value="{{ nomenclature.pk }}" selected>{{ nomenclature }}</option>
                 {% else %}
                     <option id="option" data-version="{{ nomenclature.version }}"
-                                value="{{ nomenclature.pk }}">{{ nomenclature }}</option>
+                            value="{{ nomenclature.pk }}">{{ nomenclature }}</option>
                 {% endif %}
             {% endfor %}
         </select>
@@ -37,19 +37,23 @@
     </div>
     <div class="d-flex justify-content-between">
         <div>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
-                Загрузить excel
-            </button>
+            {% if request.user.is_staff or request_user_employee.role == 'Управляющий' %}
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#importModal">
+                    Загрузить excel
+                </button>
+            {% endif %}
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exportModal">
                 Скачать excel
             </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formimportModal">
                 Форма для заполнения excel
             </button>
-            <button id="saveButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#editName">
-                Редактировать
-            </button>
+            {% if request.user.is_staff or request_user_employee.role == 'Управляющий' %}
+                <button id="saveButton" type="button" class="btn btn-primary" data-bs-toggle="modal"
+                        data-bs-target="#editName">
+                    Редактировать
+                </button>
+            {% endif %}
         </div>
         {% if error %}
             <div class="alert alert-danger d-flex align-items-center pt-1 pb-1 pe-4 ps-4 m-0" role="alert">
@@ -69,7 +73,8 @@
                    value="100" id="limit">
             <div class="btn-group align-items-center">
                 <button class="btn btn-secondary" id="back">&#8592;</button>
-                <input type="number" class="form-control bg-transparent border-secondary text-center" style="width: 100px" id="page"
+                <input type="number" class="form-control bg-transparent border-secondary text-center"
+                       style="width: 100px" id="page"
                        value="1" disabled>
                 <button class="btn btn-secondary" id="next">&#8594;</button>
             </div>

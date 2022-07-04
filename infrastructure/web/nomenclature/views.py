@@ -2,7 +2,7 @@ import tablib
 from concurrency.api import disable_concurrency
 from django.views.generic import TemplateView
 from services.employee_services import EmployeeServices
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from .forms import NomenclatureForm, NomenclatureImportForm
 from django.shortcuts import render, redirect, reverse
 from services.nomenclature_services import NomenclatureService
@@ -37,14 +37,12 @@ class NomenclatureImportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, 
             return True
         else:
             employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
-            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+            return employee.role == 'Управляющий'
 
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['nomenclatures'] = NomenclatureService.get_all_nomenclatures()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
 
         return context
 
@@ -88,9 +86,7 @@ class NomenclaturesServiceListView(ResetOrderCreateFormDataMixin, LoginRequiredM
         context['categories'] = CATEGORY_CHOICES
         context['marks'] = MARK_CHOICES
         context['nomenclatures'] = NomenclatureService.get_nomenclatures_by_tradepoint_id(self.kwargs['tpID'])
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -171,7 +167,7 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, User
             nomenclature = NomenclatureService.create_nomenclature(form.cleaned_data)
             cache.delete('nomenclatures')
 
-            tradepoint = TradePointServices.get_trade_point_by_id({'tpID': self.kwargs['tpID']})
+            tradepoint = TradePointService.get_trade_point_by_id({'tpID': self.kwargs['tpID']})
             tradepoint.nomenclature.add(nomenclature)
 
             response = redirect('nomenclature_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
@@ -180,30 +176,19 @@ class NomenclatureCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, User
             return response
 
         context = self.get_context_data()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         context['form'] = form
 
         return render(request, self.template_name, context)
 
 
-class NomenclatureExportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+class NomenclatureExportView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
     """Экспорт прайса по выбранной номенклатуре"""
     template_name = 'nomenclature/list.html'
 
-    def test_func(self):
-        if self.request.user.is_staff:
-            return True
-        else:
-            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
-            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
-
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         return context
 
     def get(
@@ -233,9 +218,7 @@ class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, LoginRequiredMixin
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         return context
 
     def get(
@@ -255,8 +238,7 @@ class NomenclatureDownloadView(ResetOrderCreateFormDataMixin, LoginRequiredMixin
         if main_data is False:
             request.session['error'] = 'Проверьте наличие прайсов у номенклатуры, или наличие номенклатуры'
             url = reverse('nomenclature_list', kwargs={'orgID': 1,
-                                                       'tpID': EmployeeServices.get_attached_tradepoint_id(  # noqa E501
-                                                           self.request, self.request.user.uuid)}  # noqa E501
+                                                       'tpID': TradePointService.get_tradepoint_id_from_cookie(self.request)}  # noqa E501
                           )
             return HttpResponseRedirect(url)
         else:
@@ -293,9 +275,7 @@ class NomenclatureProgressView(ResetOrderCreateFormDataMixin, LoginRequiredMixin
 
     def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
