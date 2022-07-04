@@ -41,6 +41,7 @@ class QueueCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesT
             trade_point = TradePointService.get_trade_point_by_clean_id(self.kwargs['tpID'])
             form.cleaned_data['trade_point'] = trade_point
             form.cleaned_data['status'] = QUEUE_STATUSES[0][0]
+            QueueService.create_queue(form.cleaned_data)
             return redirect('home', orgID=self.kwargs['orgID'],
                             tpID=self.kwargs['tpID'])
         else:
