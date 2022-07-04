@@ -14,8 +14,8 @@ def get_report(from_date: datetime.date, to_date: datetime.date, tpID: int) -> D
     to_date = datetime.strptime(to_date, '%Y-%m-%dT%H:%M:%S')
 
     result = {
-        'paidJobs': [],
-        'unpaidJobs': [],
+        'paidOrders': [],
+        'unpaidOrders': [],
         'employeeSalary': [],
         'total': Decimal('0.00'),
         'totalPaid': Decimal('0.00'),
@@ -27,19 +27,38 @@ def get_report(from_date: datetime.date, to_date: datetime.date, tpID: int) -> D
     employeeIINs = []
 
     for order in orders:
+        if order.payment.payment_status == 'Оплачено':
+            result['paidOrders'].append({
+                'created_at': datetime.strftime(order.created_at, '%d.%m.%Y'),
+                'finished_at': datetime.strftime(order.finished_at, '%d.%m.%Y'),
+                'order_id': order.id,
+                'contractor_id': order.contractor.id,
+                'contractor': order.contractor.name,
+                'own': order.own.number if order.own.is_part is False else order.own.name,
+                'garanty': order.full_price - order.price_for_pay,
+                'total': order.price_for_pay,
+            })
+        else:
+            result['unpaidOrders'].append({
+                'created_at': datetime.strftime(order.created_at, '%d.%m.%Y'),
+                'finished_at': datetime.strftime(order.finished_at, '%d.%m.%Y'),
+                'order_id': order.id,
+                'contractor_id': order.contractor.id,
+                'contractor': order.contractor.name,
+                'own': order.own.number if order.own.is_part is False else order.own.name,
+                'garanty': order.full_price - order.price_for_pay,
+                'total': order.price_for_pay,
+            })
+
         for job in order.jobs:
             result['total'] += job['Цена услуги']
 
             if order.payment.payment_status == 'Оплачено':
-                result['paidJobs'].append(job)
-
                 if not job['Гарантия']:
                     result['totalPaid'] += job['Цена услуги']
                 else:
                     result['garanty'] += job['Цена услуги']
             else:
-                result['unpaidJobs'].append(job)
-
                 if not job['Гарантия']:
                     result['totalUnpaid'] += job['Цена услуги']
                 else:

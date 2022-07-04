@@ -1,39 +1,42 @@
 let reportForm = document.getElementById('reportForm');
+let resetReport = document.getElementById('resetReport');
+let downloadReport = document.getElementById('downloadReport');
 let bodyBlock = document.getElementById('bodyBlock');
+let downloadData = document.getElementById('downloadData');
 
 
-function renderReport(paidJobs, unpaidJobs, report) {
-    if (paidJobs === true) {
-        if (unpaidJobs === true) {
-            bodyBlock.innerHTML = ` <span class="badge fs-5 mb-2 bg-success">Оплаченные работы</span>
+function renderReport(paidOrders, unpaidOrders, report) {
+    if (paidOrders === true) {
+        if (unpaidOrders === true) {
+            bodyBlock.innerHTML = ` <span class="badge fs-5 mb-2 bg-success">Оплаченные заказ наряды</span>
                                     <table class="table table-sm table-bordered border-secondary align-middle">
                                         <thead>
                                             <tr class="table-success border-secondary">
                                                 <th class="text-center" scope="col" style="width: 40px">№</th>
-                                                <th style="width: 500px;" scope="col">Название услуги</th>
-                                                <th scope="col">Категория</th>
-                                                <th scope="col">Марка</th>
-                                                <th scope="col">Мастера</th>
-                                                <th style="width: 150px;" scope="col">Гарантия</th>
-                                                <th scope="col">Цена</th>
+                                                <th scope="col">Дата создания</th>
+                                                <th scope="col">Дата завершения</th>
+                                                <th scope="col">Контрагент</th>
+                                                <th scope="col">Номер авто/Запчасть</th>
+                                                <th scope="col">Гарантия</th>
+                                                <th scope="col">Сумма</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="paidJobsBody"></tbody>
+                                        <tbody id="paidOrdersBody"></tbody>
                                     </table>
-                                    <span class="badge fs-5 mb-2 bg-danger">Неоплаченные работы</span>
+                                    <span class="badge fs-5 mb-2 bg-danger">Неоплаченные заказ наряды</span>
                                     <table class="table table-sm table-bordered border-secondary align-middle">
                                         <thead>
                                             <tr class="table-danger border-secondary">
                                                 <th class="text-center" scope="col" style="width: 40px">№</th>
-                                                <th style="width: 500px;" scope="col">Название услуги</th>
-                                                <th scope="col">Категория</th>
-                                                <th scope="col">Марка</th>
-                                                <th scope="col">Мастера</th>
-                                                <th style="width: 150px;" scope="col">Гарантия</th>
-                                                <th scope="col">Цена</th>
+                                                <th scope="col">Дата создания</th>
+                                                <th scope="col">Дата завершения</th>
+                                                <th scope="col">Контрагент</th>
+                                                <th scope="col">Номер авто/Запчасть</th>
+                                                <th scope="col">Гарантия</th>
+                                                <th scope="col">Сумма</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="unpaidJobsBody"></tbody>
+                                        <tbody id="unpaidOrdersBody"></tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
                                         <div class="w-50">
@@ -87,20 +90,20 @@ function renderReport(paidJobs, unpaidJobs, report) {
                                     </div>`
         }
         else {
-            bodyBlock.innerHTML = ` <span class="badge fs-5 mb-2 bg-success">Оплаченные работы</span>
+            bodyBlock.innerHTML = ` <span class="badge fs-5 mb-2 bg-success">Оплаченные заказ наряды</span>
                                     <table class="table table-sm table-bordered border-secondary align-middle">
                                         <thead>
                                             <tr class="table-success border-secondary">
                                                 <th class="text-center" scope="col" style="width: 40px">№</th>
-                                                <th style="width: 500px;" scope="col">Название услуги</th>
-                                                <th scope="col">Категория</th>
-                                                <th scope="col">Марка</th>
-                                                <th scope="col">Мастера</th>
-                                                <th style="width: 150px;" scope="col">Гарантия</th>
-                                                <th scope="col">Цена</th>
+                                                <th scope="col">Дата создания</th>
+                                                <th scope="col">Дата завершения</th>
+                                                <th scope="col">Контрагент</th>
+                                                <th scope="col">Номер авто/Запчасть</th>
+                                                <th scope="col">Гарантия</th>
+                                                <th scope="col">Сумма</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="paidJobsBody"></tbody>
+                                        <tbody id="paidOrdersBody"></tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
                                         <div class="w-50">
@@ -155,21 +158,21 @@ function renderReport(paidJobs, unpaidJobs, report) {
         }
     }
     else {
-        if (unpaidJobs === true) {
-            bodyBlock.innerHTML = ` <span class="badge fs-5 mb-2 bg-danger">Неоплаченные работы</span>
+        if (unpaidOrders === true) {
+            bodyBlock.innerHTML = ` <span class="badge fs-5 mb-2 bg-success">Неоплаплаченные заказ наряды</span>
                                     <table class="table table-sm table-bordered border-secondary align-middle">
                                         <thead>
-                                            <tr class="table-danger border-secondary">
+                                            <tr class="table-success border-secondary">
                                                 <th class="text-center" scope="col" style="width: 40px">№</th>
-                                                <th style="width: 500px;" scope="col">Название услуги</th>
-                                                <th scope="col">Категория</th>
-                                                <th scope="col">Марка</th>
-                                                <th scope="col">Мастера</th>
-                                                <th style="width: 150px;" scope="col">Гарантия</th>
-                                                <th scope="col">Цена</th>
+                                                <th scope="col">Дата создания</th>
+                                                <th scope="col">Дата завершения</th>
+                                                <th scope="col">Контрагент</th>
+                                                <th scope="col">Номер авто/Запчасть</th>
+                                                <th scope="col">Гарантия</th>
+                                                <th scope="col">Сумма</th>
                                             </tr>
                                         </thead>
-                                        <tbody id="unpaidJobsBody"></tbody>
+                                        <tbody id="paidOrdersBody"></tbody>
                                     </table>
                                     <div class="d-flex justify-content-between">
                                         <div class="w-50">
@@ -276,79 +279,55 @@ function renderReport(paidJobs, unpaidJobs, report) {
         }
     }
 
-    let paidJobsBody = document.getElementById('paidJobsBody');
-    let unpaidJobsBody = document.getElementById('unpaidJobsBody');
+    let paidOrdersBody = document.getElementById('paidOrdersBody');
+    let unpaidOrdersBody = document.getElementById('unpaidOrdersBody');
     let employeeSalaryBody = document.getElementById('employeeSalaryBody');
 
-    if (paidJobsBody != undefined) {
-        for (let i = 0; i < report['paidJobs'].length; i++) {
-            const job = report['paidJobs'][i];
+    if (paidOrdersBody != undefined) {
+        for (let i = 0; i < report['paidOrders'].length; i++) {
+            const order = report['paidOrders'][i];
 
-            if (job['Гарантия'] === true) {
-                paidJobsBody.innerHTML += `<tr>
-                                    <th class="text-center">${i + 1}</th>
-                                    <td>${job['Название услуги']}</td>
-                                    <td>${job['Категория услуги']}</td>
-                                    <td>${job['Марка услуги']}</td>
-                                    <td class="employeeBody"></td>
-                                    <td>На гарантии</td>
-                                    <th>${job['Цена услуги']}</th>
-                                </tr>`
-            }
-            else {
-                paidJobsBody.innerHTML += `<tr>
-                                    <th class="text-center">${i + 1}</th>
-                                    <td>${job['Название услуги']}</td>
-                                    <td>${job['Категория услуги']}</td>
-                                    <td>${job['Марка услуги']}</td>
-                                    <td class="employeeBody"></td>
-                                    <td></td>
-                                    <th>${job['Цена услуги']}</th>
-                                </tr>`
-            }
-
-            for (j = 0; j < job['Мастера'].length; j++) {
-                const employee = job['Мастера'][j];
-                let employeeBodies = document.getElementsByClassName('employeeBody');
-
-                employeeBodies[employeeBodies.length - 1].innerHTML += `<div>${employee['Наименование']}</div>`
-            }
+            paidOrdersBody.innerHTML += `<tr>
+                                            <th class="text-center">
+                                                <a class="link-primary" href="/org/1/tp/${tpID}/order/${order.order_id}/">
+                                                    ${order.order_id}
+                                                </a>
+                                            </th>
+                                            <td>${order.created_at}</td>
+                                            <td>${order.finished_at}</td>
+                                            <td>
+                                                <a class="link-primary" href="/org/1/tp/${tpID}/order/${order.contractor_id}/">
+                                                    ${order.contractor}
+                                                </a>
+                                            </td>
+                                            <td>${order.own}</td>
+                                            <td>${order.garanty}</td>
+                                            <th>${order.total}</th>
+                                        </tr>`
         }
     }
 
-    if (unpaidJobsBody != undefined) {
-        for (let i = 0; i < report['unpaidJobs'].length; i++) {
-            const job = report['unpaidJobs'][i];
+    if (unpaidOrdersBody != undefined) {
+        for (let i = 0; i < report['unpaidOrders'].length; i++) {
+            const order = report['unpaidOrders'][i];
 
-            if (job['Гарантия'] === true) {
-                unpaidJobsBody.innerHTML += `<tr>
-                                                <th class="text-center">${i + 1}</th>
-                                                <td>${job['Название услуги']}</td>
-                                                <td>${job['Категория услуги']}</td>
-                                                <td>${job['Марка услуги']}</td>
-                                                <td class="employeeBody"></td>
-                                                <td>На гарантии</td>
-                                                <th>${job['Цена услуги']}</th>
-                                            </tr>`
-            }
-            else {
-                unpaidJobsBody.innerHTML += `<tr>
-                                                <th class="text-center">${i + 1}</th>
-                                                <td>${job['Название услуги']}</td>
-                                                <td>${job['Категория услуги']}</td>
-                                                <td>${job['Марка услуги']}</td>
-                                                <td class="employeeBody"></td>
-                                                <td></td>
-                                                <th>${job['Цена услуги']}</th>
-                                            </tr>`
-            }
-
-            for (j = 0; j < job['Мастера'].length; j++) {
-                const employee = job['Мастера'][j];
-                let employeeBodies = document.getElementsByClassName('employeeBody');
-
-                employeeBodies[employeeBodies.length - 1].innerHTML += `<div>${employee['Наименование']}</div>`
-            }
+            unpaidOrdersBody.innerHTML += `<tr>
+                                            <th class="text-center">
+                                                <a class="link-primary" href="/org/1/tp/${tpID}/order/${order.order_id}/">
+                                                    ${order.order_id}
+                                                </a>
+                                            </th>
+                                            <td>${order.created_at}</td>
+                                            <td>${order.finished_at}</td>
+                                            <td>
+                                                <a class="link-primary" href="/org/1/tp/${tpID}/order/${order.contractor_id}/">
+                                                    ${order.contractor}
+                                                </a>
+                                            </td>
+                                            <td>${order.own}</td>
+                                            <td>${order.garanty}</td>
+                                            <th>${order.total}</th>
+                                        </tr>`
         }
     }
 
@@ -365,10 +344,55 @@ function renderReport(paidJobs, unpaidJobs, report) {
 }
 
 
+resetReport.onclick = e => {
+    if (localStorage.getItem('report') != null) {
+        localStorage.removeItem('report');
+    }
+
+    bodyBlock.innerHTML = '<h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>'
+
+    resetReport.disabled = true;
+    downloadReport.disabled = true;
+}
+
+
+if (localStorage.getItem('report') != null) {
+    let report = JSON.parse(localStorage.getItem('report'));
+
+    downloadData.value = JSON.stringify(report);
+    downloadData.innerText = JSON.stringify(report);
+
+    if (report['paidOrders'].length != 0) {
+        if (report['unpaidOrders'].length != 0) {
+            renderReport(true, true, report)
+        }
+        else {
+            renderReport(true, false, report)
+        }
+    }
+    else {
+        if (report['unpaidOrders'].length != 0) {
+            renderReport(false, true, report)
+        }
+        else {
+            renderReport(false, false, report)
+        }
+    }
+
+    resetReport.disabled = false;
+    downloadReport.disabled = false;
+}
+
+
 reportForm.addEventListener('submit', e => {
     e.preventDefault();
 
-    reportSocket = new WebSocket(`wss://${window.location.host}/report/create`);
+    if (DEBUG === true) {
+        reportSocket = new WebSocket(`ws://${window.location.host}/wss/report/create`);
+    }
+    else {
+        reportSocket = new WebSocket(`wss://${window.location.host}/wss/report/create`);
+    }
 
     reportSocket.onopen = e => {
         reportSocket.send(JSON.stringify({
@@ -388,8 +412,13 @@ reportForm.addEventListener('submit', e => {
     reportSocket.onmessage = e => {
         let report = JSON.parse(e.data);
 
-        if (report['paidJobs'].length != 0) {
-            if (report['unpaidJobs'].length != 0) {
+        localStorage.setItem('report', JSON.stringify(report));
+
+        downloadData.value = JSON.stringify(report);
+        downloadData.innerText = JSON.stringify(report);
+
+        if (report['paidOrders'].length != 0) {
+            if (report['unpaidOrders'].length != 0) {
                 renderReport(true, true, report)
             }
             else {
@@ -397,13 +426,16 @@ reportForm.addEventListener('submit', e => {
             }
         }
         else {
-            if (report['unpaidJobs'].length != 0) {
+            if (report['unpaidOrders'].length != 0) {
                 renderReport(false, true, report)
             }
             else {
                 renderReport(false, false, report)
             }
         }
+
+        resetReport.disabled = false;
+        downloadReport.disabled = false;
 
         reportSocket.close();
     };

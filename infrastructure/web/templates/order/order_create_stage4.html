@@ -53,8 +53,10 @@
                         <th scope="col">Катагория</th>
                         <th scope="col">Марка</th>
                         <th scope="col">Мастера</th>
-                        <th scope="col">Гарантия</th>
+                        <th scope="col">Количество</th>
                         <th scope="col">Цена</th>
+                        <th scope="col" style="width: 130px;">Гарантия</th>
+                        <th scope="col">Сумма</th>
                     </tr>
                 </thead>
                 <tbody id="selectedServicesTable">
@@ -63,14 +65,16 @@
                             <td>{{ job|get_item:'Название услуги' }}</td>
                             <td>{{ job|get_item:'Категория услуги' }}</td>
                             <td>{{ job|get_item:'Марка услуги' }}</td>
-                            <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
+                            <td>{% for employee in job|get_item:'Мастера' %}<span class="badge rounded-pill text-bg-warning text-truncate" style="max-width: 150px;">{{ employee|get_item:'Наименование' }}</span>{% endfor %}</td>
+                            <th><div class="d-flex ps-5">{{ job|get_item:'Количество услуг' }}</div></th>
+                            <th>{{ job|get_item:'Цена услуги' }}</th>
                             <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                            {% if job|get_item:'Гарантия' %}<th><span style="text-decoration: line-through;">{{ job|get_item:'Цена услуги' }}</span> &#8376;</th>{% else %}<th>{{ job|get_item:'Цена услуги' }} &#8376;</th>{% endif %}
+                            {% if job|get_item:'Гарантия' %}<th><span style="text-decoration: line-through;">{{ job|get_item:'Сумма услуг' }}</span></th>{% else %}<th>{{ job|get_item:'Сумма услуг' }}</th>{% endif %}
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span style="font-weight: bold;">{{ price_for_pay }} &#8376;</span></div>
+            <div class="d-flex justify-content-end me-3"><span class="me-2"><strong>Общая сумма:</strong></span><span style="font-weight: bold;">{{ price_for_pay }}</span></div>
         </div>
         <div class="card-footer bg-transparent">
             <form method="POST" id="serviceEmployeeForm" enctype="multipart/form-data">

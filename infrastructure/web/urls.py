@@ -30,7 +30,7 @@ from .trade_point.views import (
 from .contractor.views import (
     ContractorCreate, ContractorList, ContractorDetail,
     ContractorUpdate, ContractorFilterApiView,
-    ContractorUpdateConcurrecnyView
+    ContractorUpdateConcurrecnyView, ContractorDetailOwnListApiView
 )
 from .employee.views import (
     EmployeeCreate,
@@ -39,7 +39,7 @@ from .employee.views import (
     EmployeeConcurrencyUpdate, EmployeeImageUpdateView
 )
 from infrastructure.accounts.views import RegisterView
-from infrastructure.web.report.views import ReportPreviewView
+from infrastructure.web.report.views import ReportPreviewView, ReportDownloadView
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
 
@@ -92,7 +92,10 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path('contractor/<int:contrID>/',ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/',
+	 ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/own/list/filter/',
+	 ContractorDetailOwnListApiView.as_view()),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
     path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
@@ -135,10 +138,11 @@ order_urls = [
 
 report_urls = [
 	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+    path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
 ]
 
 report_websocket_urls = [
-    path('report/create', ReportConsumer.as_asgi())
+    path('wss/report/create', ReportConsumer.as_asgi())
 ]
 
 payment_url = [
