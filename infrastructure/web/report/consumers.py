@@ -18,6 +18,4 @@ class ReportConsumer(WebsocketConsumer):
         task = get_report.delay(from_date, to_date, data['tpID'])
         report = AsyncResult(task.id).get()
 
-        print(report)
-
         self.send(json.dumps(report))

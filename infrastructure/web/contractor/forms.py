@@ -6,3 +6,9 @@ class ContractorForm(forms.ModelForm):
     class Meta:
         model = Contractor
         exclude = ['organization']
+
+
+class ContractorUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Contractor
+        exclude = ['organization', 'IIN_or_BIN']
