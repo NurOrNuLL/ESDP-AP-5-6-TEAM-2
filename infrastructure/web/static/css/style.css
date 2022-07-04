@@ -92,6 +92,8 @@ body {
   color: #cccccc;
   border: 4px dashed #009578;
   border-radius: 10px;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .drop-zone--over {
@@ -124,3 +126,4 @@ body {
   font-size: 14px;
   text-align: center;
 }
+

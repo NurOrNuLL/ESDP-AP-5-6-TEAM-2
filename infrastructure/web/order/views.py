@@ -161,7 +161,7 @@ class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         contractor_id = request.session.get('contractor')
         own_id = request.session.get('own')
 
-        if contractor_id:
+        if contractor_id and not own_id:
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
         elif contractor_id and own_id:
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
@@ -195,6 +195,63 @@ class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
 class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'order/order_create_stage2.html'
     form_class = OrderCreateFormStage2
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        else:
+            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
+            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
+
+    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
+        context['payment_methods'] = PaymentService.get_payment_methods()
+
+        return context
+
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        own = OwnServices.get_own_by_id({'ownID': request.session['own']})
+
+        context = self.get_context_data()
+
+        mileage = request.session.get('mileage')
+        note = request.session.get('note')
+
+        if own.is_part:
+            if note:
+                context['note'] = note
+        else:
+            if mileage and not note:
+                context['session_mileage'] = mileage
+            elif not mileage and note:
+                context['session_note'] = note
+            else:
+                context['session_mileage'] = mileage
+                context['session_note'] = note
+
+        context['own'] = own
+
+        return render(request=request, template_name=self.template_name, context=context)
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            request.session['mileage'] = form.cleaned_data['mileage']
+            request.session['note'] = form.cleaned_data['note']
+
+            return redirect('order_create_stage3', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+        else:
+            context = self.get_context_data()
+            context['form'] = form
+
+            return render(request, self.template_name, context)
+
+
+class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
+    template_name = 'order/order_create_stage3.html'
+    form_class = OrderCreateFormStage3
 
     def test_func(self):
         if self.request.user.is_staff:
@@ -248,6 +305,7 @@ class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             for job in form.cleaned_data['jobs']:
                 if not job['Мастера']:
                     form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
+                    print(form.cleaned_data['jobs'])
 
                     context = self.get_context_data()
                     context['services'] = self.get_services(nomenclature)
@@ -256,71 +314,16 @@ class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
 
                     return render(request, self.template_name, context)
 
+            print(form.cleaned_data['jobs'])
+
             request.session['jobs'] = form.cleaned_data['jobs']
 
-            return redirect('order_create_stage3', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+            return redirect('order_create_stage4', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
         else:
             form.errors['jobs'] = 'Вы не выбрали услуги!!!'
 
             context = self.get_context_data()
             context['services'] = self.get_services(nomenclature)
-            context['form'] = form
-
-            return render(request, self.template_name, context)
-
-
-class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
-    template_name = 'order/order_create_stage3.html'
-    form_class = OrderCreateFormStage3
-
-    def test_func(self):
-        if self.request.user.is_staff:
-            return True
-        else:
-            employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
-            return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
-
-    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
-        context['payment_methods'] = PaymentService.get_payment_methods()
-
-        return context
-
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        own = OwnServices.get_own_by_id({'ownID': request.session['own']})
-
-        context = self.get_context_data()
-
-        mileage = request.session.get('mileage')
-        note = request.session.get('note')
-
-        if own.is_part:
-            if note:
-                context['note'] = note
-        else:
-            if mileage and not note:
-                context['session_mileage'] = mileage
-            elif not mileage and note:
-                context['session_note'] = note
-            else:
-                context['session_mileage'] = mileage
-                context['session_note'] = note
-
-        context['own'] = own
-
-        return render(request=request, template_name=self.template_name, context=context)
-
-    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        form = self.form_class(request.POST)
-
-        if form.is_valid():
-            request.session['mileage'] = form.cleaned_data['mileage']
-            request.session['note'] = form.cleaned_data['note']
-
-            return redirect('order_create_stage4', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
-        else:
-            context = self.get_context_data()
             context['form'] = form
 
             return render(request, self.template_name, context)
@@ -348,10 +351,10 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
 
         for job in jobs:
             if job['Гарантия']:
-                full_price += job['Цена услуги']
+                full_price += job['Сумма услуг']
             else:
-                price_for_pay += job['Цена услуги']
-                full_price += job['Цена услуги']
+                price_for_pay += job['Сумма услуг']
+                full_price += job['Сумма услуг']
 
         return [price_for_pay, full_price]
 

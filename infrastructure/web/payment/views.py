@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http import HttpRequest, HttpResponse
+from django.http.response import HttpResponse
+from django.http.request import HttpRequest
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.utils.datastructures import MultiValueDictKeyError

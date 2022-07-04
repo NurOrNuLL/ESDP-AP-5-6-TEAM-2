@@ -30,6 +30,9 @@
 <script src='{% static "js/bootstrap-table.min.js" %}'></script>
 <script src="{% static 'js/bootstrap-select.min.js' %}"></script>
 <script>
+    const DEBUG = eval('{{ DEBUG }}'.toLowerCase());
+</script>
+<script>
     let tradepointSelect = document.getElementById('tradepointChoices');
 
     tradepointSelect.addEventListener('change', (e) => {

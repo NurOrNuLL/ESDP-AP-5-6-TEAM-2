@@ -93,9 +93,9 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path('contractor/<int:contrID>/', 
+    path('contractor/<int:contrID>/',
 	 ContractorDetail.as_view(), name="contractor_detail"),
-    path('contractor/<int:contrID>/own/list/filter/', 
+    path('contractor/<int:contrID>/own/list/filter/',
 	 ContractorDetailOwnListApiView.as_view()),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
@@ -147,7 +147,7 @@ report_urls = [
 ]
 
 report_websocket_urls = [
-    path('report/create', ReportConsumer.as_asgi())
+    path('wss/report/create', ReportConsumer.as_asgi())
 ]
 
 payment_url = [

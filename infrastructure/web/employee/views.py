@@ -1,5 +1,5 @@
 import ast
-import base64
+import base64, io
 from concurrency.api import disable_concurrency
 from concurrency.exceptions import RecordModifiedError
 from django.http import HttpResponseRedirect, HttpResponse
@@ -90,7 +90,6 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
                     empUID=employee.uuid
                 )
         else:
-            print(form.errors.as_json())
             context = self.get_context_data(**kwargs)
             context['form'] = form
             context['roles'] = self.initial_data
@@ -172,6 +171,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
+        context['image'] = ast.literal_eval(self.object.image)[0]
         context['employee'] = self.object
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
@@ -183,7 +183,6 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         form_kwargs = {'instance': EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])}
         if self.request.method == 'POST':
             form_kwargs['data'] = self.request.POST
-            form_kwargs['files'] = self.request.FILES
         return EmployeeForm(**form_kwargs)
 
     def get_inital(self, emp_uid: str) -> dict:
@@ -242,6 +241,13 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
                     orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID']
                     )
             except RecordModifiedError:
+                if request.session.get('image'):
+                    encoded_image = request.session.get('image')
+                    byte_image = io.BytesIO(base64.b64decode(encoded_image))
+                    image_1 = base64.b64encode(byte_image.getvalue()).decode()
+                    context['image_1'] = image_1
+                else:
+                    context['image_0'] = ast.literal_eval(self.object.image)[0]
                 context['form'] = form.cleaned_data
                 context['orgID'] = self.kwargs['orgID']
                 context['tpID'] = self.kwargs['tpID']
@@ -275,7 +281,8 @@ class EmployeeConcurrencyUpdate(LoginRequiredMixin, UserPassesTestMixin, View):
             employee.tradepoint = TradePointService.get_trade_point_by_id(self.kwargs)
             employee.role = request.POST.get('role')
             employee.birthdate = request.POST.get('birthdate')
-            employee.image = request.POST.get('image')
+            if request.POST.get('image'):
+                employee.image = request.POST.get('image')
             employee.save()
             return redirect('employee_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'],
                             empUID=self.kwargs['empUID'])
