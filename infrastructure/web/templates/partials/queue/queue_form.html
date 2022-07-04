@@ -1,0 +1,33 @@
+<form method="POST">
+    {% csrf_token %}
+    <div class="row">
+        <div class="col">
+            <label for="contractor" class="form-label">Контрагент <span class="text-danger">*</span></label><br>
+                <input type="text" class="form-control border-secondary" name="contractor" value="{{ form.contractor.value|default:'' }}">
+                <div class="form-text text-danger">{% for err in form.errors.contractor %}{{ err }}{% endfor %}</div><br>
+        </div>
+        <div class="col">
+                <label for="own" class="form-label">Собственность <span class="text-danger">*</span></label><br>
+                <input type="text" class="form-control border-secondary" name="own" value="{{ form.own.value|default:'' }}">
+                <div class="form-text text-danger">{% for err in form.errors.own %}{{ err }}{% endfor %}</div><br>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <label for="status" class="form-label">Статус <span class="text-danger">*</span></label><br>
+            <select class="form-select" name="status">
+            {% for status in statuses %}
+                <option value="{{ status.1 }}">{{ status.1 }}</option>
+            {% endfor %}
+            </select>
+            <div class="form-text text-danger">{% for err in form.errors.status %}{{ err }}{% endfor %}</div>
+        </div><br>
+
+        <div class="col">
+                <label for="expiration" class="form-label">Дата назначения <span class="text-danger">*</span></label><br>
+                <input type="text" class="form-control border-secondary" name="expiration" value="{{ form.expiration.value|default:'' }}">
+                <div class="form-text text-danger">{% for err in form.errors.expiration %}{{ err }}{% endfor %}</div><br>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">{{ button_text }}</button>
+</form>

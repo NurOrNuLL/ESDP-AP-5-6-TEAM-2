@@ -46,6 +46,19 @@
         </li>
         <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
+                    data-bs-target="#queue-collapse" aria-expanded="false">
+                Очередь
+            </button>
+            <div class="collapse sidebar-ul" id="queue-collapse">
+                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a href="#" class="link-dark sidebar-link rounded">Список</a></li>
+                    <li><a href="{% url 'queue_create' orgID=1 tpID=tpID %}"
+                           class="link-dark sidebar-link rounded">Поставить в очередь</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
                     data-bs-target="#contragent-collapse" aria-expanded="false">
                 Контрагенты
             </button>
@@ -68,12 +81,12 @@
                 <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn"
                         data-bs-toggle="collapse"
                         data-bs-target="#report-collapse" aria-expanded="false">
-                    Отчеты
+                    Отчет
                 </button>
                 <div class="collapse sidebar-ul" id="report-collapse" style="">
                     <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                         <li><a href="{% url 'report_preview' orgID=1 tpID=tpID %}"
-                               class="link-dark sidebar-link rounded">Посмотреть отчет</a></li>
+                               class="link-dark sidebar-link rounded">Сформировать</a></li>
                     </ul>
                 </div>
             </li>

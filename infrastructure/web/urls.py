@@ -23,6 +23,7 @@ from .own.views import (
     OwnDeleteView, OwnCreate,
     OwnList, OwnFullList, OwnFilterApiView
 )
+from .queue.views import QueueCreate
 from .trade_point.views import (
     TradePointCreate, TradePointList,
     TradePointUpdate, TradePointUpdateConcurrecnyView
@@ -136,6 +137,10 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
+queue_urls = [
+    path('queue/create/', QueueCreate.as_view(), name='queue_create'),
+]
+
 report_urls = [
 	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
     path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
@@ -164,5 +169,6 @@ urlpatterns += employee_urls
 urlpatterns += order_urls
 urlpatterns += report_urls
 urlpatterns += payment_url
+urlpatterns += queue_urls
 
 websocket_urlpatterns += report_websocket_urls

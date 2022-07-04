@@ -6,7 +6,7 @@ from rest_framework import filters
 from models.contractor.models import Contractor
 from services.employee_services import EmployeeServices
 from services.own_services import OwnServices
-from .forms import ContractorForm
+from .forms import ContractorForm, ContractorUpdateForm
 from django.shortcuts import render, redirect
 from .serializers import ContractorSerializer
 from rest_framework import generics
@@ -151,7 +151,7 @@ class ContractorDetailOwnListApiView(generics.ListAPIView):
 
 class ContractorUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/update.html'
-    form_class = ContractorForm
+    form_class = ContractorUpdateForm
 
     def test_func(self):
         if self.request.user.is_staff:
