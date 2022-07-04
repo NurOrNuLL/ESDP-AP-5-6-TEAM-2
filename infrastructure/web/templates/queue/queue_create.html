@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+    <h1>Постановка в очередь</h1>
+    <hr>
+    <div class="row m-0" style="height: 410px;">
+        <div class="card border-secondary col me-2">
+            <div class="card-header bg-transparent">
+                <h3 class="my-2">Добавить в очередь</h3>
+            </div>
+            <div class="card-body d-flex align-items-center">
+                <form method="POST" enctype="multipart/form-data" class="w-100">
+                    {% csrf_token %}
+                    <div>
+                        <label for="contractor" class="form-label">Контрагент <span class="text-danger">*</span></label>
+                        <select class="form-control selectpicker" id="contractor" name="contractor" data-live-search="true" required>
+                            <option value="">Выберите контрагента</option>
+                            <optgroup label="Контрагенты">
+                                {% for contractor in contractors %}
+                                    <option value="{{ contractor.id }}" data-phone="{{ contractor.phone }}" data-address="{{ contractor.address|default:'' }}" data-subtext="{{ contractor.IIN_or_BIN }}">{{ contractor.name }}</option>
+                                {% endfor %}
+                            </optgroup>
+                        </select>
+                        <div class="form-text" id="contractor-links">
+                            <a href="{% url 'contractor_create' orgID=1 tpID=tpID %}?next=queue_create" class="link-primary">Создать контрагента</a>
+                        </div>
+                        <div class="form-text text-danger">
+                            {% for err in form.errors.contractor %}{{ err }}{% endfor %}</div>
+                    </div>
+                    <br>
+                    <div class="col">
+                        <label for="own" class="form-label">Собственность <span class="text-danger">*</span></label>
+                            <select name="own" class="form-select border-secondary" id="own" required>
+                                {% for own in owns %}
+                                    <option value="{{ own.id }}" data-number="{{ own.number }}" data-is-part="{% if own.is_part == False %}false{% else %}true{% endif %}" data-comment="{{ own.comment|default:'null' }}">{{ own.name }} {{ own.number }}</option>
+                                {% endfor %}
+                            </select>
+                        <div class="form-text" id="own-links"></div>
+                        <div cclass="form-text text-danger">
+                            {% for err in form.errors.own %}{{ err }}{% endfor %}</div>
+                    </div>
+                    <br>
+                    <div class="col">
+                        <label for="expiration" class="form-label">Дата назначения <span class="text-danger">*</span></label>
+                        <input type="datetime-local" id="expiration"
+                               name="expiration" class="col me-2 form-control border-secondary bg-transparent">
+                        <div class="form-text text-danger">{% for err in form.errors.expiration %}{{ err }}{% endfor %}</div>
+                    </div>
+                    <br>
+                    <button type="submit" class="btn btn-primary">Добавить</button>
+                </form>
+            </div>
+        </div>
+        <div class="card border-secondary col-5 ms-2">
+            <div class="card-header bg-transparent">
+                <strong>Выбранный контрагент</strong>
+            </div>
+            <div class="card-body" id="contractorInfo">
+                <div class="text-center">
+                    Контрагент не выбран!
+                </div>
+            </div>
+            <br>
+            <div class="card-header bg-transparent">
+                <strong>Выбранная собственность</strong>
+            </div>
+            <div class="card-body" id="ownInfo">
+                <div class="text-center">
+                    Собственность не выбрана!
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+{% block js_block %}
+
+    <script>var tpID = {{ tpID }}</script>
+    <script src="{% static 'js/queue/queue_create.js' %}"></script>
+
+{% endblock js_block %}

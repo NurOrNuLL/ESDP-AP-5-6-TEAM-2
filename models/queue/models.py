@@ -8,11 +8,12 @@ QUEUE_STATUSES = [
 
 
 class Queue(models.Model):
+    """Очередь"""
     contractor = models.ForeignKey(
         'contractor.Contractor',
         on_delete=models.PROTECT,
         related_name='contractor_queue',
-        verbose_name='Контагент',
+        verbose_name='Контрагент',
         null=False, blank=False
     )
     own = models.ForeignKey(
@@ -33,6 +34,10 @@ class Queue(models.Model):
     expiration = models.DateTimeField(
         verbose_name='Дата назначения',
         null=False, blank=False
+    )
+    trade_point = models.ForeignKey(
+        'trade_point.TradePoint', on_delete=models.PROTECT,
+        verbose_name='Филиал'
     )
 
     def __str__(self):
