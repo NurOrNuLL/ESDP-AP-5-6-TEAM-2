@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'celery_progress',
 ]
 
-ASGI_APPLICATION = 'core.asgi.application'
+ASGI_APPLICATION = 'core.routing.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -81,14 +81,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testdomen.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testdomen.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -239,4 +237,13 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('redis', 6379)],
+        },
+    },
 }
