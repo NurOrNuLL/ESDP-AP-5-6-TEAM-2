@@ -3,9 +3,16 @@ from channels.generic.websocket import WebsocketConsumer
 from datetime import datetime
 from celery.result import AsyncResult
 from .tasks import get_report
+from datetime import datetime
 
 
 class ReportConsumer(WebsocketConsumer):
+    @staticmethod
+    def dates_is_valid(from_date: datetime, to_date: datetime) -> bool:
+        if (to_date - from_date).days <= 366:
+            return True
+        return False
+
     def connect(self) -> None:
         self.accept()
 
@@ -15,7 +22,14 @@ class ReportConsumer(WebsocketConsumer):
         from_date = datetime.strptime(data['from_date'], '%Y-%m-%d')
         to_date = datetime.strptime(data['to_date'], '%Y-%m-%d')
 
-        task = get_report.delay(from_date, to_date, data['tpID'])
-        report = AsyncResult(task.id).get()
+        if self.dates_is_valid(from_date, to_date):
+            task = get_report.delay(from_date, to_date, int(data['report_type']), data['tpID'])
+            report = AsyncResult(task.id).get()
 
-        self.send(json.dumps(report))
+            self.send(json.dumps(report))
+        else:
+            error = {
+                'error': 'Выберите корректные даты. Максимальный промежуток год!'
+            }
+
+            self.send(json.dumps(error))
