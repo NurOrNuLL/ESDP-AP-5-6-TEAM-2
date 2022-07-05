@@ -217,10 +217,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-if ast.literal_eval(os.environ.get('DEBUG')) or os.environ.get('GITHUB_WORKFLOW'):
-    REDIS_HOST = '0.0.0.0'
-else:
+if not ast.literal_eval(os.environ.get('DEBUG')) or os.environ.get('GITHUB_WORKFLOW'):
     REDIS_HOST = 'redis'
+else:
+    REDIS_HOST = '0.0.0.0'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
