@@ -110,7 +110,8 @@ TEMPLATES = [
                 'infrastructure.web.trade_point.context_processor.trade_point_context',
                 'infrastructure.web.payment.context_processor.payment_methods',
                 'infrastructure.web.employee.context_processor.request_user_employee',
-                'infrastructure.web.employee.context_processor.trade_point_id'
+                'infrastructure.web.employee.context_processor.trade_point_id',
+                'infrastructure.web.context_processor.env_debug_context'
             ],
             'libraries': {
                 'custom_tags': 'infrastructure.web.template_tags.custom_tags'
@@ -243,7 +244,7 @@ CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('redis', 6379)],
+            "hosts": [(REDIS_HOST, 6379)],
         },
     },
 }

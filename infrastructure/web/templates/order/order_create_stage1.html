@@ -17,7 +17,6 @@
                     <div>
                         <label for="nomenclature" class="form-label">Номенклатура <span style="color: red;">*</span></label>
                         <select class="form-control selectpicker" id="nomenclature" name="nomenclature" required>
-                            <option value="">Выберите номенклатуру</option>
                             <optgroup label="Номенклатуры">
                                 {% for nomenclature in nomenclatures %}
                                     {% if nomenclature.id == session_nomenclature.id or nomenclature.id|slugify == form.nomenclature.value|slugify %}
@@ -33,7 +32,6 @@
                     <div>
                         <label for="contractor" class="form-label">Контрагент <span style="color: red;">*</span></label>
                         <select class="form-control selectpicker" id="contractor" name="contractor" data-live-search="true" required>
-                            <option value="">Выберите контрагента</option>
                             <optgroup label="Контрагенты">
                                 {% for contractor in contractors %}
                                     {% if contractor.id == session_contractor.id or contractor.id|slugify == form.contractor.value|slugify  %}
@@ -65,7 +63,7 @@
                             </select>
                         {% else %}
                             <select name="own" class="form-select border-secondary" disabled id="own" required>
-                                <option value="">-</option>
+                                <option value="">Выберите собственность</option>
                             </select>
                         {% endif %}
                         <div class="form-text" id="own-links"></div>
