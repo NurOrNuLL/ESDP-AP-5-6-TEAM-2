@@ -3,6 +3,7 @@ import json
 from django.template.context_processors import request
 from django.views import View
 from django.views.generic import TemplateView
+
 from models.nomenclature.models import Nomenclature
 
 from services.nomenclature_services import NomenclatureService
@@ -426,8 +427,10 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
     form_class = OrderUpdateForm
 
     def test_func(self):
+        self.object = OrderService.get_order_by_id(self.kwargs['ordID'])
         if self.request.user.is_staff:
-            return True
+            if self.object.status == 'В работе' or self.object.payment.payment_status == 'Не оплачено':
+                return True
         else:
             employee = EmployeeServices.get_employee_by_uuid(self.request.user.uuid)
             return employee.role == 'Управляющий' and employee.tradepoint_id == self.kwargs.get('tpID')
@@ -460,6 +463,7 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
+        print(11111111111111111111111)
 
         order = OrderService.get_order_by_id(self.kwargs['ordID'])
 
