@@ -35,6 +35,7 @@ from rest_framework.pagination import PageNumberPagination
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+import pytz
 
 
 class HomePageView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
@@ -63,7 +64,8 @@ class MyPagination(PageNumberPagination):
 class OrderFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request: HttpRequest, queryset: List[Order], view: View) -> List[Order]:
         try:
-            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+            from_date = datetime.strptime(request.GET.get('from_date'), '%Y-%m-%d')
+            to_date = datetime.strptime(request.GET.get('to_date'), '%Y-%m-%d')
         except ValueError:
             filtered_orders = []
 
@@ -94,9 +96,10 @@ class OrderFilterBackend(filters.BaseFilterBackend):
                         request.GET.get('payment_status') in order.payment.payment_status
                         and request.GET.get('status') in order.status
                         and request.GET.get('search').lower() in order.contractor.name.lower()
-                        and request_date.day == order.created_at.day
-                        and request_date.month == order.created_at.month
-                        and request_date.year == order.created_at.year
+                        and ((order.created_at >= pytz.UTC.localize(from_date)
+                        or order.created_at.day == from_date.day and order.created_at.month == from_date.month and order.created_at.year == from_date.year)
+                        and (order.created_at <= pytz.UTC.localize(to_date)
+                        or (order.created_at.day == to_date.day and order.created_at.month == to_date.month and order.created_at.year == to_date.year)))
                     ):
                         filtered_orders.append(order)
                 else:
@@ -104,10 +107,12 @@ class OrderFilterBackend(filters.BaseFilterBackend):
                         request.GET.get('payment_status') in order.payment.payment_status
                         and request.GET.get('status') in order.status
                         and (request.GET.get('search').lower() in order.contractor.name.lower()
-                             or request.GET.get('search').lower() in order.own.number.lower())
-                        and request_date.day == order.created_at.day
-                        and request_date.month == order.created_at.month
-                        and request_date.year == order.created_at.year
+                        or request.GET.get('search').lower() in order.own.number.lower())
+                        and ((order.created_at >= pytz.UTC.localize(from_date)
+                        or order.created_at.day == from_date.day
+                        and order.created_at.month == from_date.month and order.created_at.year == from_date.year)
+                        and (order.created_at <= pytz.UTC.localize(to_date)
+                        or (order.created_at.day == to_date.day and order.created_at.month == to_date.month and order.created_at.year == to_date.year)))
                     ):
                         filtered_orders.append(order)
 
@@ -367,8 +372,6 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         context['mileage'] = request.session['mileage']
         context['note'] = request.session['note']
         context['price_for_pay'], context['full_price'] = self.get_prices(request.session['jobs'])
-        print(request.session)
-        print(request.session['jobs'])
 
         return render(request, self.template_name, context)
 
