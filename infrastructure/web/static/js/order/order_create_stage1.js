@@ -1,6 +1,5 @@
 let contractor = document.getElementById('contractor');
 let own = document.getElementById('own');
-let contractorLinks = document.getElementById('contractor-links');
 let ownLinks = document.getElementById('own-links');
 let contractorInfo = document.getElementById('contractorInfo');
 let ownInfo = document.getElementById('ownInfo');
@@ -12,7 +11,6 @@ if (own.value != '' && contractor.value != '') {
         contractorDetailLink.remove();
     }
 
-    contractorLinks.innerHTML += `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
     ownLinks.innerHTML = `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}/own/create?next=order_create_stage1" class="link-primary">Создать собственность</a>`
 
 
@@ -113,8 +111,6 @@ if (contractor.value != '' && own.value === '') {
     if (contractorDetailLink != null) {
         contractorDetailLink.remove();
     }
-
-    contractorLinks.innerHTML += `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
 
     if (contractor.selectedOptions[0].dataset['address'] === '') {
         contractorInfo.innerHTML = `<div class="d-flex">
@@ -242,8 +238,6 @@ contractor.addEventListener('change', (e) => {
     if (contractorDetailLink != null) {
         contractorDetailLink.remove();
     }
-
-    contractorLinks.innerHTML += `<a href="${locationHost}/org/1/tp/${tpID}/contractor/${contractor.value}" class="link-primary" id="contractor-detail-link">Подробнее о контрагенте</a>`;
 
     if (contractor.selectedOptions[0].dataset['address'] === '') {
         contractorInfo.innerHTML = `<div class="d-flex">
