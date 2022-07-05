@@ -184,9 +184,3 @@ submit.addEventListener('click', (event) => {
     submit.dataset.dismiss = 'modal'
     window.location.replace(`${locationHost}/org/1/tp/${tpID}/`)
 })
-
-// Закрытие модального окна Оплаты при нажатии кнопки Закрыть
-let second_submit = document.querySelector('.close_modal_second')
-second_submit.addEventListener('click', (event) => {
-    window.location.replace(`${locationHost}/org/1/tp/${tpID}/`)
-})

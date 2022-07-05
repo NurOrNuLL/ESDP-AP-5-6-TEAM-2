@@ -7,9 +7,11 @@
     <h1>Детали заказ-наряда</h1>
     <hr>
     <div class="d-flex mb-4">
-        <a class="btn btn-secondary me-2" href="">К списку</a>
-        {% if request.user.is_staff or request_user_employee.role == 'Управляющий' and request_user_employee.tradepoint.id == tradepoint_id %}
+        <a class="btn btn-secondary me-2" href="{% url 'home' orgID=orgID tpID=tpID%}">К списку</a>
+        {% if request.user.is_staff or request_user_employee.role == 'Управляющий' and request_user_employee.tradepoint.id == tradepoint_id%}
+            {% if order.status == 'В работе' or order.payment.payment_staus == 'Не оплачено'%}
             <a class="btn btn-secondary" href="{% url 'order_update' orgID=orgID tpID=tpID ordID=order.id %}">Редактировать заказ-наряд</a>
+            {% endif %}
         {% endif %}
     </div>
     <div class="card mb-3">

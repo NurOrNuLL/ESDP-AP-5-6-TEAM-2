@@ -1,27 +1,28 @@
 <form method="POST">
     {% csrf_token %}
     <div class="row">
+        <input type="hidden" class="form-control border-secondary" id="contractor_type" name="contractor_type" value="{{ contractor_type }}">
         <div class="col">
             <label for="contractor_name" class="form-label">Наименование <span class="text-danger">*</span></label><br>
-                <input type="text" class="form-control border-secondary" id="contractor_name" name="name" value="{{ form.name.value|default:'' }}">
-                <div class="form-text text-danger">{% for err in form.errors.name %}{{ err }}{% endfor %}</div><br>
+            <input type="text" class="form-control border-secondary" id="contractor_name" name="name" value="{{ form.name.value|default:'' }}">
+            <div class="form-text text-danger">{% for err in form.errors.name %}{{ err }}{% endfor %}</div><br>
         </div>
         <div class="col">
-                <label for="contractor_IIN_or_BIN" class="form-label">ИИН/БИН <span class="text-danger">*</span></label><br>
-                <input type="number" class="form-control border-secondary" id="contractor_IIN_or_BIN" name="IIN_or_BIN" value="{{ form.IIN_or_BIN.value|default:'' }}">
-                <div class="form-text text-danger">{% for err in form.errors.IIN_or_BIN %}{{ err }}{% endfor %}</div><br>
+            <label for="contractor_IIN_or_BIN" class="form-label">ИИН/БИН <span class="text-danger">*</span></label><br>
+            <input type="number" class="form-control border-secondary" id="contractor_IIN_or_BIN" name="IIN_or_BIN" value="{{ form.IIN_or_BIN.value|default:'' }}">
+            <div class="form-text text-danger">{% for err in form.errors.IIN_or_BIN %}{{ err }}{% endfor %}</div><br>
         </div>
     </div>
     <div class="row">
         <div class="col">
-                <label for="contractor_phone" class="form-label">Контакты <span class="text-danger">*</span></label><br>
-                <input type="number" class="form-control border-secondary" id="contractor_phone" name="phone" value="{{ form.phone.value|default:'' }}">
-                <div class="form-text text-danger">{% for err in form.errors.phone %}{{ err }}{% endfor %}</div><br>
+            <label for="contractor_phone" class="form-label">Контакты <span class="text-danger">*</span></label><br>
+            <input type="number" class="form-control border-secondary" id="contractor_phone" name="phone" value="{{ form.phone.value|default:'' }}">
+            <div class="form-text text-danger">{% for err in form.errors.phone %}{{ err }}{% endfor %}</div><br>
         </div>
         <div class="col">
-                <label for="contractor_address" class="form-label">Адрес</label><br>
-                <input type="text" class="form-control border-secondary" id="contractor_address" name="address" value="{{ form.address.value|default:'' }}">
-                <div class="form-text text-danger">{% for err in form.errors.address %}{{ err }}{% endfor %}</div><br>
+            <label for="contractor_address" class="form-label">Адрес</label><br>
+            <input type="text" class="form-control border-secondary" id="contractor_address" name="address" value="{{ form.address.value|default:'' }}">
+            <div class="form-text text-danger">{% for err in form.errors.address %}{{ err }}{% endfor %}</div><br>
         </div>
     </div>
 
