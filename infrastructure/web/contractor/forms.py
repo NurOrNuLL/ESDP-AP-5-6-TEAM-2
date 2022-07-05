@@ -5,6 +5,7 @@ from models.contractor.models import Contractor
 class ContractorForm(forms.ModelForm):
     class Meta:
         model = Contractor
+        contractor_type = forms.CharField()
         exclude = ['organization']
 
 

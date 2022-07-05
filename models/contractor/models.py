@@ -38,7 +38,7 @@ class Contractor(models.Model):
         null=False, blank=False, max_length=12, unique=True,
         verbose_name='ИИН/БИН', validators=[RegexValidator(r'^\d{12,12}$'), validate_iin]
     )
-    IIC = IBANField(
+    IIC = models.CharField(
         max_length=100, null=True, blank=True,
         verbose_name='ИИК'
     )
@@ -46,8 +46,8 @@ class Contractor(models.Model):
         max_length=150, null=True, blank=True,
         verbose_name='Наименование банка'
     )
-    BIC = BICField(
-        max_length=100, null=True, blank=True,
+    BIC = models.CharField(
+        max_length=12, null=True, blank=True,
         verbose_name='БИК'
     )
     phone = models.CharField(
