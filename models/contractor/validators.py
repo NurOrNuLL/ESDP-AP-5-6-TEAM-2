@@ -14,7 +14,7 @@ class JSONSchemaValidator(BaseValidator):
             jsonschema.validate(value, schema)
         except jsonschema.exceptions.ValidationError:
             raise django.core.exceptions.ValidationError(
-                '%(value)s failed JSON schema check', params={'value': value}
+                '%(value)s не более 100 символов для Имени и не более 150 символов для Комментария для доверенного лица', params={'value': value}
             )
 
 
