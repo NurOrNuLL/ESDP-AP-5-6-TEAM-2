@@ -44,12 +44,14 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
         self.delete_order_data_from_session(request)
 
         context = self.get_context_data(**kwargs)
+        context['contractor_type'] = 'private'
         context['trust_person'] = dict()
 
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         form = self.form_class(data=request.POST)
+        print(request.POST)
         if form.is_valid():
             trust_person = dict(name=request.POST['trust_person_name'],
                                 comment=request.POST['trust_person_comment'])
@@ -67,7 +69,11 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
                             orgID=self.kwargs['orgID'],
                             contrID=contractor.pk, tpID=self.kwargs['tpID'])
         else:
+            form.contractor_type = request.POST['contractor_type']
+            print(form.contractor_type)
+
             context = self.get_context_data(**kwargs)
+            context['contractor_type'] = form.contractor_type
             context['form'] = form
             context['trust_person'] = dict(name=request.POST['trust_person_name'],
                                            comment=request.POST['trust_person_comment'])
