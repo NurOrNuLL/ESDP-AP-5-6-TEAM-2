@@ -61,7 +61,11 @@
                 <div class="row">
                     <div class="col-6">
                         <label for="note" class="form-label">Примечание</label>
-                        <textarea class="form-control" id="note" name="note" rows="3">{{ form.note.value|default:'' }}</textarea>
+                        <textarea class="form-control" id="note" name="note" maxlength="100" rows="3" autofocus>{{ form.note.value|default:'' }}</textarea>
+                        <div id="the-count">
+                            <span id="current">0</span>
+                            <span id="maximum">/ 100</span>
+                          </div>
                         <div class="form-text" style="color: red;">
                             {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
                     </div>
@@ -99,5 +103,6 @@
         var errors = "{{ form.errors|slugify }}"
     </script>
     <script src="{% static 'js/order/order_update.js' %}"></script>
+    <script src="{% static 'js/partial/textarea.js' %}"></script>
 
 {% endblock js_block %}
