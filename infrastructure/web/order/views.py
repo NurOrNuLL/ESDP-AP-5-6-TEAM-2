@@ -466,7 +466,6 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
-        print(11111111111111111111111)
 
         order = OrderService.get_order_by_id(self.kwargs['ordID'])
 
