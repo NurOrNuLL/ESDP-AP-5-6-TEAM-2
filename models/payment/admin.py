@@ -8,3 +8,4 @@ class PaymentAdmin(admin.ModelAdmin):
     """Оплата"""
     list_display = ('id', 'payment_status', 'method', 'details')
     list_display_links = ('id', 'payment_status', 'method', 'details')
+    readonly_fields = ('payment_status',)

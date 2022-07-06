@@ -1,13 +1,13 @@
 let beforeTableBlock = document.getElementById('beforeTable');
 
-function render(search, date, status, payment_status, page, limit) {
+function render(search, from_date, to_date, status, payment_status, page, limit) {
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/order/list/filter?search=${search}&date=${date}&status=${status}&payment_status=${payment_status}&page=${page}&limit=${limit}`,
+        url: `${locationHost}/org/1/tp/${tpID}/order/list/filter?search=${search}&from_date=${from_date}&to_date=${to_date}&status=${status}&payment_status=${payment_status}&page=${page}&limit=${limit}`,
         method: 'get',
         async: false,
         success: (data) => {
             body.innerHTML = '';
-            if (data.length != 0) {
+            if (data.results.length != 0) {
                 beforeTableBlock.innerHTML = '';
                 data.results.forEach(function (item) {
                     var today = new Date(item.created_at);
@@ -15,69 +15,114 @@ function render(search, date, status, payment_status, page, limit) {
                     var mm = String(today.getMonth() + 1).padStart(2, '0');
                     var yyyy = today.getFullYear();
                     var hh = String(today.getHours())
-                    var min = String(today.getMinutes())
+                    var min
+                    if (today.getMinutes() < 10) {
+                        min = '0' + String(today.getMinutes())
+                    } else {
+                        min = String(today.getMinutes())
+                    }
+
                     today = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
 
+                    var finish_day = new Date(item.finished_at);
+                    var dd = String(finish_day.getDate()).padStart(2, '0');
+                    var mm = String(finish_day.getMonth() + 1).padStart(2, '0');
+                    var yyyy = finish_day.getFullYear();
+                    var hh = String(finish_day.getHours())
+                    var min = String(finish_day.getMinutes())
+                    finish_day = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
+
                     if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
-                        body.innerHTML += `<tr data-id="${item.id}"><td>${item.id}</td><td>${today}</td>
+                        body.innerHTML += `<tr><td><a style="text-decoration: none; color: #696d74;" class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/"></a></td>
                         <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
-                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        <td><a  class="modalbtn" type="button" data-bs-toggle="modal"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal"><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                        <td><a  class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">Оплатить</a></td></tr>`
                     } else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
-                        body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
+                        body.innerHTML += `<tr><td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/"></a></td>
                         <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
-                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        <td><a  class="modalbtn" type="button"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
+                        <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                        <td><a  class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">Оплатить</a></td>
+                        
+                        </tr>`
                     } else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
-                        body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
-                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        body.innerHTML += `<tr><td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${finish_day}</a></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
+                        <td><a  class="modalbtn" type="button" data-bs-toggle="modal"  
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
+                        <span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                        <td><a  class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">Оплатить</a></td>
+                        </tr>`
                     } else {
-                        body.innerHTML += `<tr><td>${item.id}</td><td>${today}</td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></td>
-                        <td>${item.contractor.name}</td><td>${item.own.number}</td>
-                        <td><button type="button" class="btn btn-primary modalbtn" 
-                        data-idorderclass=${encodeURIComponent(item.id)} 
-                        data-dayorder=${encodeURIComponent(today)} 
-                        data-statusorder=${encodeURIComponent(item.status)} 
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}  
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}  
-                        data-ownorder=${encodeURIComponent(item.own.number)} 
-                        data-bs-toggle="modal"  data-bs-target="#exampleModal">Оплатить</button></td>
-                        <td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/${tpID}/order/${item.id}/">Детали</a></td></tr>`
-
+                        body.innerHTML += `<tr><td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${finish_day}</a></td>
+                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
+                        <td><a  class="modalbtn" type="button"  
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
+                        <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                        <td><a  class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
+                        data-idorderclass=${encodeURIComponent(item.id)}
+                        data-dayorder=${encodeURIComponent(today)}
+                        data-statusorder=${encodeURIComponent(item.status)}
+                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
+                        data-contractororder=${encodeURIComponent(item.contractor.name)}
+                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">Оплатить</a></td>
+                        </tr>`
                     }
                 })
 
@@ -95,6 +140,7 @@ function render(search, date, status, payment_status, page, limit) {
                     back.classList.remove('disabled')
                 }
             } else {
+                console.log(data);
                 beforeTableBlock.innerHTML = '';
                 beforeTableBlock.innerHTML += '<h4 class="text-center">Ничего не найдено!</h4>';
             }
@@ -117,30 +163,34 @@ $(function () {
             var idorderclass = decodeURIComponent($(this).attr('data-idorderclass'));
             var dayorder = decodeURIComponent($(this).attr('data-dayorder'));
             var statusorder = decodeURIComponent($(this).attr('data-statusorder'));
+            if (statusorder == 'Завершен') {
+                $(".statusorder").html(`<p><strong>Статус</strong>: <span class="badge rounded-pill text-bg-success">${statusorder}</span>`);
+            } else if (statusorder == 'В работе') {
+                $(".statusorder").html(`<p><strong>Статус</strong>: <span class="badge rounded-pill text-bg-primary">${statusorder}</span>`);
+            }
             var paymentstatusorder = decodeURIComponent($(this).attr('data-paymentstatusorder'));
             if (paymentstatusorder == 'Оплачено') {
+                $(".paymentstatusorder").html(`<p><strong>Статус оплаты</strong>: <span class="badge rounded-pill text-bg-success paystatus" data-paystatus="${paymentstatusorder}"> ${paymentstatusorder}</span></p>`);
                 $('.showForm').html(`<div class="alert alert-danger" role="alert">
                 Внимание заказ ОПЛАЧЕН, убедитесь что действительно хотите внести изменения!!!
                 </div>`)
-            } else if (paymentstatusorder == 'Не оплачено') (
+            } else if (paymentstatusorder == 'Не оплачено') {
+                $(".paymentstatusorder").html(`<p><strong>Статус оплаты</strong>: <span class="badge rounded-pill text-bg-danger paystatus" data-paystatus="${paymentstatusorder}"> ${paymentstatusorder}</span> </p>`);
                 $('.showForm').html(``)
-            )
+            }
             var contractororder = decodeURIComponent($(this).attr('data-contractororder'));
             var ownorder = decodeURIComponent($(this).attr('data-ownorder'));
             $(".idorderclass").html(`<p><strong>ID</strong>: ${idorderclass} </p>`);
             $(".dayorder").html(`<p><strong>Дата</strong>: ${dayorder}</p>`);
-            $(".statusorder").html(`<p><strong>Статус</strong>: <span class="badge rounded-pill text-bg-primary">${statusorder}</span>`);
-            $(".paymentstatusorder").html(`<p><strong>Статус оплаты</strong>: <span class="badge rounded-pill text-bg-danger"> ${paymentstatusorder}</span> </p>`);
             $(".contractororder").html(`<p><strong>Заказ-наряд</strong>: ${contractororder}</p>`);
             $(".ownorder").html(`<p><strong>Контрактор</strong>:  ${ownorder}</p>`);
             let senId = document.getElementsByClassName('chosenID')
             $('.sendId').html(`<input type="text" value="${idorderclass}" id="chosenID" class="chosenID" name="order_id" hidden >`)
-            idClicked = parseInt(e.target.dataset.idorderclass)
+            idClicked = parseInt(idorderclass)
             senId.value = idClicked
             let formAction = document.getElementById('paymentForm')
             formAction.action = `${tpID}/order/${idClicked}/payment/`
             document.payment.action
-
         })
 
 
@@ -150,7 +200,16 @@ $(function () {
             e.stopPropagation();
             var data = $(this).serialize();
 
-            $.post(`http://127.0.0.1:8000/org/1/tp/${tpID}/order/${idClicked}/payment/`, data);
+            $.ajax({
+                url: `${locationHost}/org/1/tp/${tpID}/order/${idClicked}/payment/`,
+                method: 'post',
+                data: data,
+                success: (response) => {
+                },
+                error: (response) => {
+                    console.log(response)
+                }
+            })
 
         })
     })
@@ -158,7 +217,8 @@ $(function () {
 });
 
 
-let orderDate = document.getElementById('order_date')
+let fromDate = document.getElementById('from_date')
+let toDate = document.getElementById('to_date')
 let orderStatus = document.getElementById('order_status')
 let orderPaymentStatus = document.getElementById('payment_status')
 let search = document.getElementById('search')
@@ -168,35 +228,44 @@ let limit = document.getElementById('limit');
 let back = document.getElementById('back');
 let next = document.getElementById('next');
 
-render('', '', '', '', 1, 999999)
+render('', '', '', '', '', 1, 999999)
 
 limit.addEventListener('input', (e) => {
     if (limit.value === '' || limit.value === 0) {
-        render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, 999999)
+        render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, 999999)
     }
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
 })
 
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
 })
 
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
 })
 
 search.addEventListener('input', (e) => {
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
 })
-orderDate.addEventListener('change', (e) => {
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+fromDate.addEventListener('change', (e) => {
+    if (fromDate.value != '' && toDate.value != '') {
+        render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    }
 })
+
+toDate.addEventListener('change', (e) => {
+    if (fromDate.value != '' && toDate.value != '') {
+        render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    }
+})
+
 orderStatus.addEventListener('change', (e) => {
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
 })
 
 orderPaymentStatus.addEventListener('change', (e) => {
-    render(search.value, orderDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
+    render(search.value, fromDate.value, toDate.value, orderStatus.value, orderPaymentStatus.value, page.value, limit.value)
 })

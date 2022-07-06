@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from localflavor.generic.models import BICField, IBANField
-from .validators import JSONSchemaValidator, validate_iin, upper_word
+from .validators import JSONSchemaValidator, validate_iin
 from concurrency.fields import AutoIncVersionField
 
 
@@ -28,7 +28,7 @@ class Contractor(models.Model):
     version = AutoIncVersionField()
     name = models.CharField(
         max_length=150, null=False, blank=False,
-        unique=True, verbose_name='Наименование', validators=[upper_word]
+        unique=True, verbose_name='Наименование'
     )
     address = models.CharField(
         max_length=250, null=True, blank=True,
@@ -38,7 +38,7 @@ class Contractor(models.Model):
         null=False, blank=False, max_length=12, unique=True,
         verbose_name='ИИН/БИН', validators=[RegexValidator(r'^\d{12,12}$'), validate_iin]
     )
-    IIC = IBANField(
+    IIC = models.CharField(
         max_length=100, null=True, blank=True,
         verbose_name='ИИК'
     )
@@ -46,8 +46,8 @@ class Contractor(models.Model):
         max_length=150, null=True, blank=True,
         verbose_name='Наименование банка'
     )
-    BIC = BICField(
-        max_length=100, null=True, blank=True,
+    BIC = models.CharField(
+        max_length=12, null=True, blank=True,
         verbose_name='БИК'
     )
     phone = models.CharField(

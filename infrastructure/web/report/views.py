@@ -1,15 +1,17 @@
+import json
 from typing import List
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import TemplateView
-from .forms import ReportDateForm
+from services.report_services import ReportService
+from .forms import ReportDateForm, ReportDownloadForm
 from django.shortcuts import render
 import datetime
 import calendar
-from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from services.employee_services import EmployeeServices
 
 
-class ReportPreviewView(UserPassesTestMixin, TemplateView):
+class ReportPreviewView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'report/report.html'
     form_class = ReportDateForm
 
@@ -65,3 +67,36 @@ class ReportPreviewView(UserPassesTestMixin, TemplateView):
 
             return render(request, self.template_name, context)
 
+
+class ReportDownloadView(TemplateView):
+    """При удачном выполнении задачи выдает загруженный файл отчёта"""
+    template_name = 'report/report.html'
+    reports_file = ''
+    form_class = ReportDownloadForm
+
+    def get_context_data(self, **kwargs: dict) -> dict:
+        context = super().get_context_data(**kwargs)
+        context['orgID'] = self.kwargs['orgID']
+        context['tpID'] = self.kwargs['tpID']
+        return context
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        form = self.form_class(data=request.POST)
+        self.get_context_data(**self.kwargs)
+        if form.is_valid():
+            extension = request.POST['format']
+            if request.POST['data']:
+                main_data = json.loads(request.POST['data'])
+                self.reports_file = ReportService.download_a_exel_file_to_user(
+                    file_data=main_data,
+                    file_extension=extension
+                )
+                return self.reports_file
+            else:
+                context = self.get_context_data(**kwargs)
+                context['form'] = form
+                return render(request, template_name=self.template_name, context=context)
+        else:
+            context = self.get_context_data(**kwargs)
+            context['form'] = form
+            return render(request, template_name=self.template_name, context=context)

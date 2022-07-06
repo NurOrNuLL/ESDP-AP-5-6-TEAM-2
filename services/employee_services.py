@@ -7,15 +7,15 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from models.trade_point.models import TradePoint
 from django.http import HttpRequest
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 
 
 class EmployeeServices:
     @staticmethod
     def create_employee_without_image(data: dict) -> Employee:
         return Employee.objects.create(
-            name=data['name'],
-            surname=data['surname'],
+            name=data['name'].capitalize(),
+            surname=data['surname'].capitalize(),
             role=data['role'],
             IIN=data['IIN'],
             address=data['address'],
@@ -28,8 +28,8 @@ class EmployeeServices:
     def create_employee_with_uuid(uuid: str, data: dict) -> Employee:
         return Employee.objects.create(
             uuid=uuid,  # noqa E126
-            name=data['name'],
-            surname=data['surname'],
+            name=data['name'].capitalize(),
+            surname=data['surname'].capitalize(),
             role=data['role'],
             IIN=data['IIN'],
             address=data['address'],
@@ -54,21 +54,6 @@ class EmployeeServices:
     def get_tradepoint() -> List['TradePoint']:
         return TradePoint.objects.all()
 
-
-    @staticmethod
-    def get_attached_tradepoint_id(request: HttpRequest, uuid: str) -> int:  # noqa C901
-        try:
-            employee = Employee.objects.get(uuid=uuid)  # noqa F841
-        except ObjectDoesNotExist:
-            tradepointID = request.COOKIES.get('tradepointID')
-
-            if tradepointID:
-                return int(tradepointID)
-            else:
-                return TradePoint.objects.first().id
-        else:
-            return Employee.objects.get(uuid=uuid).tradepoint.id
-
     @staticmethod
     def get_employees() -> List['Employee']:
         return Employee.objects.filter()
@@ -88,11 +73,11 @@ class EmployeeServices:
     @staticmethod
     def update_employee_without_image(emp_uid: str, cleaned_data: dict) -> Employee:
         employee = Employee.objects.get(uuid=emp_uid)
-        employee.name = cleaned_data['name']
-        employee.surname = cleaned_data['surname']
+        employee.name = cleaned_data['name'].capitalize()
+        employee.surname = cleaned_data['surname'].capitalize()
         employee.role = cleaned_data['role']
         employee.IIN = cleaned_data['IIN']
         employee.address = cleaned_data['address']
         employee.phone = cleaned_data['phone']
-        employee.tradepoint = TradePointServices.get_trade_point_from_form(cleaned_data)
+        employee.tradepoint = TradePointService.get_trade_point_from_form(cleaned_data)
         return employee

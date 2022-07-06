@@ -23,6 +23,7 @@ from .own.views import (
     OwnDeleteView, OwnCreate,
     OwnList, OwnFullList, OwnFilterApiView, OwnUpdateApiView, OwnConcurrencyUpdateApiView
 )
+from .queue.views import QueueCreate
 from .trade_point.views import (
     TradePointCreate, TradePointList,
     TradePointUpdate, TradePointUpdateConcurrecnyView
@@ -30,7 +31,7 @@ from .trade_point.views import (
 from .contractor.views import (
     ContractorCreate, ContractorList, ContractorDetail,
     ContractorUpdate, ContractorFilterApiView,
-    ContractorUpdateConcurrecnyView
+    ContractorUpdateConcurrecnyView, ContractorDetailOwnListApiView
 )
 from .employee.views import (
     EmployeeCreate,
@@ -39,7 +40,7 @@ from .employee.views import (
     EmployeeConcurrencyUpdate, EmployeeImageUpdateView
 )
 from infrastructure.accounts.views import RegisterView
-from infrastructure.web.report.views import ReportPreviewView
+from infrastructure.web.report.views import ReportPreviewView, ReportDownloadView
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
 
@@ -92,7 +93,10 @@ trade_point_urls = [
 contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
-    path('contractor/<int:contrID>/',ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/',
+	 ContractorDetail.as_view(), name="contractor_detail"),
+    path('contractor/<int:contrID>/own/list/filter/',
+	 ContractorDetailOwnListApiView.as_view()),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
     path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
@@ -135,12 +139,17 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
+queue_urls = [
+    path('queue/create/', QueueCreate.as_view(), name='queue_create'),
+]
+
 report_urls = [
 	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+    path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
 ]
 
 report_websocket_urls = [
-    path('report/create', ReportConsumer.as_asgi())
+    path('wss/report/create', ReportConsumer.as_asgi())
 ]
 
 payment_url = [
@@ -162,5 +171,6 @@ urlpatterns += employee_urls
 urlpatterns += order_urls
 urlpatterns += report_urls
 urlpatterns += payment_url
+urlpatterns += queue_urls
 
 websocket_urlpatterns += report_websocket_urls

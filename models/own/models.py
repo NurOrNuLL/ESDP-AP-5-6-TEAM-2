@@ -1,7 +1,5 @@
 from concurrency.fields import AutoIncVersionField
 from django.db import models
-from tomlkit import value
-
 from models.own.validators import OwnValidator
 
 
@@ -25,6 +23,8 @@ class Own(models.Model):
         verbose_name='Комментарий'
     )
     is_part = models.BooleanField(default=False, verbose_name="Зап.часть")
+
+    is_deleted = models.BooleanField(default=False, verbose_name='Удалена')
 
     def __str__(self: object) -> str:
         return f'{self.name}'

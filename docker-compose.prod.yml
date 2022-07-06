@@ -7,9 +7,9 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 300 gservicegroup celery
+    command: --interval 300 gservicegroup asgiserver celery
 
-  web:
+  wsgiserver:
     image: esdp2/gservicegroup:latest
     container_name: gservicegroup
     restart: always
@@ -22,6 +22,23 @@ services:
       - ./.env_prod
     depends_on:
       - postgres
+      - redis
+
+  asgiserver:
+    image: esdp2/gservicegroup:latest
+    container_name: asgiserver
+    restart: always
+    command: daphne core.asgi:application -b 0.0.0.0 -p 8000
+    env_file:
+      - ./.env_prod
+    volumes:
+      - ./app/:/usr/src/app/
+    links:
+      - postgres
+      - redis
+    expose:
+      - 8000
+    depends_on:
       - redis
 
   postgres:
@@ -54,7 +71,8 @@ services:
       - redis
     depends_on:
       - redis
-      - web
+      - wsgiserver
+      - asgiserver
 
   nginx:
     build: ./nginx
@@ -69,7 +87,8 @@ services:
       - "80:80"
       - "443:443"
     depends_on:
-      - web
+      - wsgiserver
+      - asgiserver
       - celery
 
   certbot:

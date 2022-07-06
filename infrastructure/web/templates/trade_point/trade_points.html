@@ -3,23 +3,26 @@
 {% block content %}
     <h1 class="mb-4">Список торговых точек</h1>
     <hr>
-    <table class="table">
-      <thead>
+    <table class="table table-hover">
+        <thead>
         <tr>
-          <th class="col-3">#</th>
-          <th class="col-3">Наименование</th>
-          <th class="col-3">Адрес</th>
+            <th class="col-3">#</th>
+            <th class="col-3">Наименование</th>
+            <th class="col-3">Адрес</th>
         </tr>
-      </thead>
-      <tbody>
-      {% for trade_point in trade_points %}
-        <tr>
-          <th scope="row">{{ trade_point.id }}</th>
-          <td>{{ trade_point.name }}</td>
-          <td>{{ trade_point.address|default:'-' }}</td>
-          <td><a class="btn btn-secondary" href="{% url 'trade_point_update' orgID tpID trade_point.pk %}">Редактировать</a></td>
-        </tr>
-      {% endfor %}
-      </tbody>
+        </thead>
+        <tbody>
+        {% for trade_point in trade_points %}
+            <tr>
+                <th scope="row">{{ trade_point.id }}</th>
+                <td>{{ trade_point.name }}</td>
+                <td>{{ trade_point.address|default:'-' }}</td>
+                {% if request.user.is_staff %}
+                    <td><a class="btn btn-secondary" href="{% url 'trade_point_update' orgID tpID trade_point.pk %}">Редактировать</a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
     </table>
 {% endblock content %}

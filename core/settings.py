@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import ast
 import os
 from pathlib import Path
 
@@ -56,7 +57,7 @@ INSTALLED_APPS = [
     'celery_progress',
 ]
 
-ASGI_APPLICATION = 'core.asgi.application'
+ASGI_APPLICATION = 'core.routing.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
@@ -81,14 +82,12 @@ CORS_ALLOWED_ORIGINS = [
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testdomen.ddns.net',
 ]
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8000',
     'http://0.0.0.0:8000',
     'http://195.201.135.12',
     'https://gservicegroup.top',
-    'https://testdomen.ddns.net',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -111,6 +110,9 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'infrastructure.web.trade_point.context_processor.trade_point_context',
                 'infrastructure.web.payment.context_processor.payment_methods',
+                'infrastructure.web.employee.context_processor.request_user_employee',
+                'infrastructure.web.employee.context_processor.trade_point_id',
+                'infrastructure.web.context_processor.env_debug_context'
             ],
             'libraries': {
                 'custom_tags': 'infrastructure.web.template_tags.custom_tags'
@@ -135,17 +137,6 @@ DATABASES = {
     }
 }
 
-if os.environ.get('GITHUB_WORKFLOW'):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'github_actions',
-            'USER': 'postgres',
-            'PASSWORD': 'postgres',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-        }
-    }
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -215,7 +206,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_HOST = 'redis'
+REDIS_HOST = os.environ.get('REDIS_HOST')
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
@@ -237,4 +228,13 @@ CACHES = {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [(REDIS_HOST, 6379)],
+        },
+    },
 }

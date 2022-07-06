@@ -7,11 +7,11 @@
     <h1 class="mb-4">Редактировать данные</h1>
     <hr>
     <div class="d-flex mb-4">
-        <a class="btn btn-secondary me-2" href="{% url 'employee_detail' orgID tpID employee.uuid %}">К списку</a>
+        <a class="btn btn-secondary me-2" href="{% url 'employee_detail' orgID tpID employee.uuid %}">К деталям</a>
     </div>
     <div class="card border-secondary">
         <div class="card-body">
-            {% include 'partials/employee/employee_form.html' with button_text="Редактировать" tpID=tpID %}
+            {% include 'partials/employee/employee_form.html' with button_text="Редактировать" tpID=tpID image_url=image %}
         </div>
     </div>
     <script>

@@ -1,25 +1,31 @@
 import ast
+from typing import List
+
+import jsonschema
 from django.views.generic import TemplateView, View
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from models.contractor.models import Contractor
+from models.contractor.models import Contractor, MY_JSON_FIELD_SCHEMA
 from services.employee_services import EmployeeServices
-from .forms import ContractorForm
+from services.own_services import OwnServices
+from .forms import ContractorForm, ContractorUpdateForm
 from django.shortcuts import render, redirect
 from .serializers import ContractorSerializer
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from services.contractor_services import ContractorService
 from services.organization_services import OrganizationService
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from ..own.serializer import OwnSerializer
 
 
-class ContractorCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/contractor_create.html'
     form_class = ContractorForm
 
@@ -40,15 +46,22 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
         self.delete_order_data_from_session(request)
 
         context = self.get_context_data(**kwargs)
+        context['contractor_type'] = 'private'
         context['trust_person'] = dict()
 
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         form = self.form_class(data=request.POST)
+        trust_person = dict(name=request.POST['trust_person_name'],
+                            comment=request.POST['trust_person_comment'])
+        try:
+            jsonschema.validate(trust_person, MY_JSON_FIELD_SCHEMA)
+        except jsonschema.exceptions.ValidationError:
+            form.errors['trust_person'] = \
+                'Не более 100 символов для Имени и не более 150 символов для Комментария для доверенного лица'
+
         if form.is_valid():
-            trust_person = dict(name=request.POST['trust_person_name'],
-                                comment=request.POST['trust_person_comment'])
             form.cleaned_data['trust_person'] = trust_person
             contractor = ContractorService.create_contractor(form.cleaned_data)
 
@@ -64,9 +77,10 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
                             contrID=contractor.pk, tpID=self.kwargs['tpID'])
         else:
             context = self.get_context_data(**kwargs)
+            form.contractor_type = request.POST['contractor_type']
+            context['contractor_type'] = form.contractor_type
             context['form'] = form
-            context['trust_person'] = dict(name=request.POST['trust_person_name'],
-                                           comment=request.POST['trust_person_comment'])
+            context['trust_person'] = trust_person
             return render(request, template_name=self.template_name, context=context)
 
 
@@ -76,8 +90,8 @@ class ContractorList(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Template
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['contractors'] = ContractorService.get_contractors(kwargs)
-        context['tpID'] = self.kwargs['tpID']
         context['organization'] = OrganizationService.get_organization_by_id(kwargs)
+        context['tpID'] = self.kwargs['tpID']
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
@@ -90,10 +104,24 @@ class MyPagination(PageNumberPagination):
     page_size = 100
 
 
+class ContractorFilterBackend(filters.BaseFilterBackend):
+    def filter_queryset(self, request: HttpRequest, queryset: List[Contractor], view: View) -> List[Contractor]:
+        filtered_contractors = []
+        for contractor in queryset:
+            if (
+                request.GET['search'].lower() in contractor.name.lower()
+                or request.GET['search'].lower() in str(contractor.IIN_or_BIN)
+                or request.GET['search'].lower() in str(contractor.phone)
+            ):
+                filtered_contractors.append(contractor)
+
+        return filtered_contractors
+
+
 class ContractorFilterApiView(generics.ListAPIView):
     serializer_class = ContractorSerializer
-    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
-    search_fields = ['name', 'IIN_or_BIN', 'phone']
+    filter_backends = [filters.OrderingFilter, ContractorFilterBackend]
+    search_fields = ['IIN_or_BIN', 'phone']
     ordering_fields = ['name']
     pagination_class = MyPagination
     queryset = Contractor.objects.all()
@@ -105,7 +133,7 @@ class ContractorDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Templa
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['organization'] = OrganizationService.get_organization_by_id(self.kwargs)
-        context['trade_point'] = TradePointServices.get_trade_point_by_id(self.kwargs)
+        context['trade_point'] = TradePointService.get_trade_point_by_id(self.kwargs)
         context['contractor'] = ContractorService.get_contractor_by_id(
             self.kwargs['contrID']
         )
@@ -117,9 +145,23 @@ class ContractorDetail(ResetOrderCreateFormDataMixin, LoginRequiredMixin, Templa
         return super().get(request, *args, **kwargs)
 
 
-class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, TemplateView):
+class ContractorDetailOwnListApiView(generics.ListAPIView):
+    serializer_class = OwnSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['is_part']
+    pagination_class = MyPagination
+
+    def get_object(self, **kwargs):
+        contractor = ContractorService.get_contractor_by_id(self.kwargs['contrID'])
+        return contractor
+
+    def get_queryset(self):
+        return OwnServices.get_own_by_contr_id((self.get_object()).id)
+
+
+class ContractorUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     template_name = 'contractor/update.html'
-    form_class = ContractorForm
+    form_class = ContractorUpdateForm
 
     def test_func(self):
         if self.request.user.is_staff:
@@ -142,7 +184,6 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
             'version': contractor.version,
             'name': contractor.name,
             'address': contractor.address,
-            'IIN_or_BIN': contractor.IIN_or_BIN,
             'IIC': contractor.IIC,
             'bank_name': contractor.bank_name,
             'BIC': contractor.BIC,
@@ -158,9 +199,7 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
         context = self.get_context_data()
         context['form'] = form
         context['trust_person'] = contractor.trust_person if contractor.trust_person else dict()
-        context['tpID'] = EmployeeServices.get_attached_tradepoint_id(
-            self.request, self.request.user.uuid
-        )
+        context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict
@@ -170,6 +209,11 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
         form = self.form_class(data=request.POST, instance=contractor)
         trust_person = dict(name=request.POST['trust_person_name'],
                             comment=request.POST['trust_person_comment'])
+        try:
+            jsonschema.validate(trust_person, MY_JSON_FIELD_SCHEMA)
+        except jsonschema.exceptions.ValidationError:
+            form.errors['trust_person'] = \
+                'Не более 100 символов для Имени и не более 150 символов для Комментария для доверенного лица'
         if form.is_valid():
             form.cleaned_data['trust_person'] = trust_person
             try:
@@ -182,12 +226,12 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, UserPassesTestMixin, Templ
         else:
             context['form'] = form
             context['trust_person'] = trust_person
-            context['tpID'] = EmployeeServices.get_attached_tradepoint_id(self.request, self.request.user.uuid)
+            context['tpID'] = TradePointService.get_tradepoint_id_from_cookie(self.request)
 
             return render(request, template_name=self.template_name, context=context)
 
 
-class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, UserPassesTestMixin, View):
+class ContractorUpdateConcurrecnyView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPassesTestMixin, View):
 
     def test_func(self):
         if self.request.user.is_staff:

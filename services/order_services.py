@@ -1,7 +1,7 @@
 import datetime
 from models.order.models import Order
 from typing import Any, Dict, List
-from services.trade_point_services import TradePointServices
+from services.trade_point_services import TradePointService
 import pytz
 
 
@@ -11,7 +11,7 @@ utc = pytz.UTC
 class OrderService:
     @staticmethod
     def get_finished_orders_in_period(from_date: datetime.date, to_date: datetime.date, tpID: int) -> List[Order]:
-        trade_point = TradePointServices.get_trade_point_by_clean_id(tpID)
+        trade_point = TradePointService.get_trade_point_by_clean_id(tpID)
         all_orders = Order.objects.filter(trade_point=trade_point, status='Завершен')
 
         orders = [order for order in all_orders \
@@ -52,3 +52,5 @@ class OrderService:
     @staticmethod
     def get_order_by_id(ordID: int) -> Order:
         return Order.objects.get(id=ordID)
+
+

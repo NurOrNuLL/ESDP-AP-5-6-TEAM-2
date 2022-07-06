@@ -17,10 +17,9 @@
                     <div>
                         <label for="nomenclature" class="form-label">Номенклатура <span style="color: red;">*</span></label>
                         <select class="form-control selectpicker" id="nomenclature" name="nomenclature" required>
-                            <option value="">Выберите номенклатуру</option>
                             <optgroup label="Номенклатуры">
                                 {% for nomenclature in nomenclatures %}
-                                    {% if nomenclature.id == session_nomenclature.id %}
+                                    {% if nomenclature.id == session_nomenclature.id or nomenclature.id|slugify == form.nomenclature.value|slugify %}
                                         <option value="{{ nomenclature.id }}" selected>{{ nomenclature.name }}</option>
                                     {% else %}
                                         <option value="{{ nomenclature.id }}">{{ nomenclature.name }}</option>
@@ -33,10 +32,9 @@
                     <div>
                         <label for="contractor" class="form-label">Контрагент <span style="color: red;">*</span></label>
                         <select class="form-control selectpicker" id="contractor" name="contractor" data-live-search="true" required>
-                            <option value="">Выберите контрагента</option>
                             <optgroup label="Контрагенты">
                                 {% for contractor in contractors %}
-                                    {% if contractor.id == session_contractor.id %}
+                                    {% if contractor.id == session_contractor.id or contractor.id|slugify == form.contractor.value|slugify  %}
                                         <option value="{{ contractor.id }}" data-phone="{{ contractor.phone }}" data-address="{{ contractor.address }}" data-subtext="{{ contractor.IIN_or_BIN }}" selected>{{ contractor.name }}</option>
                                     {% else %}
                                         <option value="{{ contractor.id }}" data-phone="{{ contractor.phone }}" data-address="{{ contractor.address|default:'' }}" data-subtext="{{ contractor.IIN_or_BIN }}">{{ contractor.name }}</option>
@@ -56,7 +54,7 @@
                         {% if session_own %}
                             <select name="own" class="form-select border-secondary" id="own" required>
                                 {% for own in owns %}
-                                    {% if own.id == session_own.id %}
+                                    {% if own.id == session_own.id or own.id|slugify == form.own.value|slugify %}
                                         <option value="{{ own.id }}" data-number="{{ own.number }}" data-is-part="{% if own.is_part == False %}false{% else %}true{% endif %}" data-comment="{{ own.comment|default:'null' }}" selected>{{ own.name }}</option>
                                     {% else %}
                                         <option value="{{ own.id }}" data-number="{{ own.number }}" data-is-part="{% if own.is_part == False %}false{% else %}true{% endif %}" data-comment="{{ own.comment|default:'null' }}">{{ own.name }}</option>
@@ -65,12 +63,12 @@
                             </select>
                         {% else %}
                             <select name="own" class="form-select border-secondary" disabled id="own" required>
-                                <option value="">-</option>
+                                <option value="">Выберите собственность</option>
                             </select>
                         {% endif %}
                         <div class="form-text" id="own-links"></div>
                         <div class="form-text" style="color: red;">
-                            {% for err in register_form.errors.own %}{{ err }}{% endfor %}</div>
+                            {% for err in form.errors.own %}{{ err }}{% endfor %}</div>
                     </div>
                     <br>
                     <button disabled class="btn btn-secondary">Назад</button>

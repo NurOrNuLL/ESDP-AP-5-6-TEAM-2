@@ -48,7 +48,7 @@
                                     <td class="text-danger">{{ job|get_item:'Марка услуги' }}</td>
                                     <td class="text-danger">{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
                                     <td class="text-danger">{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                                    <th class="text-danger">{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                                    <th class="text-danger">{{ job|get_item:'Цена услуги' }}</th>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -73,7 +73,7 @@
                                     <td>{{ job|get_item:'Марка услуги' }}</td>
                                     <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
                                     <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                                    <th>{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                                    <th>{{ job|get_item:'Цена услуги' }}</th>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -141,7 +141,7 @@
                                 <td class="text-success">{{ job|get_item:'Марка услуги' }}</td>
                                 <td class="text-success">{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
                                 <td class="text-success">{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                                <th class="text-success">{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                                <th class="text-success">{{ job|get_item:'Цена услуги' }}</th>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -166,7 +166,7 @@
                                 <td>{{ job|get_item:'Марка услуги' }}</td>
                                 <td>{% for employee in job|get_item:'Мастера' %}<div>{{ employee|get_item:'Наименование' }}</div>{% endfor %}</td>
                                 <td>{% if job|get_item:'Гарантия' %}На гарантии{% endif %}</td>
-                                <th>{{ job|get_item:'Цена услуги' }} &#8376;</th>
+                                <th>{{ job|get_item:'Цена услуги' }}</th>
                             </tr>
                         {% endfor %}
                     </tbody>

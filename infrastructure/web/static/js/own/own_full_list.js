@@ -450,6 +450,3 @@ isPart.addEventListener('change', () => {
         }
         })
 })
-
-
-
