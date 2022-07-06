@@ -191,5 +191,3 @@ isNotPart.addEventListener('click', () => {
         }
     })
 })
-
-

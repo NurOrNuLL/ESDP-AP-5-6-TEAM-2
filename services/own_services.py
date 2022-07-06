@@ -21,8 +21,8 @@ class OwnServices:
         own.save()
 
     @staticmethod
-    def get_own_by_id(kwargs: dict) -> Own:
-        return Own.objects.get(id=kwargs['ownID'])
+    def get_own_by_id(own_id: int) -> Own:
+        return Own.objects.get(id=own_id)
 
     @staticmethod
     def get_own_by_contr_id(contr_id: int) -> List[Own]:
