@@ -88,8 +88,3 @@ selectElement.addEventListener('change', (event) => {
 // Закрытие модального окна кнопкой X и обновление страницы с актуальными данными после изменения
 
 let submit = document.querySelector('.close_modal')
-
-submit.addEventListener('click', (event) => {
-    submit.dataset.dismiss = 'modal'
-    window.location.replace(`${locationHost}/org/1/tp/${tpID}/`)
-})

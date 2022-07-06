@@ -171,13 +171,13 @@ class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
         elif contractor_id and own_id:
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
-            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['session_own'] = OwnServices.get_own_by_id(own_id)
             context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
 
         if contractor_id and own_id and nomenclature_id:
             context['session_nomenclature'] = NomenclatureService.get_nomenclature_by_id(nomenclature_id)
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
-            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['session_own'] = OwnServices.get_own_by_id(own_id)
             context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
 
         return render(request, self.template_name, context)
@@ -217,7 +217,7 @@ class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        own = OwnServices.get_own_by_id({'ownID': request.session['own']})
+        own = OwnServices.get_own_by_id(request.session['own'])
 
         context = self.get_context_data()
 
@@ -311,7 +311,6 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             for job in form.cleaned_data['jobs']:
                 if not job['Мастера']:
                     form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
-                    print(form.cleaned_data['jobs'])
 
                     context = self.get_context_data()
                     context['services'] = self.get_services(nomenclature)
@@ -319,8 +318,6 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
                     context['form'] = form
 
                     return render(request, self.template_name, context)
-
-            print(form.cleaned_data['jobs'])
 
             request.session['jobs'] = form.cleaned_data['jobs']
 
@@ -367,7 +364,7 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
         context['contractor'] = ContractorService.get_contractor_by_id(request.session['contractor'])
-        context['own'] = OwnServices.get_own_by_id({'ownID': request.session['own']})
+        context['own'] = OwnServices.get_own_by_id(request.session['own'])
         context['jobs'] = request.session['jobs']
         context['mileage'] = request.session['mileage']
         context['note'] = request.session['note']
@@ -382,7 +379,7 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             'trade_point': TradePointService.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
             'contractor': ContractorService.get_contractor_by_id(request.session['contractor']),
             'nomenclature': NomenclatureService.get_nomenclature_by_id(request.session['nomenclature']),
-            'own': OwnServices.get_own_by_id({'ownID': request.session['own']}),
+            'own': OwnServices.get_own_by_id(request.session['own']),
             'status': ORDER_STATUS_CHOICES[0][0],
             'price_for_pay': prices[0],
             'full_price': prices[1],
