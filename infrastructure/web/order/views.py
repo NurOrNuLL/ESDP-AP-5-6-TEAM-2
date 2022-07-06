@@ -518,7 +518,13 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
 
                 return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], ordID=self.kwargs['ordID'])
         else:
-            form.errors['jobs'] = 'Вы не выбрали услуги!!!'
+            if not json.loads(request.POST.get('jobs')):
+                form.errors['jobs'] = 'Вы не выбрали услуги!!!'
+
+            for job in json.loads(request.POST.get('jobs')):
+                if not job['Мастера']:
+                    form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
+
             employees = EmployeeServices.get_employee_by_tradepoint(
                 tradepoint=TradePointService.get_trade_point_by_id(self.kwargs)
             ).filter(role='Мастер')
