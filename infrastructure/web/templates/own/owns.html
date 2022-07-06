@@ -36,6 +36,9 @@
         <tbody id="body"></tbody>
     </table>
     <div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
+    {% include 'partials/own/own_update.html' %}
+    <button type="button" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#concurrency"
+            id="concurrencyBtn"></button>
 <script>
     var tpID = {{ tpID }}
 </script>

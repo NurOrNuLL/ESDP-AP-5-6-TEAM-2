@@ -1,3 +1,4 @@
+from concurrency.fields import AutoIncVersionField
 from django.db import models
 from tomlkit import value
 
@@ -6,6 +7,7 @@ from models.own.validators import OwnValidator
 
 class Own(models.Model):
     """Собственность"""
+    version = AutoIncVersionField()
     name = models.CharField(
         max_length=100, null=False, blank=False,
         verbose_name='Наименование собственности'
