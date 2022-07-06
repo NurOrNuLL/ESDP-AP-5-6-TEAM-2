@@ -21,7 +21,7 @@ from .nomenclature.views import (
 )
 from .own.views import (
     OwnDeleteView, OwnCreate,
-    OwnList, OwnFullList, OwnFilterApiView
+    OwnList, OwnFullList, OwnFilterApiView, OwnUpdateApiView, OwnConcurrencyUpdateApiView
 )
 from .queue.views import QueueCreate
 from .trade_point.views import (
@@ -43,6 +43,8 @@ from infrastructure.accounts.views import RegisterView
 from infrastructure.web.report.views import ReportPreviewView, ReportDownloadView
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
+from infrastructure.web.order.consumers import OrderStatusUpdateTrackingConsumer
+
 
 nomenclature_urls = [
     path(
@@ -111,7 +113,9 @@ own_urls = [
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
         OwnDeleteView.as_view(), name="own_delete"
     ),
-    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list")
+    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list"),
+    path('own/<int:ownID>/update/', OwnUpdateApiView.as_view(), name='own_update'),
+    path('own/<int:ownID>/update/concurrency/', OwnConcurrencyUpdateApiView.as_view(), name='own_update_concurrency'),
 ]
 
 employee_urls = [
@@ -137,6 +141,10 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
+order_websocket_urls = [
+    path('order/status/update/tracking/', OrderStatusUpdateTrackingConsumer.as_asgi())
+]
+
 queue_urls = [
     path('queue/create/', QueueCreate.as_view(), name='queue_create'),
 ]
@@ -147,7 +155,7 @@ report_urls = [
 ]
 
 report_websocket_urls = [
-    path('wss/report/create', ReportConsumer.as_asgi())
+    path('report/create/', ReportConsumer.as_asgi())
 ]
 
 payment_url = [
@@ -172,3 +180,4 @@ urlpatterns += payment_url
 urlpatterns += queue_urls
 
 websocket_urlpatterns += report_websocket_urls
+websocket_urlpatterns += order_websocket_urls

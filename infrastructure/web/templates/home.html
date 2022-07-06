@@ -5,8 +5,19 @@
 {% block content %}
     <h1 class="mb-4">Заказ-наряды</h1>
     <hr>
-    <div class="row mt-0 me-0 ms-0 mb-3">
-        <input type="date" id="order_date" class="col me-2 form-control border-secondary bg-transparent">
+    <div class="row mt-0 me-0 ms-0">
+        <div class="d-flex" style="width: 555px; padding-left: 0 !important;">
+            <div class="input-group me-2 border-secondary">
+                <span class="input-group-text border-secondary bg-light">От</span>
+                <input type="date" class="form-control border-secondary bg-transparent" id="from_date"
+                       value="{{ form.from_date.value }}">
+            </div>
+            <div class="input-group">
+                <span class="input-group-text border-secondary bg-light">До</span>
+                <input type="date" class="form-control border-secondary bg-transparent" id="to_date" value="{{ form.to_date.value }}">
+            </div>
+        </div>
+{#        <input type="date" id="order_date" class="col me-2 form-control border-secondary bg-transparent">#}
         <select id="order_status" class="col me-2 form-select border-secondary bg-transparent" name="order_status"
                 aria-label="Default select example">
             <option selected value="">Выберите статус</option>
@@ -50,15 +61,17 @@
             </div>
         {% endif %}
     </div>
-    <table id="table" class="table mt-3">
+    <table id="table" class="table mt-3 table-hover">
         <thead>
         <tr>
-            <th scope="col">ID</th>
-            <th scope="col">Дата</th>
+            <th scope="col">№</th>
+            <th scope="col">Дата начало</th>
+            <th scope="col">Дата завершения</th>
             <th scope="col">Статус</th>
             <th scope="col">Статус оплаты</th>
             <th scope="col">Контрагент</th>
             <th scope="col">№ Авто</th>
+            <th scope="col">Оплатить</th>
         </tr>
         </thead>
         <tbody id="body"></tbody>
@@ -70,8 +83,8 @@
     </script>
     {% include 'partials/payment/payment_modal.html' %}
 {% endblock content %}
- <script src="https://code.jquery.com/jquery-3.5.1.min.js"
-            integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 {% block js_block %}
     <script src="{% static 'js/order/order_list.js' %}"></script>
 {% endblock %}

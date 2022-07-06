@@ -1,0 +1,102 @@
+{% block content %}
+    <form method="patch" action="" id="ownEditForm" name="ownEditForm">
+        {% csrf_token %}
+        <div class="modal fade" id="editOwn" tabindex="-1" aria-labelledby="ownModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="ownModalLabel">Редактировать собственность</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3 id">
+                            <input hidden name="id" id="id" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3 name">
+                            <label for="name" class="form-label" id="own_name_label">Модель автомобиля: </label><br>
+                            <input name="name" id="name" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3 own_number">
+                            <label for="number" class="form-label" id="own_number_label">Гос. номер: </label><br>
+                            <input name="number" id="number" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3 own_comment">
+                            <label for="comment" class="form-label" id="own_comment_label">Дополнительная
+                                информация:</label><br>
+                            <input name="comment" id="comment" type="text" class="form-control">
+                        </div>
+                        <div class="mb-3 version">
+                            <input hidden name="version" id="version" type="text" class="form-control">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="edit3Button" type="submit" class="btn btn-primary"
+                                data-bs-dismiss="modal">Сохранить
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="closeBtn" data-bs-dismiss="modal">Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="concurrency" tabindex="-1" aria-labelledby="concurrency" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="concurrencyHeader"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-header bg-transparent">
+                            <div class="row p-0">
+                                <div class="col-md-6">
+                                    <h4 class="text" style="font-weight: bold">Текущие данные</h4>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4 class="text" style="font-weight: bold">Предлагаемые изменения</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row px-3">
+                            <div class="col-md-6">
+                                <span class="text" style="font-weight: bold">Модель автомобиля: </span>
+                                <span id="old"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text" style="font-weight: bold">Модель автомобиля: </span>
+                                <span id="new"></span>
+                            </div>
+                        </div>
+                        <div class="row px-3">
+                            <div class="col-md-6">
+                                <span class="text" style="font-weight: bold">Гос. номер: </span>
+                                <span id="old1"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text" style="font-weight: bold">Гос. номер: </span>
+                                <span id="new1"></span>
+                            </div>
+                        </div>
+                        <div class="row px-3">
+                            <div class="col-md-6">
+                                <span class="text" style="font-weight: bold">Дополнительная информация: </span>
+                                <span id="old2"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="text" style="font-weight: bold">Дополнительная информация: </span>
+                                <span id="new2"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="updateBtn" type="button" class="btn btn-primary"
+                                data-bs-dismiss="modal">Сохранить
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="closeBtn2" data-bs-dismiss="modal">Закрыть
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{% endblock %}

@@ -35,6 +35,7 @@ from rest_framework.pagination import PageNumberPagination
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+import pytz
 
 
 class HomePageView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, TemplateView):
@@ -63,7 +64,8 @@ class MyPagination(PageNumberPagination):
 class OrderFilterBackend(filters.BaseFilterBackend):
     def filter_queryset(self, request: HttpRequest, queryset: List[Order], view: View) -> List[Order]:
         try:
-            request_date = datetime.strptime(request.GET.get('date'), '%Y-%m-%d')
+            from_date = datetime.strptime(request.GET.get('from_date'), '%Y-%m-%d')
+            to_date = datetime.strptime(request.GET.get('to_date'), '%Y-%m-%d')
         except ValueError:
             filtered_orders = []
 
@@ -94,9 +96,10 @@ class OrderFilterBackend(filters.BaseFilterBackend):
                         request.GET.get('payment_status') in order.payment.payment_status
                         and request.GET.get('status') in order.status
                         and request.GET.get('search').lower() in order.contractor.name.lower()
-                        and request_date.day == order.created_at.day
-                        and request_date.month == order.created_at.month
-                        and request_date.year == order.created_at.year
+                        and ((order.created_at >= pytz.UTC.localize(from_date)
+                        or order.created_at.day == from_date.day and order.created_at.month == from_date.month and order.created_at.year == from_date.year)
+                        and (order.created_at <= pytz.UTC.localize(to_date)
+                        or (order.created_at.day == to_date.day and order.created_at.month == to_date.month and order.created_at.year == to_date.year)))
                     ):
                         filtered_orders.append(order)
                 else:
@@ -104,10 +107,12 @@ class OrderFilterBackend(filters.BaseFilterBackend):
                         request.GET.get('payment_status') in order.payment.payment_status
                         and request.GET.get('status') in order.status
                         and (request.GET.get('search').lower() in order.contractor.name.lower()
-                             or request.GET.get('search').lower() in order.own.number.lower())
-                        and request_date.day == order.created_at.day
-                        and request_date.month == order.created_at.month
-                        and request_date.year == order.created_at.year
+                        or request.GET.get('search').lower() in order.own.number.lower())
+                        and ((order.created_at >= pytz.UTC.localize(from_date)
+                        or order.created_at.day == from_date.day
+                        and order.created_at.month == from_date.month and order.created_at.year == from_date.year)
+                        and (order.created_at <= pytz.UTC.localize(to_date)
+                        or (order.created_at.day == to_date.day and order.created_at.month == to_date.month and order.created_at.year == to_date.year)))
                     ):
                         filtered_orders.append(order)
 
@@ -166,13 +171,13 @@ class OrderCreateViewStage1(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
         elif contractor_id and own_id:
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
-            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['session_own'] = OwnServices.get_own_by_id(own_id)
             context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
 
         if contractor_id and own_id and nomenclature_id:
             context['session_nomenclature'] = NomenclatureService.get_nomenclature_by_id(nomenclature_id)
             context['session_contractor'] = ContractorService.get_contractor_by_id(contractor_id)
-            context['session_own'] = OwnServices.get_own_by_id({'ownID': own_id})
+            context['session_own'] = OwnServices.get_own_by_id(own_id)
             context['owns'] = OwnServices.get_own_by_contr_id(contractor_id)
 
         return render(request, self.template_name, context)
@@ -212,7 +217,7 @@ class OrderCreateViewStage2(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
         return context
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
-        own = OwnServices.get_own_by_id({'ownID': request.session['own']})
+        own = OwnServices.get_own_by_id(request.session['own'])
 
         context = self.get_context_data()
 
@@ -306,7 +311,6 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             for job in form.cleaned_data['jobs']:
                 if not job['Мастера']:
                     form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
-                    print(form.cleaned_data['jobs'])
 
                     context = self.get_context_data()
                     context['services'] = self.get_services(nomenclature)
@@ -314,8 +318,6 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
                     context['form'] = form
 
                     return render(request, self.template_name, context)
-
-            print(form.cleaned_data['jobs'])
 
             request.session['jobs'] = form.cleaned_data['jobs']
 
@@ -362,13 +364,11 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         context = self.get_context_data()
         context['contractor'] = ContractorService.get_contractor_by_id(request.session['contractor'])
-        context['own'] = OwnServices.get_own_by_id({'ownID': request.session['own']})
+        context['own'] = OwnServices.get_own_by_id(request.session['own'])
         context['jobs'] = request.session['jobs']
         context['mileage'] = request.session['mileage']
         context['note'] = request.session['note']
         context['price_for_pay'], context['full_price'] = self.get_prices(request.session['jobs'])
-        print(request.session)
-        print(request.session['jobs'])
 
         return render(request, self.template_name, context)
 
@@ -379,7 +379,7 @@ class OrderCreateViewStage4(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             'trade_point': TradePointService.get_trade_point_by_id({'tpID': self.kwargs['tpID']}),
             'contractor': ContractorService.get_contractor_by_id(request.session['contractor']),
             'nomenclature': NomenclatureService.get_nomenclature_by_id(request.session['nomenclature']),
-            'own': OwnServices.get_own_by_id({'ownID': request.session['own']}),
+            'own': OwnServices.get_own_by_id(request.session['own']),
             'status': ORDER_STATUS_CHOICES[0][0],
             'price_for_pay': prices[0],
             'full_price': prices[1],

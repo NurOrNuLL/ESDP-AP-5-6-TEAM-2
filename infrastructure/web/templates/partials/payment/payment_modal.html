@@ -25,6 +25,8 @@
                             </div>
                             <div class="col ownorder">
                             </div>
+                            <div class="col priceforpay">
+                            </div>
                             <div class="col showForm"></div>
                         </div>
                     </div>
@@ -37,7 +39,8 @@
                         {% csrf_token %}
                         <div class="mb-3">
                             <select id="payment_status_id" name="payment_status"
-                                    class="form-select border-secondary bg-transparent" style="background-image: none !important;">
+                                    class="form-select border-secondary bg-transparent"
+                                    style="background-image: none !important;">
                                 <option selected value="Оплачено">Оплачено</option>
                             </select>
                         </div>
@@ -54,7 +57,7 @@
 
                         </div>
                         <div class="row">
-                            <h4>Способ оплаты</h4>
+                            <h4>Детали платежа</h4>
                             <hr>
                             <div class="col-md-12 pay_method" id="pay_method">
 
@@ -69,7 +72,7 @@
                             <br>
                         </div>
                         <div class="submit_button_form">
-
+                            <input type="submit" value="Оплатить" id="submitIfOk" class="btn btn-primary submitValues">
                         </div>
 
                         <script>
@@ -81,8 +84,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close_modal_second" data-bs-dismiss="modal">Закрыть
-                </button>
+
             </div>
 
             <div class="row">
@@ -109,8 +111,6 @@
             {% block js_block %}
                 <script src="{% static 'js/payment/pay_order.js' %}"></script>
             {% endblock %}
-            <script>
-            </script>
         </div>
     </div>
 </div>
