@@ -18,19 +18,23 @@
                         <div class="col">
                             <label for="mileage" class="form-label">Пробег</label>
                             <div class="input-group">
-                                <input type="number" class="form-control" value="{{ session_mileage }}" id="mileage" name="mileage">
+                                <input type="number" min="0" class="form-control" value="{{ session_mileage|default:''}}" id="mileage" name="mileage">
                                 <span class="input-group-text" id="basic-addon2">km</span>
                             </div>
                             <div class="form-text" style="color: red;">
-                                {% for err in order_form.errors.mileage %}{{ err }}{% endfor %}</div>
+                           {% for err in form.errors.mileage %}{{ err }}{% endfor %}</div>
                         </div>
                         <br>
                     {% endif %}
                     <div>
                         <label for="note" class="form-label">Примечание</label>
-                        <textarea class="form-control" id="note" name="note" rows="3">{{ session_note|default:'' }}</textarea>
+                        <textarea class="form-control" id="note" name="note" maxlength="100" rows="3" autofocus>{{ session_note|default:''}}</textarea>
+                        <div id="the-count">
+                            <span id="current">0</span>
+                            <span id="maximum">/ 100</span>
+                          </div>
                         <div class="form-text" style="color: red;">
-                            {% for err in order_form.errors.note %}{{ err }}{% endfor %}</div>
+                            {% for err in form.errors.note %}{{ err }}{% endfor %}</div>
                     </div>
                     <br>
                     <a href="{% url 'order_create_stage1' orgID=1 tpID=tpID %}" class="btn btn-secondary">Назад</a>
@@ -62,3 +66,6 @@
     </div>
 
 {% endblock content %}
+{% block js_block %}
+        <script src="{% static 'js/partial/textarea.js' %}"></script>
+{% endblock js_block %}
