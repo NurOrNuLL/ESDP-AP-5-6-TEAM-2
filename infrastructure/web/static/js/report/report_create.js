@@ -613,6 +613,11 @@ reportForm.addEventListener('submit', e => {
             downloadData.innerText = JSON.stringify(report);
 
             if (report['report_type'] === 1) {
+
+                resetReport.disabled = false;
+                downloadReport.disabled = false;
+                reportFormat.disabled = false;
+
                 if (report['paidOrders'].length !== 0) {
                     if (report['unpaidOrders'].length !== 0) {
                         renderReportType1(true, true, report)
@@ -631,6 +636,11 @@ reportForm.addEventListener('submit', e => {
                 }
             }
             else if (report['report_type'] === 2) {
+
+                resetReport.disabled = false;
+                downloadReport.disabled = false;
+                reportFormat.disabled = false;
+
                 if (report['paidOrders'].length !== 0) {
                     if (report['unpaidOrders'].length !== 0) {
                         renderReportType2(true, true, report)
