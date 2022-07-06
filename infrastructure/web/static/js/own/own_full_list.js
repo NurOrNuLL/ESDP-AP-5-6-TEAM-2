@@ -6,7 +6,6 @@ let page = document.getElementById('page');
 let search = document.getElementById('ownSearch');
 let isPart = document.getElementById('isPart');
 let numberTitle = document.getElementById('numberTitle');
-let ownEditForm = document.getElementById('ownEditForm');
 let ownEditBTN = document.getElementById('edit3Button');
 
 function update() {
@@ -23,7 +22,6 @@ function update() {
             number.value = $(this).attr('data-ownnumber');
             comment.value = decodeURIComponent($(this).attr('data-owncomment'));
             version.value = $(this).attr('data-ownversion')
-            console.log(id)
             ownEditBTN.onclick = e => {
                 e.preventDefault();
                 let id = document.getElementById('id').value
@@ -156,22 +154,23 @@ function update() {
         })
 }
 
-
 $.ajax({
     url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=&is_part=${isPart.value}`,
     method: 'GET',
-    async: false,
     success: (data) => {
         if (data.next && data.previous === null) {
             next.classList.remove('disabled')
             back.classList.add('disabled')
-        } else if (data.previous && data.next === null) {
+        }
+        else if (data.previous && data.next === null) {
             next.classList.add('disabled')
             back.classList.remove('disabled')
-        } else if (data.next === null && data.previous === null) {
+        }
+        else if (data.next === null && data.previous === null) {
             next.classList.add('disabled')
             back.classList.add('disabled')
-        } else {
+        }
+        else {
             next.classList.remove('disabled')
             back.classList.remove('disabled')
         }
@@ -182,18 +181,22 @@ $.ajax({
             if (item.number == null) {
                 item.number = '';
             }
-            body.innerHTML += `<tr data-id="${item.id}">
-            <td>${item.name}</td>
-            <td>${item.number}</td>
-            <td>${item.comment}</td>
-            <td><a class="btn btn-secondary" href="/org/1/tp/${tpID}/contractor/` + item.contractor + `/">Детали</a></td>
-            <td><button id="editOwns" type="button" class="btn btn-primary button_own" 
-            data-ownid="${item.id}"
-            data-ownname="${encodeURIComponent(item.name)}"
-            data-ownnumber="${item.number}"
-            data-owncomment="${encodeURIComponent(item.comment)}"
-            data-ownversion="${item.version}"
-            data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td></tr>`
+            if (item.is_deleted === false) {
+                body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                        <td><button id="editOwns" type="button" class="btn btn-primary button_own" 
+                                        data-ownid="${item.id}"
+                                        data-ownname="${encodeURIComponent(item.name)}"
+                                        data-ownnumber="${item.number}"
+                                        data-owncomment="${encodeURIComponent(item.comment)}"
+                                        data-ownversion="${item.version}"
+                                        data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td>
+                                    </tr>`
+            }
         })
         update()
     },
@@ -205,105 +208,118 @@ $.ajax({
 
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
-    $.ajax({
-        url: `http://127.0.0.1:8000/org/1/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
-        method: 'GET',
-        success: (data) => {
-            body.innerText = ""
+  $.ajax({
+    url: `http://127.0.0.1:8000/org/1/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
+    method: 'GET',
+    success: (data) => {
+        body.innerText = ""
 
-            if (data.next && data.previous === null) {
-                next.classList.remove('disabled')
-                back.classList.add('disabled')
-            } else if (data.previous && data.next === null) {
-                next.classList.add('disabled')
-                back.classList.remove('disabled')
-            } else if (data.next === null && data.previous === null) {
-                next.classList.add('disabled')
-                back.classList.add('disabled')
-            } else {
-                next.classList.remove('disabled')
-                back.classList.remove('disabled')
-            }
-            data.results.forEach(function (item) {
-                if (item.comment == null) {
-                    item.comment = '';
-                }
-                if (item.number == null) {
-                    item.number = '';
-                }
-                body.innerHTML += `<tr data-id="${item.id}">
-                <td>${item.name}</td>
-                <td>${item.number}</td>
-                <td>${item.comment}</td>
-                <td><a class="btn btn-secondary" href="/org/1/tp/${tpID}/contractor/` + item.contractor + `/">Детали</a></td>
-                <td><button id="editOwns" type="button" class="btn btn-primary button_own"
-                data-ownid="${item.id}"
-                data-ownname="${encodeURIComponent(item.name)}"
-                data-ownnumber="${item.number}"
-                data-owncomment="${encodeURIComponent(item.comment)}"
-                data-ownversion="${item.version}"
-                data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td></tr>`
-            })
-            update()
-        },
-        error: (response) => {
-            console.log(response)
+        if (data.next && data.previous === null) {
+            next.classList.remove('disabled')
+            back.classList.add('disabled')
         }
-    })
+        else if (data.previous && data.next === null) {
+            next.classList.add('disabled')
+            back.classList.remove('disabled')
+        }
+        else if (data.next === null && data.previous === null) {
+            next.classList.add('disabled')
+            back.classList.add('disabled')
+        }
+        else {
+            next.classList.remove('disabled')
+            back.classList.remove('disabled')
+        }
+        data.results.forEach(function (item) {
+            if (item.comment == null) {
+                item.comment = '';
+            }
+            if (item.number == null) {
+                item.number = '';
+            }
+            if (item.is_deleted === false) {
+                body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                        <td><button id="editOwns" type="button" class="btn btn-primary button_own"
+                                        data-ownid="${item.id}"
+                                        data-ownname="${encodeURIComponent(item.name)}"
+                                        data-ownnumber="${item.number}"
+                                        data-owncomment="${encodeURIComponent(item.comment)}"
+                                        data-ownversion="${item.version}"
+                                        data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td>
+                                    </tr>`
+            }
+            })
+        update()
+    },
+    error: (response) => {
+        console.log(response)
+    }
 })
-
+})
 
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
-    $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
-        method: 'GET',
-        success: (data) => {
-            body.innerText = ""
+  $.ajax({
+    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
+    method: 'GET',
+    success: (data) => {
+        body.innerText = ""
 
-            if (data.next && data.previous === null) {
-                next.classList.remove('disabled')
-                back.classList.add('disabled')
-            } else if (data.previous && data.next === null) {
-                next.classList.add('disabled')
-                back.classList.remove('disabled')
-            } else if (data.next === null && data.previous === null) {
-                next.classList.add('disabled')
-                back.classList.add('disabled')
-            } else {
-                next.classList.remove('disabled')
-                back.classList.remove('disabled')
-            }
-            data.results.forEach(function (item) {
-                if (item.comment == null) {
-                    item.comment = '';
-                }
-                if (item.number == null) {
-                    item.number = '';
-                }
-                body.innerHTML += `<tr data-id="${item.id}">
-                <td>${item.name}</td>
-                <td>${item.number}</td>
-                <td>${item.comment}</td>
-                <td><a class="btn btn-secondary" href="/org/1/tp/${tpID}/contractor/` + item.contractor + `/">Детали</a></td>
-                <td><button id="editOwns" type="button" class="btn btn-primary button_own"
-                data-ownid="${item.id}"
-                data-ownname="${encodeURIComponent(item.name)}"
-                data-ownnumber="${item.number}"
-                data-owncomment="${encodeURIComponent(item.comment)}"
-                data-ownversion="${item.version}"
-                data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td></tr>`
-            })
-            update()
-        },
-        error: (response) => {
-            console.log(response)
+        if (data.next && data.previous === null) {
+            next.classList.remove('disabled')
+            back.classList.add('disabled')
         }
-    })
+        else if (data.previous && data.next === null) {
+            next.classList.add('disabled')
+            back.classList.remove('disabled')
+        }
+        else if (data.next === null && data.previous === null) {
+            next.classList.add('disabled')
+            back.classList.add('disabled')
+        }
+        else {
+            next.classList.remove('disabled')
+            back.classList.remove('disabled')
+        }
+        data.results.forEach(function (item) {
+            if (item.comment == null) {
+                item.comment = '';
+            }
+            if (item.number == null) {
+                item.number = '';
+            }
+            if (item.is_deleted === false) {
+                body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color:#566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                        <td><button id="editOwns" type="button" class="btn btn-primary button_own"
+                                        data-ownid="${item.id}"
+                                        data-ownname="${encodeURIComponent(item.name)}"
+                                        data-ownnumber="${item.number}"
+                                        data-owncomment="${encodeURIComponent(item.comment)}"
+                                        data-ownversion="${item.version}"
+                                        data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td>
+                                    </tr>`
+            }
+            })
+        update()
+    },
+    error: (response) => {
+        console.log(response)
+    }
+})
 })
 
 search.addEventListener('input', (e) => {
-    $.ajax({
+      $.ajax({
         url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=${search.value}&is_part=${isPart.value}`,
         method: 'GET',
         success: (data) => {
@@ -312,18 +328,21 @@ search.addEventListener('input', (e) => {
             if (data.next && data.previous === null) {
                 next.classList.remove('disabled')
                 back.classList.add('disabled')
-            } else if (data.previous && data.next === null) {
+            }
+            else if (data.previous && data.next === null) {
                 next.classList.add('disabled')
                 back.classList.remove('disabled')
-            } else if (data.next === null && data.previous === null) {
+            }
+            else if (data.next === null && data.previous === null) {
                 next.classList.add('disabled')
                 back.classList.add('disabled')
-            } else {
+            }
+            else {
                 next.classList.remove('disabled')
                 back.classList.remove('disabled')
             }
 
-            if (data.results.length) {
+            if(data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {
                         item.comment = '';
@@ -331,21 +350,26 @@ search.addEventListener('input', (e) => {
                     if (item.number == null) {
                         item.number = '';
                     }
-                    body.innerHTML += `<tr data-id="${item.id}">
-                    <td>${item.name}</td>
-                    <td>${item.number}</td>
-                    <td>${item.comment}</td>
-                    <td><a class="btn btn-secondary" href="/org/1/tp/${tpID}/contractor/` + item.contractor + `/">Детали</a></td>
-                    <td><button id="editOwns" type="button" class="btn btn-primary button_own"
-                    data-ownid="${item.id}"
-                    data-ownname="${encodeURIComponent(item.name)}"
-                    data-ownnumber="${item.number}"
-                    data-owncomment="${encodeURIComponent(item.comment)}"
-                    data-ownversion="${item.version}"
-                    data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td></tr>`
-                })
+                    if (item.is_deleted === false) {
+                        body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color: #566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                        <td><button id="editOwns" type="button" class="btn btn-primary button_own"
+                                        data-ownid="${item.id}"
+                                        data-ownname="${encodeURIComponent(item.name)}"
+                                        data-ownnumber="${item.number}"
+                                        data-owncomment="${encodeURIComponent(item.comment)}"
+                                        data-ownversion="${item.version}"
+                                        data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td>
+                                    </tr>`
+                    }
+                    })
                 update()
-            } else {
+            }
+            else {
                 body.innerHTML = '';
                 emptyBody.innerHTML = '';
                 emptyBody.innerHTML += '<h4 class="text-center" >Ничего не найдено!</h4>';
@@ -354,7 +378,7 @@ search.addEventListener('input', (e) => {
         error: (response) => {
             console.log(response);
         }
-    })
+        })
 })
 
 isPart.addEventListener('change', () => {
@@ -367,18 +391,21 @@ isPart.addEventListener('change', () => {
             if (data.next && data.previous === null) {
                 next.classList.remove('disabled')
                 back.classList.add('disabled')
-            } else if (data.previous && data.next === null) {
+            }
+            else if (data.previous && data.next === null) {
                 next.classList.add('disabled')
                 back.classList.remove('disabled')
-            } else if (data.next === null && data.previous === null) {
+            }
+            else if (data.next === null && data.previous === null) {
                 next.classList.add('disabled')
                 back.classList.add('disabled')
-            } else {
+            }
+            else {
                 next.classList.remove('disabled')
                 back.classList.remove('disabled')
             }
 
-            if (data.results.length) {
+            if(data.results.length) {
                 data.results.forEach(function (item) {
                     if (item.comment == null) {
                         item.comment = '';
@@ -387,25 +414,41 @@ isPart.addEventListener('change', () => {
                         item.number = '';
                     }
                     if (item.is_part === true) {
-                        numberTitle.innerText = ' ';
+                        numberTitle.innerText = '';
+                        item.number = ''
                     }
-                    body.innerHTML += `<tr data-id="${item.id}">
-                    <td>${item.name}</td>
-                    <td>${item.number}</td>
-                    <td>${item.comment}</td>
-                    <td><a class="btn btn-secondary" href="/org/1/tp/${tpID}/contractor/` + item.contractor + `/">Детали</a></td>
-                    <td><button id="editOwns" type="button" class="btn btn-primary button_own"
-                    data-ownid="${item.id}"
-                    data-ownname="${encodeURIComponent(item.name)}"
-                    data-ownnumber="${item.number}"
-                    data-owncomment="${encodeURIComponent(item.comment)}"
-                    data-ownversion="${item.version}"
-                    data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td></tr>`
-                })
+                    if (isPart.value === 'all' || item.is_part === false) {
+                        numberTitle.innerText = 'Номер';
+                    }
+                    if (item.is_deleted === false) {
+                        body.innerHTML += ` <tr>
+                                        <td>
+                                            <a style="text-decoration: none; color: #566573;" href="/org/1/tp/${tpID}/contractor/${item.contractor}/">${item.name}</a>
+                                        </td>
+                                        <td>${item.number}</td>
+                                        <td>${item.comment}</td>
+                                        <td><button id="editOwns" type="button" class="btn btn-primary button_own"
+                                        data-ownid="${item.id}"
+                                        data-ownname="${encodeURIComponent(item.name)}"
+                                        data-ownnumber="${item.number}"
+                                        data-owncomment="${encodeURIComponent(item.comment)}"
+                                        data-ownversion="${item.version}"
+                                        data-bs-toggle="modal" data-bs-target="#editOwn">Редактировать</button></td>
+                                    </tr>`
+                    }
+                    })
                 update()
             }
+            else {
+                body.innerHTML = '';
+                emptyBody.innerHTML = '';
+                emptyBody.innerHTML += '<h4 class="text-center" >Ничего не найдено!</h4>';
+            }
+        },
+        error: (response) => {
+            console.log(response);
         }
-    })
+        })
 })
 
 
