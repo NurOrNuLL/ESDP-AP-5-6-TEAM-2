@@ -311,7 +311,6 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
             for job in form.cleaned_data['jobs']:
                 if not job['Мастера']:
                     form.errors['jobs'] = 'Вы не выбрали мастеров!!!'
-                    print(form.cleaned_data['jobs'])
 
                     context = self.get_context_data()
                     context['services'] = self.get_services(nomenclature)
@@ -319,8 +318,6 @@ class OrderCreateViewStage3(LoginRequiredMixin, UserPassesTestMixin, TemplateVie
                     context['form'] = form
 
                     return render(request, self.template_name, context)
-
-            print(form.cleaned_data['jobs'])
 
             request.session['jobs'] = form.cleaned_data['jobs']
 
@@ -466,7 +463,6 @@ class OrderUpdateView(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPas
 
     def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         self.delete_order_data_from_session(request)
-        print(11111111111111111111111)
 
         order = OrderService.get_order_by_id(self.kwargs['ordID'])
 

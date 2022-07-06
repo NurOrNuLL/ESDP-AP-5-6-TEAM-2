@@ -9,7 +9,6 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-import ast
 import os
 from pathlib import Path
 
@@ -38,9 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
-    'infrastructure',
     'infrastructure.accounts',
-    'infrastructure.web',
+    'infrastructure.web.apps.WebAppConfig',
     'models.contractor',
     'models.nomenclature',
     'models.organization',
