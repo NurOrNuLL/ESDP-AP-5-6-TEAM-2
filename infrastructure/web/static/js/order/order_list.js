@@ -73,7 +73,7 @@ function render(search, from_date, to_date, status, payment_status, page, limit)
                         <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
                         <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
                         <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
-                        <td><a  class="modalbtn btn btn-primary" type="button" 
+                        <td><a  class="modalbtn btn btn-primary" type="button"
                         data-idorderclass=${encodeURIComponent(item.id)}
                         data-dayorder=${encodeURIComponent(today)}
                         data-statusorder=${encodeURIComponent(item.status)}
@@ -120,7 +120,7 @@ function render(search, from_date, to_date, status, payment_status, page, limit)
                         <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
                         <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
                         <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
-                        <td><a  class="modalbtn btn btn-primary" type="button" 
+                        <td><a  class="modalbtn btn btn-primary" type="button"
                         data-idorderclass=${encodeURIComponent(item.id)}
                         data-dayorder=${encodeURIComponent(today)}
                         data-statusorder=${encodeURIComponent(item.status)}
@@ -217,6 +217,8 @@ $(function () {
                         error_text.innerHTML = `<p style="color: red">${response.error}</p>`
                     } else {
                         error_text.innerHTML = ''
+                        let submit = document.querySelector('.close_modal')
+                        submit.click();
                     }
                 },
                 error: (response) => {
