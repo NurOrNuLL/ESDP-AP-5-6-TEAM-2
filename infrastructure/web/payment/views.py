@@ -1,9 +1,9 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.http.response import HttpResponse
 from django.http.request import HttpRequest
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.utils.datastructures import MultiValueDictKeyError
 
 from models.payment.models import PAYMENT_STATUS_CHOICES
 from services.order_services import OrderService
@@ -13,6 +13,9 @@ from models.payment_method.models import PaymentMethod
 from infrastructure.web.order.helpers import ResetOrderCreateFormDataMixin
 from models.order.models import Order
 from services.employee_services import EmployeeServices
+from models.payment.models import PAYMENT_JSON_FIELD_SCHEMA_CASHLESS, PAYMENT_JSON_FIELD_SCHEMA_KASPI
+from services.nomenclature_services import NomenclatureService
+from django.http.response import HttpResponse
 
 
 class OrderPayment(LoginRequiredMixin, UserPassesTestMixin, ResetOrderCreateFormDataMixin, TemplateView):
@@ -36,33 +39,57 @@ class OrderPayment(LoginRequiredMixin, UserPassesTestMixin, ResetOrderCreateForm
         context['details'] = order.payment.details
         context['order'] = order
         context['tpID'] = self.kwargs['tpID']
-        form = PaymentForm()
-        context['form'] = form
         return context
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         form = self.form_class(data=request.POST)
-        context = self.get_context_data(**kwargs)
 
         if form.is_valid():
             order_id = self.get_context_data().get('order_id')
             piked_order = Order.objects.get(pk=order_id)
-            try:
-                details = dict(cash=request.POST['details_cash'], cashless=request.POST['details_cashless'],
-                               kaspi=request.POST['details_kaspi'])
-                details['cashless'] = {'consignment': request.POST['consignment'], 'invoice': request.POST['invoice']}
-            except MultiValueDictKeyError:
-                details = {'cash': '', 'cashless': {'consignment': '', 'invoice': ''}, 'kaspi': ''}
-            get_method = PaymentMethod.objects.get(pk=int(request.POST['method']))
-            status = request.POST['payment_status']
-            piked_order.payment.method = get_method
-            piked_order.payment.payment_status = status
-            piked_order.payment.details = details
-            piked_order.payment.save()
+            payment_pk = int(request.POST['method'])
+            if payment_pk == 1:
+                details_cash = dict(cash=request.POST.get('details_cash'))
+                get_method = PaymentMethod.objects.get(pk=payment_pk)
+                status = request.POST['payment_status']
+                piked_order.payment.method = get_method
+                piked_order.payment.payment_status = status
+                piked_order.payment.details = details_cash
+                piked_order.payment.save()
+                return render(request, self.template_name, self.get_context_data())
+            elif payment_pk == 2:
+                details_cashless = dict(cashless=request.POST.get('details_cashless'))
+                details_cashless['cashless'] = {'consignment': request.POST.get('consignment'), 'invoice': request.POST.get('invoice')}
+                get_method = PaymentMethod.objects.get(pk=payment_pk)
+                validated_data = NomenclatureService.validate_json(
+                    json.dumps(details_cashless), PAYMENT_JSON_FIELD_SCHEMA_CASHLESS
+                )
+                if validated_data:
+                    status = request.POST['payment_status']
+                    piked_order.payment.method = get_method
+                    piked_order.payment.payment_status = status
+                    piked_order.payment.details = details_cashless
+                    piked_order.payment.save()
+                else:
+                    return HttpResponse(json.dumps({'error': 'Счет фактура или накладное заполнено не корректно, '
+                                                             'максимальная длина 100 символов'}), content_type='application/json')
+            elif payment_pk == 3:
+                details_kaspi = dict(kaspi=request.POST.get('details_kaspi'))
+                get_method = PaymentMethod.objects.get(pk=payment_pk)
+                validated_data = NomenclatureService.validate_json(
+                    json.dumps(details_kaspi), PAYMENT_JSON_FIELD_SCHEMA_KASPI
+                )
+                if validated_data:
+                    status = request.POST['payment_status']
+                    piked_order.payment.method = get_method
+                    piked_order.payment.payment_status = status
+                    piked_order.payment.details = details_kaspi
+                    piked_order.payment.save()
+                else:
+                    return HttpResponse(json.dumps({'error': ' Возможно вы забыли выбрать каспи метод'}),
+                                        content_type='application/json')
+            else:
+                return HttpResponse(json.dumps({'error': 'Данный метод оплаты не существует'}),
+                                    content_type='application/json')
             return render(request, self.template_name, self.get_context_data())
-        else:
-            context['form'] = form
-            context['error'] = form.errors
-            context['details'] = dict(cash=request.POST['details_cash'], cashless=request.POST['details_cashless'],
-                                      kaspi=request.POST['details_kaspi'])
-            return render(request, self.template_name, self.get_context_data())
+

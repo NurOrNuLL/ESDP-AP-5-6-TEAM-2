@@ -10,3 +10,9 @@ class OwnSerializer(serializers.ModelSerializer):
     class Meta:
         model = Own
         fields = '__all__'
+
+
+class OwnUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Own
+        fields = ['id', 'name', 'number', 'comment', 'version']

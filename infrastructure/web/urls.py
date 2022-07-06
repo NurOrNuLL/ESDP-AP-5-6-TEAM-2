@@ -21,7 +21,7 @@ from .nomenclature.views import (
 )
 from .own.views import (
     OwnDeleteView, OwnCreate,
-    OwnList, OwnFullList, OwnFilterApiView
+    OwnList, OwnFullList, OwnFilterApiView, OwnUpdateApiView, OwnConcurrencyUpdateApiView
 )
 from .queue.views import QueueCreate
 from .trade_point.views import (
@@ -113,7 +113,9 @@ own_urls = [
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
         OwnDeleteView.as_view(), name="own_delete"
     ),
-    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list")
+    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list"),
+    path('own/<int:ownID>/update/', OwnUpdateApiView.as_view(), name='own_update'),
+    path('own/<int:ownID>/update/concurrency/', OwnConcurrencyUpdateApiView.as_view(), name='own_update_concurrency'),
 ]
 
 employee_urls = [
