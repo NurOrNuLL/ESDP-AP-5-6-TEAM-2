@@ -1,3 +1,4 @@
+import datetime
 import json
 from models.order.models import Order
 from models.payment.models import Payment
@@ -10,7 +11,7 @@ from typing import Any, Optional
 @dataclass
 class OrderDataclass:
     id: int
-    status: str
+    status: Optional[str] = 'В работе'
 
 @dataclass
 class PaymentDataclass:
@@ -20,7 +21,6 @@ class PaymentDataclass:
 
 def get_old_order_status(sender: Order, instance: Order, **kwargs: Any) -> None:
     OrderDataclass.id = instance.id
-    OrderDataclass.status = instance.status
 
 def get_new_order_status(sender: Order, instance: Order, **kwargs: Any) -> None:
     channel_layer = get_channel_layer()
@@ -31,7 +31,8 @@ def get_new_order_status(sender: Order, instance: Order, **kwargs: Any) -> None:
             {
                 'type': 'update_status',
                 'id': OrderDataclass.id,
-                'status': instance.status
+                'status': instance.status,
+                'finished_at': instance.finished_at.strftime('%Y-%m-%dT%H:%M:%S%z')
             }
         )
 

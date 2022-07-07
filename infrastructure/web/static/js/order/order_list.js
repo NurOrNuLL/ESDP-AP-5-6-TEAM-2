@@ -38,96 +38,120 @@ function render(search, from_date, to_date, status, payment_status, page, limit)
                     finish_day = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
 
                     if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
-                        body.innerHTML += `<tr class="orderRow"><td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/"></a></td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><a class="modalbtn" type="button" data-bs-toggle="modal"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)} data-priceforpay="${encodeURIComponent(item.price_for_pay)}"  data-bs-target="#exampleModal"><span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
-                        <td><a  class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)} data-priceforpay="${encodeURIComponent(item.price_for_pay)}"  data-bs-target="#exampleModal">Оплатить</a></td></tr>`
+                        body.innerHTML += `<tr class="orderRow">
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/"></a></td>
+                                                <td><a class="finishButton" type="button" data-bs-toggle="modal" data-bs-target="#finishOrderModal" data-order-ID="${item.id}"><span class="badge rounded-pill text-bg-primary">${item.status}</span></a></td>
+                                                <td>
+                                                    <a class="modalbtn" type="button" data-bs-toggle="modal"
+                                                                data-idorderclass="${item.id}"
+                                                                data-dayorder="${today}"
+                                                                data-statusorder="${item.status}"
+                                                                data-paymentstatusorder="${item.payment.payment_status}"
+                                                                data-contractororder="${item.contractor.name}"
+                                                                data-ownorder="${item.own.number}"
+                                                                data-priceforpay="${item.price_for_pay}"
+                                                                data-bs-target="#exampleModal">
+                                                        <span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span>
+                                                    </a>
+                                                </td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                                                <td class="d-flex justify-content-end">
+                                                    <button class="modalbtn btn btn-primary" type="button"
+                                                                data-bs-toggle="modal"
+                                                                data-idorderclass="${item.id}"
+                                                                data-dayorder="${today}"
+                                                                data-statusorder="${item.status}"
+                                                                data-paymentstatusorder="${item.payment.payment_status}"
+                                                                data-contractororder="${item.contractor.name}"
+                                                                data-ownorder="${item.own.number}"
+                                                                data-priceforpay="${item.price_for_pay}"
+                                                                data-bs-target="#exampleModal">Оплатить</button>
+                                                    <button type="button" class="btn btn-primary ms-2 finishButton" data-bs-toggle="modal" data-bs-target="#finishOrderModal" data-order-ID="${item.id}">Завершить</button>
+                                                </td>
+                                            </tr>`
                     } else if (item.status.trim() === 'В работе'.trim() && item.payment.payment_status.trim() != 'Не оплачено'.trim()) {
-                        body.innerHTML += `<tr class="orderRow"><td><a style="text-decoration: none; color: #696d74;"   href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/"></a></td>
-                        <td><span class="badge rounded-pill text-bg-primary">${item.status}</span></td>
-                        <td><a  class="modalbtn" type="button"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
-                        <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
-                        <td><a  class="modalbtn btn btn-primary" type="button"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">Оплатить</a></td>
-
-                        </tr>`
+                        body.innerHTML += `<tr class="orderRow">
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/"></a></td>
+                                                <td><a class="finishButton" type="button" data-bs-toggle="modal" data-bs-target="#finishOrderModal" data-order-ID="${item.id}"><span class="badge rounded-pill text-bg-primary">${item.status}</span></a></td>
+                                                <td><span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                                                <td class="d-flex justify-content-end">
+                                                    <button class="modalbtn btn btn-primary" type="button" disabled
+                                                                data-bs-toggle="modal"
+                                                                data-idorderclass="${item.id}"
+                                                                data-dayorder="${today}"
+                                                                data-statusorder="${item.status}"
+                                                                data-paymentstatusorder="${item.payment.payment_status}"
+                                                                data-contractororder="${item.contractor.name}"
+                                                                data-ownorder="${item.own.number}"
+                                                                data-priceforpay="${item.price_for_pay}"
+                                                                data-bs-target="#exampleModal">Оплатить</button>
+                                                    <button type="button" class="btn btn-primary ms-2 finishButton" data-bs-toggle="modal" data-bs-target="#finishOrderModal" data-order-ID="${item.id}">Завершить</button>
+                                                </td>
+                                            </tr>`
                     } else if (item.status.trim() != 'В работе'.trim() && item.payment.payment_status.trim() === 'Не оплачено'.trim()) {
-                        body.innerHTML += `<tr class="orderRow"><td><a style="text-decoration: none; color: #696d74;"   href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${finish_day}</a></td>
-                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
-                        <td><a  class="modalbtn" type="button" data-bs-toggle="modal"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)} data-priceforpay="${encodeURIComponent(item.price_for_pay)}"  data-bs-target="#exampleModal">
-                        <span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span></a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
-                        <td><a  class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)} data-priceforpay="${encodeURIComponent(item.price_for_pay)}"  data-bs-target="#exampleModal">Оплатить</a></td>
-                        </tr>`
+                        body.innerHTML += `<tr class="orderRow">
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${finish_day}</a></td>
+                                                <td><a class="finishButton" type="button" data-order-ID="${item.id}"><span class="badge rounded-pill text-bg-success">${item.status}</span></a></td>
+                                                <td>
+                                                    <a class="modalbtn" type="button" data-bs-toggle="modal"
+                                                                data-idorderclass="${item.id}"
+                                                                data-dayorder="${today}"
+                                                                data-statusorder="${item.status}"
+                                                                data-paymentstatusorder="${item.payment.payment_status}"
+                                                                data-contractororder="${item.contractor.name}"
+                                                                data-ownorder="${item.own.number}"
+                                                                data-priceforpay="${item.price_for_pay}"
+                                                                data-bs-target="#exampleModal">
+                                                        <span class="badge rounded-pill text-bg-danger">${item.payment.payment_status}</span>
+                                                    </a>
+                                                </td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                                                <td class="d-flex justify-content-end">
+                                                    <button class="modalbtn btn btn-primary" type="button" data-bs-toggle="modal"
+                                                                data-idorderclass="${item.id}"
+                                                                data-dayorder="${today}"
+                                                                data-statusorder="${item.status}"
+                                                                data-paymentstatusorder="${item.payment.payment_status}"
+                                                                data-contractororder="${item.contractor.name}"
+                                                                data-ownorder="${item.own.number}"
+                                                                data-priceforpay="${item.price_for_pay}"
+                                                                data-bs-target="#exampleModal">Оплатить</button>
+                                                    <button type="button" class="btn btn-primary ms-2 disabled finishButton" data-order-ID="${item.id}">Завершить</button>
+                                                </td>
+                                            </tr>`
                     } else {
-                        body.innerHTML += `<tr class="orderRow"><td><a style="text-decoration: none; color: #696d74;"   href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${finish_day}</a></td>
-                        <td><span class="badge rounded-pill text-bg-success">${item.status}</span></td>
-                        <td><a  class="modalbtn" type="button"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">
-                        <span class="badge rounded-pill text-bg-success">${item.payment.payment_status}</span></a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
-                        <td><a style="text-decoration: none; color: #696d74;"  href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
-                        <td><a  class="modalbtn btn btn-primary" type="button"
-                        data-idorderclass=${encodeURIComponent(item.id)}
-                        data-dayorder=${encodeURIComponent(today)}
-                        data-statusorder=${encodeURIComponent(item.status)}
-                        data-paymentstatusorder=${encodeURIComponent(item.payment.payment_status)}
-                        data-contractororder=${encodeURIComponent(item.contractor.name)}
-                        data-ownorder=${encodeURIComponent(item.own.number)}  data-bs-target="#exampleModal">Оплатить</a></td>
-                        </tr>`
+                        body.innerHTML += `<tr class="orderRow">
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.id}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${today}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${finish_day}</a></td>
+                                                <td><a class="finishButton" type="button"><span class="badge rounded-pill text-bg-success">${item.status}</span></a></td>
+                                                <td><span class="badge rounded-pill text-bg-success" data-order-ID="${item.id}">${item.payment.payment_status}</span></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" class="" href="/org/1/tp/${tpID}/contractor/${item.contractor.id}/">${item.contractor.name}</a></td>
+                                                <td><a style="text-decoration: none; color: #696d74;" href="/org/1/tp/${tpID}/order/${item.id}/">${item.own.number}</a></td>
+                                                <td class="d-flex justify-content-end w-100 h-100">
+                                                    <button class="modalbtn btn btn-primary" type="button" disabled
+                                                                data-bs-toggle="modal"
+                                                                data-idorderclass="${item.id}"
+                                                                data-dayorder="${today}"
+                                                                data-statusorder="${item.status}"
+                                                                data-paymentstatusorder="${item.payment.payment_status}"
+                                                                data-contractororder="${item.contractor.name}"
+                                                                data-ownorder="${item.own.number}"
+                                                                data-priceforpay="${item.price_for_pay}"
+                                                                data-bs-target="#exampleModal">Оплатить</button>
+                                                    <button type="button" class="btn btn-primary ms-2 finishButton" data-order-ID="${item.id}" disabled>Завершить</button>
+                                                </td>
+                                            </tr>`
                     }
                 })
 
@@ -286,6 +310,72 @@ orderPaymentStatus.addEventListener('change', (e) => {
 })
 
 
+let finishButtons = document.getElementsByClassName('finishButton');
+
+
+function addFinishOrderEvent(sender, orderID) {
+    sender.onclick = (e) => {
+        let orderNumber = document.getElementById('orderNumber');
+        let finishConfirmButton = document.getElementById('finishConfirmButton');
+
+        orderNumber.innerText = orderID;
+        finishConfirmButton.dataset['orderId'] = orderID;
+    }
+}
+
+
+for (finishButton of finishButtons) {
+    let orderID = finishButton.dataset['orderId'];
+    addFinishOrderEvent(finishButton, orderID);
+}
+
+finishConfirmButton.onclick = e => {
+    $.ajax({
+        type: "post",
+        url: `${locationHost}/org/1/tp/${tpID}/order/${finishConfirmButton.dataset['orderId']}/finish/`,
+        contenType: 'application/json',
+        headers: {'X-CSRFToken': $.cookie('csrftoken')},
+        success: function (data) {
+            let orderRows = document.getElementsByClassName('orderRow');
+
+            for (orderRow of orderRows) {
+                if (eval(orderRow.children[0].innerText) === data['id']) {
+                    var finish_day = new Date(data.finished_at);
+                    var dd = String(finish_day.getDate()).padStart(2, '0');
+                    var mm = String(finish_day.getMonth() + 1).padStart(2, '0');
+                    var yyyy = finish_day.getFullYear();
+                    var hh = String(finish_day.getHours())
+                    var min
+                    if (finish_day.getMinutes() < 10) {
+                        min = '0' + String(finish_day.getMinutes())
+                    } else {
+                        min = String(finish_day.getMinutes())
+                    }
+                    finish_day = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
+
+                    if (data['status'] === 'Завершен') {
+                        orderRow.children[2].children[0].innerText = finish_day;
+                        orderRow.children[3].children[0].children[0].innerText = 'Завершен';
+                        orderRow.children[3].children[0].children[0].classList.remove('text-bg-primary');
+                        orderRow.children[3].children[0].children[0].classList.add('text-bg-success');
+                        orderRow.children[3].children[0].removeAttribute('data-bs-toggle');
+                        orderRow.children[3].children[0].onclick = null;
+                        orderRow.children[7].children[1].disabled = true;
+                    }
+                }
+            }
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
+    let closeFinishOrderModal = document.getElementById('closeFinishOrderModal');
+
+    closeFinishOrderModal.click();
+}
+
+
 window.onload = e => {
     let orderStatusSocket;
 
@@ -302,22 +392,40 @@ window.onload = e => {
 
         for (orderRow of orderRows) {
             if (data['payment_status'] !== undefined && data['status'] === undefined) {
+
                 if (eval(orderRow.children[0].innerText) === data['id']) {
                     if (data['payment_status'] === 'Оплачено') {
-                        orderRow.children[4].firstChild.firstChild.innerText = 'Оплачено';
-                        orderRow.children[4].firstChild.firstChild.classList.remove('text-bg-danger');
-                        orderRow.children[4].firstChild.firstChild.classList.add('text-bg-success');
-                        orderRow.children[4].firstChild.removeAttribute('data-bs-toggle');
-                        orderRow.children[7].firstChild.removeAttribute('data-bs-toggle');
+                        orderRow.children[4].children[0].children[0].innerText = 'Оплачено';
+                        orderRow.children[4].children[0].children[0].classList.remove('text-bg-danger');
+                        orderRow.children[4].children[0].children[0].classList.add('text-bg-success');
+                        orderRow.children[4].children[0].removeAttribute('data-bs-toggle');
+                        orderRow.children[7].children[0].disabled = true;
                     }
                 }
             }
             else {
                 if (eval(orderRow.children[0].innerText) === data['id']) {
                     if (data['status'] === 'Завершен') {
-                        orderRow.children[3].firstChild.innerText = 'Завершен';
-                        orderRow.children[3].firstChild.firstChild.classList.remove('text-bg-primary');
-                        orderRow.children[3].firstChild.firstChild.classList.add('text-bg-success');
+                        var finish_day = new Date(data.finished_at);
+                        var dd = String(finish_day.getDate()).padStart(2, '0');
+                        var mm = String(finish_day.getMonth() + 1).padStart(2, '0');
+                        var yyyy = finish_day.getFullYear();
+                        var hh = String(finish_day.getHours())
+                        var min
+                        if (finish_day.getMinutes() < 10) {
+                            min = '0' + String(finish_day.getMinutes())
+                        } else {
+                            min = String(finish_day.getMinutes())
+                        }
+                        finish_day = dd + '.' + mm + '.' + yyyy + ' ' + hh + ':' + min;
+
+                        orderRow.children[2].children[0].innerText = finish_day;
+                        orderRow.children[3].children[0].children[0].innerText = 'Завершен';
+                        orderRow.children[3].children[0].children[0].classList.remove('text-bg-primary');
+                        orderRow.children[3].children[0].children[0].classList.add('text-bg-success');
+                        orderRow.children[3].children[0].removeAttribute('data-bs-toggle');
+                        orderRow.children[3].children[0].onclick = null;
+                        orderRow.children[7].children[1].disabled = true;
                     }
                 }
             }

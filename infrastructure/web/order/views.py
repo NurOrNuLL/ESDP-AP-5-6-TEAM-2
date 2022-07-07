@@ -35,6 +35,7 @@ from rest_framework.pagination import PageNumberPagination
 from concurrency.exceptions import RecordModifiedError
 from concurrency.api import disable_concurrency
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from rest_framework.response import Response
 import pytz
 
 
@@ -576,3 +577,18 @@ class OrderUpdateConcurrencyView(LoginRequiredMixin, UserPassesTestMixin, View):
             order.save()
 
             return redirect('order_detail', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'], ordID=self.kwargs['ordID'])
+
+
+class OrderFinishApiView(generics.GenericAPIView):
+    serializer_class = OrderSerializer
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        order = OrderService.get_order_by_id(self.kwargs['ordID'])
+
+        order.status = 'Завершен'
+        order.finished_at = datetime.now()
+        order.save()
+
+        serializer = OrderSerializer(order)
+
+        return Response(serializer.data)
