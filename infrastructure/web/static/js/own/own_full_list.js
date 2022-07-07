@@ -12,16 +12,49 @@ function update() {
     $('.button_own').click(
         function (e) {
             e.preventDefault()
-            let id = document.getElementById('id')
-            let name = document.getElementById('name')
-            let number = document.getElementById('number')
-            let comment = document.getElementById('comment')
-            let version = document.getElementById('version')
-            id.value = $(this).attr('data-ownid');
-            name.value = decodeURIComponent($(this).attr('data-ownname'));
-            number.value = $(this).attr('data-ownnumber');
-            comment.value = decodeURIComponent($(this).attr('data-owncomment'));
-            version.value = $(this).attr('data-ownversion')
+            var is_part = $(this).attr('data-ownpart');
+            console.log(is_part)
+            if (is_part === 'true'){
+                let numbers = document.getElementById('own_number_label')
+                let numbersin = document.getElementById('number')
+                numbers.classList.add('d-none')
+                numbersin.classList.add('d-none')
+                let id = document.getElementById('id')
+                let name = document.getElementById('name')
+                let comment = document.getElementById('comment')
+                let version = document.getElementById('version')
+                id.value = $(this).attr('data-ownid');
+                name.value = decodeURIComponent($(this).attr('data-ownname'));
+                comment.value = decodeURIComponent($(this).attr('data-owncomment'));
+                version.value = $(this).attr('data-ownversion')
+            }else if(is_part === 'false'){
+                console.log('sdssdsdsds')
+                let id = document.getElementById('id')
+                let name = document.getElementById('name')
+                let numbers = document.getElementById('own_number_label')
+                numbers.classList.remove('d-none')
+                let numbersin = document.getElementById('number')
+                numbersin.classList.remove('d-none')
+                let number = document.getElementById('number')
+                let comment = document.getElementById('comment')
+                let version = document.getElementById('version')
+                id.value = $(this).attr('data-ownid');
+                name.value = decodeURIComponent($(this).attr('data-ownname'));
+                number.value = $(this).attr('data-ownnumber');
+                comment.value = decodeURIComponent($(this).attr('data-owncomment'));
+                version.value = $(this).attr('data-ownversion')
+            }else{
+                let id = document.getElementById('id')
+                let name = document.getElementById('name')
+                let number = document.getElementById('number')
+                let comment = document.getElementById('comment')
+                let version = document.getElementById('version')
+                id.value = $(this).attr('data-ownid');
+                name.value = decodeURIComponent($(this).attr('data-ownname'));
+                number.value = $(this).attr('data-ownnumber');
+                comment.value = decodeURIComponent($(this).attr('data-owncomment'));
+                version.value = $(this).attr('data-ownversion')
+            }
             ownEditBTN.onclick = e => {
                 e.preventDefault();
                 let id = document.getElementById('id').value
@@ -122,6 +155,7 @@ function update() {
                                         name.innerText = data['name']
                                         number.innerText = data['number']
                                         comment.innerText = data['comment']
+                                        body.innerHtml=''
                                     },
                                     error(data) {
                                         console.log(data)
@@ -429,6 +463,7 @@ isPart.addEventListener('change', () => {
                                         <td>${item.comment}</td>
                                         <td><button id="editOwns" type="button" class="btn btn-primary button_own"
                                         data-ownid="${item.id}"
+                                        data-ownpart="${item.is_part}"
                                         data-ownname="${encodeURIComponent(item.name)}"
                                         data-ownnumber="${item.number}"
                                         data-owncomment="${encodeURIComponent(item.comment)}"
