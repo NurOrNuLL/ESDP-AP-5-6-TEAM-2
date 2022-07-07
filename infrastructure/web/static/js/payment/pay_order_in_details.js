@@ -27,7 +27,7 @@ $(function () {
             $(".dayorder").html(`<p><strong>Дата</strong>: ${dayorder}</p>`);
             $(".contractororder").html(`<p><strong>Заказ-наряд</strong>: ${contractororder}</p>`);
             $(".ownorder").html(`<p><strong>Контрактор</strong>:  ${ownorder}</p>`);
-            $(".priceforpay").html(`<p class="alert alert-danger" role="alert"><strong>Общая сумма</strong>:  ${priceforpay} тенге</p>`);
+            $(".priceforpay").html(`<p class="alert alert-warning" role="alert" style="width: 730px;"><strong>Общая сумма</strong>:  ${priceforpay} тенге</p>`);
             let senId = document.getElementsByClassName('chosenID')
             $('.sendId').html(`<input type="text" value="${idorderclass}" id="chosenID" class="chosenID" name="order_id" hidden >`)
             idClicked = parseInt(idorderclass)
