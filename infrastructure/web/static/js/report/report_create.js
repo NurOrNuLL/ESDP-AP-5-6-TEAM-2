@@ -582,7 +582,8 @@ reportForm.addEventListener('submit', e => {
         reportSocket = new WebSocket(`ws://${window.location.host}/report/create/`);
     }
     else {
-        reportSocket = new WebSocket(`wss://${window.location.host}/report/create/`);
+        reportSocket = new WebSocket(`wss://${window.location.host}/report/create/
+        `);
     }
 
     reportSocket.onopen = e => {
