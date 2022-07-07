@@ -39,7 +39,7 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['tpID'] = self.kwargs['tpID']
-        context['roles'] = [('Мастер', 'Мастер')]
+        context['roles'] = self.initial_data
         return context
 
     def get(
