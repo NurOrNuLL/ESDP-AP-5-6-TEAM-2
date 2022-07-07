@@ -41,7 +41,10 @@ from .employee.views import (
     EmployeeConcurrencyUpdate, EmployeeImageUpdateView
 )
 from infrastructure.accounts.views import RegisterView
-from infrastructure.web.report.views import ReportPreviewView, ReportDownloadView
+from infrastructure.web.report.views import (
+    ReportPreviewView, ReportDownloadView,
+    ReportRedisView, ReportListView
+)
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
 from infrastructure.web.order.consumers import OrderStatusUpdateTrackingConsumer
@@ -97,9 +100,9 @@ contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
     path('contractor/<int:contrID>/',
-	 ContractorDetail.as_view(), name="contractor_detail"),
+   ContractorDetail.as_view(), name="contractor_detail"),
     path('contractor/<int:contrID>/own/list/filter/',
-	 ContractorDetailOwnListApiView.as_view()),
+   ContractorDetailOwnListApiView.as_view()),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
     path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
@@ -152,8 +155,10 @@ queue_urls = [
 ]
 
 report_urls = [
-	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+    path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
     path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
+    path('report/save/', ReportRedisView.as_view(), name='report_save'),
+    path('report/', ReportListView.as_view(), name='report_list')
 ]
 
 report_websocket_urls = [
