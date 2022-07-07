@@ -6,6 +6,10 @@ let bodyBlock = document.getElementById('bodyBlock');
 let downloadData = document.getElementById('downloadData');
 let errorAlert = document.getElementById('errorAlert');
 let error = document.getElementById('error');
+let reportInput = document.getElementById('reportInput');
+let reportSave = document.getElementById('reportSave');
+let fromDate = document.getElementById('from_date');
+let toDate = document.getElementById('to_date');
 
 
 function renderReportType1(paidOrders, unpaidOrders, report) {
@@ -230,6 +234,10 @@ function renderReportType1(paidOrders, unpaidOrders, report) {
         }
         else {
             bodyBlock.innerHTML = '<h4 class="text-center text-danger" style="position: absolute; bottom: 50%; left: 37%;">Недостаточно данных для отчета!</h4>'
+            reportSave.disabled = true;
+            resetReport.disabled = true;
+            downloadReport.disabled = true;
+            reportFormat.disabled = true;
         }
     }
 
@@ -472,6 +480,10 @@ function renderReportType2(paidOrders, unpaidOrders, report) {
         }
         else {
             bodyBlock.innerHTML = '<h4 class="text-center text-danger" style="position: absolute; bottom: 50%; left: 37%;">Недостаточно данных для отчета!</h4>'
+            reportSave.disabled = true;
+            resetReport.disabled = true;
+            downloadReport.disabled = true;
+            reportFormat.disabled = true;
         }
     }
 
@@ -548,6 +560,10 @@ function renderReportType3(report) {
     }
     else {
         bodyBlock.innerHTML = '<h4 class="text-center text-danger" style="position: absolute; bottom: 50%; left: 37%;">Недостаточно данных для отчета!</h4>'
+        reportSave.disabled = true;
+        resetReport.disabled = true;
+        downloadReport.disabled = true;
+        reportFormat.disabled = true;
     }
 
     let employeeSalaryBody = document.getElementById('employeeSalaryBody');
@@ -568,7 +584,9 @@ function renderReportType3(report) {
 
 resetReport.onclick = e => {
     bodyBlock.innerHTML = '<h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>'
+    reportInput.value = '';
 
+    reportSave.disabled = true;
     resetReport.disabled = true;
     downloadReport.disabled = true;
     reportFormat.disabled = true;
@@ -579,10 +597,10 @@ reportForm.addEventListener('submit', e => {
     e.preventDefault();
 
     if (DEBUG === true) {
-        reportSocket = new WebSocket(`ws://${window.location.host}/report/create/`);
+        reportSocket = new WebSocket(`ws://${window.location.host}/wss/report/create`);
     }
     else {
-        reportSocket = new WebSocket(`wss://${window.location.host}/report/create/`);
+        reportSocket = new WebSocket(`wss://${window.location.host}/wss/report/create`);
     }
 
     reportSocket.onopen = e => {
@@ -609,15 +627,17 @@ reportForm.addEventListener('submit', e => {
                 errorAlert.classList.add('d-none')
             }
 
+            reportInput.value = JSON.stringify(report);
+
             downloadData.value = JSON.stringify(report);
             downloadData.innerText = JSON.stringify(report);
 
+            reportSave.disabled = false;
+            resetReport.disabled = false;
+            downloadReport.disabled = false;
+            reportFormat.disabled = false;
+
             if (report['report_type'] === 1) {
-
-                resetReport.disabled = false;
-                downloadReport.disabled = false;
-                reportFormat.disabled = false;
-
                 if (report['paidOrders'].length !== 0) {
                     if (report['unpaidOrders'].length !== 0) {
                         renderReportType1(true, true, report)
@@ -636,11 +656,6 @@ reportForm.addEventListener('submit', e => {
                 }
             }
             else if (report['report_type'] === 2) {
-
-                resetReport.disabled = false;
-                downloadReport.disabled = false;
-                reportFormat.disabled = false;
-
                 if (report['paidOrders'].length !== 0) {
                     if (report['unpaidOrders'].length !== 0) {
                         renderReportType2(true, true, report)
@@ -661,10 +676,6 @@ reportForm.addEventListener('submit', e => {
             else if (report['report_type'] === 3) {
                 renderReportType3(report);
             }
-
-            resetReport.disabled = false;
-            downloadReport.disabled = false;
-            reportFormat.disabled = false;
         }
         else {
             errorAlert.classList.remove('d-none');
@@ -672,6 +683,7 @@ reportForm.addEventListener('submit', e => {
 
             bodyBlock.innerHTML = '<h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>'
 
+            reportSave.disabled = true;
             resetReport.disabled = true;
             downloadReport.disabled = true;
             reportFormat.disabled = true;
@@ -680,3 +692,23 @@ reportForm.addEventListener('submit', e => {
         reportSocket.close();
     }
 })
+
+reportSave.onclick = e => {
+    $.ajax({
+        url: `${locationHost}/org/1/tp/${tpID}/report/save/`,
+        method: 'post',
+        data: JSON.stringify({
+            'report': reportInput.value,
+            'from_date': fromDate.value,
+            'to_date': toDate.value
+        }),
+        contentType: 'application/json',
+        headers: {'X-CSRFToken': $.cookie('csrftoken')},
+        success: (data) => {
+            console.log(data);
+        },
+        errors: (err) => {
+            console.log(err);
+        }
+    })
+}
