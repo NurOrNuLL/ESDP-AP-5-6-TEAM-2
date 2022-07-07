@@ -1,4 +1,5 @@
 import json
+import uuid
 from typing import List
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import TemplateView
@@ -9,6 +10,55 @@ import datetime
 import calendar
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from services.employee_services import EmployeeServices
+
+from django.conf import settings
+from rest_framework.generics import GenericAPIView
+import redis
+from rest_framework.response import Response
+
+
+class ReportListView(TemplateView):
+    template_name = 'report/report_list.html'
+
+
+class ReportRedisView(GenericAPIView):
+    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=1)
+        count = 0
+        items = []
+
+        for key in redis_instance.keys('*'):
+            items.append(json.loads(redis_instance.get(key)))
+            count += 1
+
+        items = sorted(items, key=lambda d: d['created_at'], reverse=True)
+        response = {
+            'msg': f'Найдено элементов: {count}',
+            'items': items,
+        }
+        return Response(response)
+
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        data = request.data
+        redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=1)
+
+        report_uuid = str(uuid.uuid4())
+
+        report = {
+            'uuid': report_uuid,
+            'report': json.loads(data['report']),
+            'created_at': datetime.datetime.now().strftime('%d.%m.%Y %H:%M'),
+            'from_date':  data['from_date'],
+            'to_date':  data['from_date'],
+        }
+
+        redis_instance.set(report_uuid, json.dumps(report), 604800)
+
+        response = {
+            'msg': 'success'
+        }
+
+        return Response(response)
 
 
 class ReportPreviewView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):

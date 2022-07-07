@@ -19,7 +19,7 @@ from django.http.response import HttpResponse
 
 
 class OrderPayment(LoginRequiredMixin, UserPassesTestMixin, ResetOrderCreateFormDataMixin, TemplateView):
-    """Создание оплаты заказ-наряда"""
+    """Произвести оплату выбранного заказ-наряда"""
     template_name = 'home.html'
     form_class = PaymentForm
 
@@ -71,8 +71,7 @@ class OrderPayment(LoginRequiredMixin, UserPassesTestMixin, ResetOrderCreateForm
                     piked_order.payment.details = details_cashless
                     piked_order.payment.save()
                 else:
-                    return HttpResponse(json.dumps({'error': 'Счет фактура или накладное заполнено не корректно, '
-                                                             'максимальная длина 100 символов'}), content_type='application/json')
+                    return HttpResponse(json.dumps({'error': 'Счет фактура или накладное заполнено не корректно'}), content_type='application/json')
             elif payment_pk == 3:
                 details_kaspi = dict(kaspi=request.POST.get('details_kaspi'))
                 get_method = PaymentMethod.objects.get(pk=payment_pk)
