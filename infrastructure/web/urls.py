@@ -21,7 +21,7 @@ from .nomenclature.views import (
 )
 from .own.views import (
     OwnDeleteView, OwnCreate,
-    OwnList, OwnFullList, OwnFilterApiView
+    OwnList, OwnFullList, OwnFilterApiView, OwnUpdateApiView, OwnConcurrencyUpdateApiView
 )
 from .queue.views import QueueCreate
 from .trade_point.views import (
@@ -46,6 +46,8 @@ from infrastructure.web.report.views import (
 )
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
+from infrastructure.web.order.consumers import OrderStatusUpdateTrackingConsumer
+
 
 nomenclature_urls = [
     path(
@@ -97,9 +99,9 @@ contractor_urls = [
     path('contractor/create/', ContractorCreate.as_view(), name="contractor_create"),
     path('contractor/list/', ContractorList.as_view(), name="contractors"),
     path('contractor/<int:contrID>/',
-	 ContractorDetail.as_view(), name="contractor_detail"),
+   ContractorDetail.as_view(), name="contractor_detail"),
     path('contractor/<int:contrID>/own/list/filter/',
-	 ContractorDetailOwnListApiView.as_view()),
+   ContractorDetailOwnListApiView.as_view()),
     path('contractor/list/filter/', ContractorFilterApiView.as_view()),
     path('contractor/<int:contrID>/update/', ContractorUpdate.as_view(), name="contractor_update"),
     path('contractor/<int:contrID>/update_concurrency/', ContractorUpdateConcurrecnyView.as_view(),
@@ -114,7 +116,9 @@ own_urls = [
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
         OwnDeleteView.as_view(), name="own_delete"
     ),
-    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list")
+    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list"),
+    path('own/<int:ownID>/update/', OwnUpdateApiView.as_view(), name='own_update'),
+    path('own/<int:ownID>/update/concurrency/', OwnConcurrencyUpdateApiView.as_view(), name='own_update_concurrency'),
 ]
 
 employee_urls = [
@@ -131,7 +135,7 @@ employee_urls = [
 
 order_urls = [
     path('order/<int:ordID>/', OrderDetail.as_view(), name="order_detail"),
-    path('order/<int:ordID>/update', OrderUpdateView.as_view(), name="order_update"),
+    path('order/<int:ordID>/update/', OrderUpdateView.as_view(), name="order_update"),
     path('order/<int:ordID>/update/concurrency', OrderUpdateConcurrencyView.as_view(), name="order_update_concurrency"),
     path('order/create/stage/1/', OrderCreateViewStage1.as_view(), name='order_create_stage1'),
     path('order/create/stage/2/', OrderCreateViewStage2.as_view(), name='order_create_stage2'),
@@ -140,19 +144,23 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
+order_websocket_urls = [
+    path('order/status/update/tracking/', OrderStatusUpdateTrackingConsumer.as_asgi())
+]
+
 queue_urls = [
     path('queue/create/', QueueCreate.as_view(), name='queue_create'),
 ]
 
 report_urls = [
-	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
+    path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
     path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
     path('report/save/', ReportRedisView.as_view(), name='report_save'),
     path('report/', ReportListView.as_view(), name='report_list')
 ]
 
 report_websocket_urls = [
-    path('wss/report/create', ReportConsumer.as_asgi())
+    path('report/create/', ReportConsumer.as_asgi())
 ]
 
 payment_url = [
@@ -177,3 +185,4 @@ urlpatterns += payment_url
 urlpatterns += queue_urls
 
 websocket_urlpatterns += report_websocket_urls
+websocket_urlpatterns += order_websocket_urls
