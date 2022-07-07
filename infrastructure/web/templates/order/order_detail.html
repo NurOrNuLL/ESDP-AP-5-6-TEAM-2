@@ -107,11 +107,23 @@
             <div class="row">
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Оплата:</span>
-                    <span class="card-text">{{ order.payment.payment_status }}</span>
+                    {% if order.payment.payment_status == 'Не оплачено' %}
+                        <span class="card-text" id="detail_status">{{ order.payment.payment_status }}</span>
+                        <a  class="modalbtn2 btn btn-primary" type="button" data-bs-toggle="modal"
+                        data-idorderclass='{{ order.id }}'
+                        data-dayorder='{{ order.created_at }}'
+                        data-statusorder='{{ order.status }}'
+                        data-paymentstatusorder='{{ order.payment.payment_status }}'
+                        data-contractororder='{{ order.contractor }}'
+                        data-ownorder='{{ order.own.number }}' data-priceforpay="{{ order.price_for_pay }}" id="detail_button"  data-bs-target="#exampleModal1">Оплатить</a>
+
+                        {% else %}
+                        <span class="card-text">{{ order.payment.payment_status }}</span>
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Метод оплаты:</span>
-                    <span class="card-text">{% if order.payment.method %}
+                    <span class="card-text" id="detail_method">{% if order.payment.method %}
                         {{ order.payment.method }}{% else %}Не указан{% endif %}</span>
                 </div>
             </div>
@@ -121,18 +133,19 @@
                 <div class="col-md-6">
                     <span class="text" style="font-weight: bold">Детали платежа:</span>
                     {% if order.payment.details %}
-                        <span class="card-text">{{ order.payment.details.kaspi }}</span>
+                        <span class="card-text" id="detail_kaspi">{{ order.payment.details.kaspi }}</span>
                         {% if order.payment.details.cashless.consignment or order.payment.details.cashless.invoice %}
                             <br><span class="card-text">Накладная #
-                            {{ order.payment.details.cashless.consignment }}</span><br>
+                            <p id="detail_consignment">{{ order.payment.details.cashless.consignment }}</p></span><br>
                             <span>Счёт-фактура #
-                                {{ order.payment.details.cashless.invoice }}</span>
+                                <p id="detail_invoice">{{ order.payment.details.cashless.invoice }}</p></span>
                         {% endif %}
                     {% else %}
-                        <span class="card-text">Не указаны</span>
+                        <span class="card-text" id="details">Не указаны</span>
                     {% endif %}
                 </div>
             </div>
         </div>
     </div>
+    {% include 'partials/payment/payment_modal_detail.html' %}
 {% endblock %}
