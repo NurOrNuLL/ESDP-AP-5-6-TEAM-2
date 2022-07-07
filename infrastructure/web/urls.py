@@ -21,7 +21,7 @@ from .nomenclature.views import (
 )
 from .own.views import (
     OwnDeleteView, OwnCreate,
-    OwnList, OwnFullList, OwnFilterApiView, OwnUpdateApiView, OwnConcurrencyUpdateApiView
+    OwnList, OwnFullList, OwnFilterApiView
 )
 from .queue.views import QueueCreate
 from .trade_point.views import (
@@ -40,11 +40,12 @@ from .employee.views import (
     EmployeeConcurrencyUpdate, EmployeeImageUpdateView
 )
 from infrastructure.accounts.views import RegisterView
-from infrastructure.web.report.views import ReportPreviewView, ReportDownloadView
+from infrastructure.web.report.views import (
+    ReportPreviewView, ReportDownloadView,
+    ReportRedisView, ReportListView
+)
 from infrastructure.web.report.consumers import ReportConsumer
 from .payment.views import OrderPayment
-from infrastructure.web.order.consumers import OrderStatusUpdateTrackingConsumer
-
 
 nomenclature_urls = [
     path(
@@ -113,9 +114,7 @@ own_urls = [
         'contractor/<int:contrID>/own/<int:ownID>/delete/',
         OwnDeleteView.as_view(), name="own_delete"
     ),
-    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list"),
-    path('own/<int:ownID>/update/', OwnUpdateApiView.as_view(), name='own_update'),
-    path('own/<int:ownID>/update/concurrency/', OwnConcurrencyUpdateApiView.as_view(), name='own_update_concurrency'),
+    path('contractor/<int:contrID>/own/', OwnList.as_view(), name="own_list")
 ]
 
 employee_urls = [
@@ -141,10 +140,6 @@ order_urls = [
     path('order/list/filter/', OrderListApiView.as_view(), name='order_list')
 ]
 
-order_websocket_urls = [
-    path('order/status/update/tracking/', OrderStatusUpdateTrackingConsumer.as_asgi())
-]
-
 queue_urls = [
     path('queue/create/', QueueCreate.as_view(), name='queue_create'),
 ]
@@ -152,10 +147,12 @@ queue_urls = [
 report_urls = [
 	path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
     path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
+    path('report/save/', ReportRedisView.as_view(), name='report_save'),
+    path('report/', ReportListView.as_view(), name='report_list')
 ]
 
 report_websocket_urls = [
-    path('report/create/', ReportConsumer.as_asgi())
+    path('wss/report/create', ReportConsumer.as_asgi())
 ]
 
 payment_url = [
@@ -180,4 +177,3 @@ urlpatterns += payment_url
 urlpatterns += queue_urls
 
 websocket_urlpatterns += report_websocket_urls
-websocket_urlpatterns += order_websocket_urls
