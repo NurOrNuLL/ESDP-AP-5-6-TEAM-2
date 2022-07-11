@@ -1,3 +1,5 @@
+import os
+
 import tablib
 from django.http import HttpResponse, HttpResponseRedirect
 from models.nomenclature.models import Nomenclature
@@ -9,6 +11,7 @@ import jsonschema
 import json
 from urllib.parse import quote
 import datetime
+import boto3
 
 File = str
 JSON = dict
@@ -18,21 +21,18 @@ JSONSchema = dict
 class ReportService:
     @staticmethod
     def download_a_exel_file_to_user(file_data, file_extension):
-        paid_data_structure = ReportService.prepare_jobs_data_for_excel(file_data['paidJobs'])
+        paid_data_structure = ReportService.prepare_jobs_data_for_excel(file_data['paidOrders'])
         paid_data = pandas.DataFrame(paid_data_structure)
-        unpaid_data_structure = ReportService.prepare_jobs_data_for_excel(file_data['unpaidJobs'])
-        unpaid_data = pandas.DataFrame(unpaid_data_structure)
         salary_data_structure = ReportService.prepare_salary_data_for_excel(file_data['employeeSalary'])
         salary_data = pandas.DataFrame(salary_data_structure)
         total_data_structure = ReportService.prepare_total_data_for_excel(file_data)
         total_data = pandas.DataFrame(total_data_structure)
-        indexing = [paid_data, unpaid_data, salary_data, total_data]
+        indexing = [paid_data, salary_data, total_data]
         for i in indexing:
             i.index = i.index +1
         with BytesIO() as b:
             writer = pandas.ExcelWriter(b, engine='xlsxwriter')
             paid_data.to_excel(writer, sheet_name='Оплаченные работы')
-            unpaid_data.to_excel(writer, sheet_name='Неоплаченные работы')
             salary_data.to_excel(writer, sheet_name='Запрлаты мастерам')
             total_data.to_excel(writer, sheet_name='Итог')
             writer.save()
@@ -56,21 +56,21 @@ class ReportService:
 
     @staticmethod
     def prepare_salary_data_for_excel(file_data):
-        data = {'Наименование': [], 'ИИН': [], 'Зарплата': []}
+        data = {'Мастер': [], 'ИИН': [], 'Зарплата': []}
         for i in file_data:
-            data['Наименование'].append(i['Наименование'])
+            data['Мастер'].append(i['Наименование'])
             data['ИИН'].append(i['ИИН'])
             data['Зарплата'].append(i['Зарплата'])
         return data
 
     @staticmethod
     def prepare_jobs_data_for_excel(file_data):
-        data = {'Название услуги': [], 'Категория': [], 'Марка': [], 'Мастера': [], 'Гарантия': [], 'Цена': []}
+        data = {'Дата создания': [], 'Дата завершения': [], 'Контрагент': [], 'Номер авто/Запчасть': [], 'Гарантия': [], 'Сумма': []}
         for i in file_data:
-            data['Название услуги'].append(i['Название услуги'])
-            data['Категория'].append(i['Категория услуги'])
-            data['Марка'].append(i['Марка услуги'])
-            data['Мастера'].append(i['Мастера'])
-            data['Гарантия'].append(i['Гарантия'])
-            data['Цена'].append(i['Цена услуги'])
+            data['Дата создания'].append(i['created_at'])
+            data['Дата завершения'].append(i['finished_at'])
+            data['Контрагент'].append(i['contractor'])
+            data['Номер авто/Запчасть'].append(i['own'])
+            data['Гарантия'].append(i['garanty'])
+            data['Сумма'].append(i['total'])
         return data

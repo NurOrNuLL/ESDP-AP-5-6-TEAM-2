@@ -12,25 +12,22 @@ $.ajax({
         if (data.next && data.previous === null) {
             next.classList.remove('disabled')
             back.classList.add('disabled')
-        }
-        else if (data.previous && data.next === null) {
+        } else if (data.previous && data.next === null) {
             next.classList.add('disabled')
             back.classList.remove('disabled')
-        }
-        else if (data.next === null && data.previous === null) {
+        } else if (data.next === null && data.previous === null) {
             next.classList.add('disabled')
             back.classList.add('disabled')
-        }
-        else {
+        } else {
             next.classList.remove('disabled')
             back.classList.remove('disabled')
         }
 
         data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td class="badge rounded-pill text-bg-primary">'
-                + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
+            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td><span class="badge rounded-pill text-bg-primary">'
+                + item.role + '</span></td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
                 + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
-            })
+        })
     },
     error: (response) => {
         console.log(response);
@@ -39,80 +36,73 @@ $.ajax({
 
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
-  $.ajax({
-    url: `${locationHost}/org/1/tp/${tpID}/employee/list/filter/?page=${page.value}&search=${search.value}`,
-    method: 'GET',
-    success: (data) => {
-        body.innerText = ""
+    $.ajax({
+        url: `${locationHost}/org/1/tp/${tpID}/employee/list/filter/?page=${page.value}&search=${search.value}`,
+        method: 'GET',
+        success: (data) => {
+            body.innerText = ""
 
-        if (data.next && data.previous === null) {
-            next.classList.remove('disabled')
-            back.classList.add('disabled')
-        }
-        else if (data.previous && data.next === null) {
-            next.classList.add('disabled')
-            back.classList.remove('disabled')
-        }
-        else if (data.next === null && data.previous === null) {
-            next.classList.add('disabled')
-            back.classList.add('disabled')
-        }
-        else {
-            next.classList.remove('disabled')
-            back.classList.remove('disabled')
-        }
+            if (data.next && data.previous === null) {
+                next.classList.remove('disabled')
+                back.classList.add('disabled')
+            } else if (data.previous && data.next === null) {
+                next.classList.add('disabled')
+                back.classList.remove('disabled')
+            } else if (data.next === null && data.previous === null) {
+                next.classList.add('disabled')
+                back.classList.add('disabled')
+            } else {
+                next.classList.remove('disabled')
+                back.classList.remove('disabled')
+            }
 
-        data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>'
-                + item.surname + '</td><td class="badge rounded-pill text-bg-primary">' + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
-        })
-    },
-    error: (response) => {
-        console.log(response)
-    }
-})
+            data.results.forEach(function (item) {
+                body.innerHTML += '<tr><td>' + item.name + '</td><td>'
+                    + item.surname + '</td><td><span class="badge rounded-pill text-bg-primary">' + item.role + '</span></td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/' + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
+            })
+        },
+        error: (response) => {
+            console.log(response)
+        }
+    })
 })
 
 
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
-  $.ajax({
-    url: `${locationHost}/org/1/tp/${tpID}/employee/list/filter/?page=${page.value}&search=${search.value}`,
-    method: 'GET',
-    success: (data) => {
-        body.innerText = ""
+    $.ajax({
+        url: `${locationHost}/org/1/tp/${tpID}/employee/list/filter/?page=${page.value}&search=${search.value}`,
+        method: 'GET',
+        success: (data) => {
+            body.innerText = ""
 
-        if (data.next && data.previous === null) {
-            next.classList.remove('disabled')
-            back.classList.add('disabled')
-        }
-        else if (data.previous && data.next === null) {
-            next.classList.add('disabled')
-            back.classList.remove('disabled')
-        }
-        else if (data.next === null && data.previous === null) {
-            next.classList.add('disabled')
-            back.classList.add('disabled')
-        }
-        else {
-            next.classList.remove('disabled')
-            back.classList.remove('disabled')
-        }
-
-        data.results.forEach(function (item) {
-            body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td class="badge rounded-pill text-bg-primary">'
-                + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
-                + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
+            if (data.next && data.previous === null) {
+                next.classList.remove('disabled')
+                back.classList.add('disabled')
+            } else if (data.previous && data.next === null) {
+                next.classList.add('disabled')
+                back.classList.remove('disabled')
+            } else if (data.next === null && data.previous === null) {
+                next.classList.add('disabled')
+                back.classList.add('disabled')
+            } else {
+                next.classList.remove('disabled')
+                back.classList.remove('disabled')
+            }
+            data.results.forEach(function (item) {
+                body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td><span class="badge rounded-pill text-bg-primary">'
+                    + item.role + '</span></td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
+                    + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
             })
-    },
-    error: (response) => {
-        console.log(response)
-    }
-})
+        },
+        error: (response) => {
+            console.log(response)
+        }
+    })
 })
 
 search.addEventListener('input', (e) => {
-      $.ajax({
+    $.ajax({
         url: `${locationHost}/org/1/tp/${tpID}/employee/list/filter/?search=${search.value}`,
         method: 'GET',
         success: (data) => {
@@ -121,30 +111,26 @@ search.addEventListener('input', (e) => {
             if (data.next && data.previous === null) {
                 next.classList.remove('disabled')
                 back.classList.add('disabled')
-            }
-            else if (data.previous && data.next === null) {
+            } else if (data.previous && data.next === null) {
                 next.classList.add('disabled')
                 back.classList.remove('disabled')
-            }
-            else if (data.next === null && data.previous === null) {
+            } else if (data.next === null && data.previous === null) {
                 next.classList.add('disabled')
                 back.classList.add('disabled')
-            }
-            else {
+            } else {
                 next.classList.remove('disabled')
                 back.classList.remove('disabled')
             }
 
-            if(data.results.length) {
+            if (data.results.length) {
                 data.results.forEach(function (item) {
                     if (item) {
-                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td class="badge rounded-pill text-bg-primary">'
-                            + item.role + '</td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
+                        body.innerHTML += '<tr><td>' + item.name + '</td><td>' + item.surname + '</td><td><span class="badge rounded-pill text-bg-primary">'
+                            + item.role + '</span></td><td>' + item.phone + '</td><td class="d-flex justify-content-end"><a class="btn btn-secondary" href="/org/1/tp/'
                             + tpID + '/employee/' + item.uuid + '/">Детали</a></td></tr>'
-                        }
-                    })
-            }
-            else {
+                    }
+                })
+            } else {
                 body.innerHTML = '';
                 emptyBody.innerHTML = '';
                 emptyBody.innerHTML += '<h4 class="text-center" >Ничего не найдено!</h4>';
@@ -153,5 +139,5 @@ search.addEventListener('input', (e) => {
         error: (response) => {
             console.log(response);
         }
-        })
+    })
 })

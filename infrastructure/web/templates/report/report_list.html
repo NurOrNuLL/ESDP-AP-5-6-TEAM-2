@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h1 class="mb-4">Список отчетов</h1>
+    <hr>
+    <a href="{% url 'report_preview' orgID=1 tpID=tpID %}" class="btn btn-secondary mt-2">Сформировать отчет</a>
+    <table class="table mt-4 table-hover">
+        <thead id="bodyTitle">
+        <tr>
+            <th scope="col">Дата создания</th>
+            <th scope="col">Период</th>
+            <th scope="col">Тип отчета</th>
+        </tr>
+        </thead>
+        <tbody id="body"></tbody>
+    </table>
+    <div style="position: absolute; left: 50%; top: 50%;" id="emptyBody"></div>
+<script>
+    var tpID = {{ tpID }}
+</script>
+{% endblock content %}
+{% block js_block %}
+    <script src="{% static 'js/report/report_list.js' %}"></script>
+{% endblock %}

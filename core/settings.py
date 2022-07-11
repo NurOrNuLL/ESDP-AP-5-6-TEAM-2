@@ -37,9 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
-    'infrastructure',
     'infrastructure.accounts',
-    'infrastructure.web',
+    'infrastructure.web.apps.WebAppConfig',
     'models.contractor',
     'models.nomenclature',
     'models.organization',
@@ -49,6 +48,7 @@ INSTALLED_APPS = [
     'models.payment_method',
     'models.payment',
     'models.order',
+    'models.report',
     'models.queue',
     'rest_framework',
     'corsheaders',
@@ -147,6 +147,7 @@ if os.environ.get('GITHUB_WORKFLOW'):
             'PORT': '5432',
         }
     }
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -216,7 +217,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIS_HOST = 'redis'
+if os.environ.get('REDIS_HOST'):
+    REDIS_HOST = os.environ.get('REDIS_HOST')
+else:
+    REDIS_HOST = 'redis'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}

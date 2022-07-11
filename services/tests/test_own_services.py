@@ -11,7 +11,7 @@ class OwnServicesTest(TestCase):
 
         with patch('models.own.models.Own.objects.get') as get_own:
             get_own.return_value = own
-            returned_own = OwnServices.get_own_by_id({'ownID': own.id})
+            returned_own = OwnServices.get_own_by_id(own.id)
 
             self.assertEqual(returned_own, own)
             get_own.assert_called_once_with(id=own.id)

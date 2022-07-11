@@ -4,40 +4,68 @@
 
 {% block content %}
 
-	<h1>Сформировать отчет</h1>
-	<hr>
+    <h1>Сформировать отчет</h1>
+    <hr>
+    <div class="alert alert-danger w-50 d-none" id="errorAlert">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+             class="bi bi-exclamation-triangle" viewBox="0 0 16 16">
+            <path d="M7.938 2.016A.13.13 0 0 1 8.002 2a.13.13 0 0 1 .063.016.146.146 0 0 1 .054.057l6.857 11.667c.036.06.035.124.002.183a.163.163 0 0 1-.054.06.116.116 0 0 1-.066.017H1.146a.115.115 0 0 1-.066-.017.163.163 0 0 1-.054-.06.176.176 0 0 1 .002-.183L7.884 2.073a.147.147 0 0 1 .054-.057zm1.044-.45a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566z"/>
+            <path d="M7.002 12a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 5.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995z"/>
+        </svg>
+        <span id="error"></span>
+    </div>
     <div class="d-flex">
         <form method="post" id="reportForm" style="display:inline-block;">
             {% csrf_token %}
-            <div class="d-flex mb-3" style="width: 555px">
-                <div class="input-group p-0 me-2 border-secondary">
-                    <span class="input-group-text border-secondary">От</span>
-                    <input type="date" class="form-control border-secondary" id="from_date" value="{{ form.from_date.value }}">
+            <div class="d-flex mb-3" style="width: 1045px">
+                <div class="me-2">
+                    <div class="input-group p-0 border-secondary">
+                        <span class="input-group-text border-secondary">От</span>
+                        <input type="date" class="form-control border-secondary" id="from_date"
+                               value="{{ form.from_date.value }}">
+                    </div>
                 </div>
-                <div class="input-group p-0 mx-2">
-                    <span class="input-group-text border-secondary">До</span>
-                    <input type="date" class="form-control border-secondary" id="to_date" value="{{ form.to_date.value }}">
+                <div class="mx-2">
+                    <div class="input-group p-0">
+                        <span class="input-group-text border-secondary">До</span>
+                        <input type="date" class="form-control border-secondary" id="to_date"
+                               value="{{ form.to_date.value }}">
+                    </div>
                 </div>
-                <input type="number" class="d-none"id="tpID" value="{{ tpID }}">
+                <div class="mx-2">
+                    <div class="input-group p-0">
+                        <span class="input-group-text border-secondary">Тип</span>
+                        <select class="form-select border-secondary" id="report_type">
+                            <option value="1">Общий</option>
+                            <option value="2">По заказ нарядам</option>
+                            <option value="3">По зарплатам</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="number" class="d-none" id="tpID" value="{{ tpID }}">
                 <button type="submit" class="btn btn-primary mx-2">Сформировать</button>
+                <button type="button" class="btn btn-primary mx-2" disabled id="resetReport">Сбросить</button>
+                <button type="button" id="reportSave" disabled class="mx-2 btn btn-primary">Сохранить</button>
             </div>
         </form>
-        <div>
-            <button class="btn btn-primary mx-2" disabled id="resetReport">Сбросить</button>
-        </div>
         <form method="post" action="{% url 'report_download' orgID tpID %}" style="display:inline-block;">
             {% csrf_token %}
-            <div class="d-flex mb-3" style="width: 555px">
+            <div class="mb-3" style="width: 186px">
                 <input type="text" class="d-none" id="downloadData" name="data">
-                <button type="submit" disabled class="btn btn-primary ms-2" id="downloadReport">Скачать</button>
-                <select class="selectpicker" data-width="20%" id="file_format" name="format">
-                    <option selected value="xlsx">xlsx</option>
-                    <option value="xls">xls</option>
-                </select>
+                <div class="input-group">
+                    <button type="submit" disabled class="btn btn-primary ms-2" id="downloadReport">Скачать</button>
+                    <select class="form-select w-50 border-secondary" data-width="20%" id="file_format" name="format" disabled>
+                        <option selected value="xlsx">xlsx</option>
+                        <option value="xls">xls</option>
+                    </select>
+                </div>
             </div>
         </form>
+        <div class="ms-2 d-none">
+            <input style="width: 25px" id="reportInput" type="text">
+        </div>
     </div>
-	<div class="card border-secondary" style="min-height: 600px;">
+    <div class="card border-secondary" style="min-height: 600px;">
         {% if report %}
             <div class="card-header bg-transparent">
                 <h3 class="my-3">Отчет за период {{ from_date|date:'d.m.Y' }} - {{ to_date|date:'d.m.Y' }}</h3>
@@ -46,20 +74,22 @@
         {% else %}
             <div class="card-body">
                 <div id="bodyBlock">
-                    <h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>
+                    <h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не
+                        сформирован!</h4>
                 </div>
             </div>
         {% endif %}
-	</div>
+    </div>
 
 {% endblock content %}
 
 
 {% block js_block %}
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         var tpID = {{ tpID }};
     </script>
-	<script src="{% static 'js/report/report_task_ajax.js' %}"></script>
+    <script src="{% static 'js/report/report_create.js' %}"></script>
 
 {% endblock js_block %}

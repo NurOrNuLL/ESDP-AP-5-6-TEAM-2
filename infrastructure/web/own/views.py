@@ -1,14 +1,18 @@
+from concurrency.api import disable_concurrency
+from concurrency.exceptions import RecordModifiedError
 from django.views.generic import TemplateView
 from django.shortcuts import render, redirect
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 from rest_framework import filters
+from rest_framework.permissions import AllowAny
+
 from services.organization_services import OrganizationService
 from services.own_services import OwnServices
 from .forms import OwnForm
 from rest_framework.generics import GenericAPIView
-from .serializer import OwnSerializer, OwnIdSerializer
+from .serializer import OwnSerializer, OwnIdSerializer, OwnUpdateSerializer
 from rest_framework.response import Response
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -143,3 +147,56 @@ class OwnFilterApiView(generics.ListAPIView):
     search_fields = ['name', 'number', 'comment']
     pagination_class = MyPagination
     queryset = OwnServices.get_owns()
+
+
+class OwnUpdateApiView(GenericAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = OwnUpdateSerializer
+
+    def get(self, request, *args, **kwargs):
+        own = OwnServices.get_own_by_id(self.kwargs.get('ownID'))
+
+        serializer = OwnSerializer(own)
+        return Response(serializer.data)
+
+    def patch(self, request, *args, **kwargs):
+        own = OwnServices.get_own_by_id(self.kwargs.get('ownID'))
+        serializer = self.serializer_class(own, data=request.data)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+            except RecordModifiedError:
+                own = OwnServices.get_own_by_id(self.kwargs.get('ownID'))
+                return Response({
+                    'current_data': {'name': own.name,
+                                     'number': own.number,
+                                     'comment': own.comment},
+                    'new_data': {'name': request.data['name'],
+                                 'number': request.data['number'],
+                                 'comment': request.data['comment'],
+                                 },
+                    'error': 'Наименование собственности было изменено другим пользователем! Вы хотите повторно изменить наименование?'
+                })
+            else:
+                own.name = serializer.data['name']
+                own.number = serializer.data['number']
+                own.comment = serializer.data['comment']
+                own.save()
+
+                return Response(serializer.data)
+        return Response(serializer.errors)
+
+
+class OwnConcurrencyUpdateApiView(GenericAPIView):
+    serializer_class = OwnUpdateSerializer
+
+    def patch(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        own = OwnServices.get_own_by_id(self.kwargs.get('ownID'))
+        print(request)
+        with disable_concurrency(own):
+            own.name = request.data['name']
+            own.number = request.data['number']
+            own.comment = request.data['comment']
+            own.save()
+
+            return Response(request.data)

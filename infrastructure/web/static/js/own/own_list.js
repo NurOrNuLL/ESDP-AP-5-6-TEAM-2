@@ -8,7 +8,7 @@ var buttonColection = document.getElementsByClassName('buttonDelete')
 
 window.addEventListener('load', () => {
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=false`,
+        url: `${locationHost}/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=false`,
         method: 'GET',
         success: (data) => {
             var ownIdInput = document.getElementById('own_id');
@@ -71,7 +71,7 @@ window.addEventListener('load', () => {
 
 isPart.addEventListener('click', () => {
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=true`,
+        url: `${locationHost}/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=true`,
         method: 'GET',
         success: (data) => {
             var ownIdInput = document.getElementById('own_id');
@@ -134,7 +134,7 @@ isPart.addEventListener('click', () => {
 
 isNotPart.addEventListener('click', () => {
      $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=false`,
+        url: `${locationHost}/org/1/tp/${tpID}/contractor/${contrID}/own/list/filter/?is_part=false`,
         method: 'GET',
         success: (data) => {
             var ownIdInput = document.getElementById('own_id');
@@ -191,5 +191,3 @@ isNotPart.addEventListener('click', () => {
         }
     })
 })
-
-
