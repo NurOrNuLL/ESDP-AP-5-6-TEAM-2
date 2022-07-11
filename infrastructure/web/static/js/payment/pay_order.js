@@ -84,4 +84,3 @@ selectElement.addEventListener('change', (event) => {
                         <input type="text" class="form-control border-secondary" id="invoice" name='invoice' hidden>`
     }
 });
-

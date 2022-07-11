@@ -33,4 +33,3 @@ class OwnServices:
     @staticmethod
     def get_owns() -> List[Own]:
         return Own.objects.all()
-

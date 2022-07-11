@@ -91,4 +91,3 @@ class OrderPayment(LoginRequiredMixin, UserPassesTestMixin, ResetOrderCreateForm
                 return HttpResponse(json.dumps({'error': 'Данный метод оплаты не существует'}),
                                     content_type='application/json')
             return render(request, self.template_name, self.get_context_data())
-
