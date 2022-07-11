@@ -156,28 +156,31 @@ if os.environ.get('GITHUB_WORKFLOW'):
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {
-        'format': {
-            'format': '{levelname} - {asctime} - {module} - {process:d}'
-                      ' - {thread:d} - {message}',
-            'style': '{',
-        }
-    },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'formatter': 'format',
-            'filename': 'logs.log'
-        }
+            'filename': 'logs/logs.log',
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
-        'main': {
+        'django': {
             'handlers': ['file'],
-            'level': 'INFO',
+            'level': 'WARNING',
             'propagate': True,
         },
-    }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
 }
 
 # Password validation
