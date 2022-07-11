@@ -171,7 +171,8 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
     def get_context_data(self, **kwargs):
         self.object = EmployeeServices.get_employee_by_uuid(self.kwargs['empUID'])
         context = super().get_context_data(**kwargs)
-        context['image'] = ast.literal_eval(self.object.image)[0]
+        if self.object.image != None:
+            context['image'] = ast.literal_eval(self.object.image)[0]
         context['employee'] = self.object
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
