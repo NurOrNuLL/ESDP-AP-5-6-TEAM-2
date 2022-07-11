@@ -48,11 +48,6 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                     data-service-price="${sessionJob['Цена услуги']}"
                                     data-total="${sessionJob['Сумма услуг']}">
 
-                                    <td>
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <button type="button" class="btn-close removeService"></button>
-                                        </div>
-                                    </td>
                                     <td>${sessionJob['Название услуги']}</td>
                                     <td>${sessionJob['Категория услуги']}</td>
                                     <td>${sessionJob['Марка услуги']}</td>
@@ -87,7 +82,16 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
                                             <input class="form-check-input garanty" type="checkbox" role="switch">
                                         </div>
                                     </td>
-                                    <th><span class="Price">${sessionJob['Сумма услуг']}</span></th>
+                                    <th><span class="Price text-nowrap">${service.selectedOptions[i].dataset['serviceCount']} х ${service.selectedOptions[i].dataset['servicePrice']}</span></th>
+                                    <td>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <button type="button" class="btn btn-danger py-1 px-2 removeService">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                    <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </td>
                                 </tr>`;
     }
 
@@ -182,13 +186,18 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
         // Событие на уменьшение количества услуг
         minusCount.onclick = e => {
             count.innerText = eval(count.innerText) - 1;
-            price.innerText = eval(price.innerText) - eval(serviceRow.dataset['servicePrice']);
+
+            let priceWithCount = price.innerText.split(' ');
+
+            priceWithCount[0] = count.innerText
+
+            price.innerText = priceWithCount.join(' ');
             serviceRow.dataset['serviceCount'] = count.innerText;
             serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceCount'] = count.innerText
-            serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = price.innerText
+            serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = eval(serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total']) - eval(serviceRow.dataset['servicePrice'])
 
             if (eval(serviceRow.dataset['serviceGaranty']) === false) {
-                serviceRow.dataset['total'] = price.innerText;
+                serviceRow.dataset['total'] = serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total']
                 total -= eval(serviceRow.dataset['servicePrice']);
                 totalPrice.innerText = total;
             }
@@ -201,13 +210,18 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
         // Событие на увеличение количества услуг
         plusCount.onclick = e => {
             count.innerText = eval(count.innerText) + 1;
-            price.innerText = eval(price.innerText) + eval(serviceRow.dataset['servicePrice']);
+
+            let priceWithCount = price.innerText.split(' ');
+
+            priceWithCount[0] = count.innerText
+
+            price.innerText = priceWithCount.join(' ');
             serviceRow.dataset['serviceCount'] = count.innerText;
             serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceCount'] = count.innerText
-            serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = price.innerText
+            serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = eval(serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total']) + eval(serviceRow.dataset['servicePrice'])
 
             if (eval(serviceRow.dataset['serviceGaranty']) === false) {
-                serviceRow.dataset['total'] = price.innerText;
+                serviceRow.dataset['total'] = serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'];
                 total += eval(serviceRow.dataset['servicePrice']);
                 totalPrice.innerText = total;
             }
@@ -228,24 +242,24 @@ if (typeof sessionJobs === 'object' && sessionJobs.length != 0) {
         // Событие для чекбокса гарантии
         garantyBtn.addEventListener('change', e => {
             if (garantyBtn.checked) {
-                serviceRow.dataset['serviceGaranty'] = 'true';
+                garantyBtn.parentElement.parentElement.parentElement.dataset['serviceGaranty'] = 'true';
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'true';
                 price.style.cssText = 'text-decoration: line-through;';
-                total -= eval(price.innerHTML);
+                total -= eval(price.innerText.split(' ')[2]) * eval(price.innerText.split(' ')[0]);
                 totalPrice.innerText = total;
             }
             else {
                 serviceRow.dataset['serviceGaranty'] = 'false';
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'false';
                 price.style.cssText = 'text-decoration: none;';
-                total += eval(price.innerHTML);
+                total += eval(price.innerText.split(' ')[2]) * eval(price.innerText.split(' ')[0]);
                 totalPrice.innerText = total;
             }
-        })
+        });
 
         // Добавление цены к общей сумме
         if (!(sessionJobs[i]['Гарантия'])) {
-            total += eval(prices[i].innerText);
+            total += eval(price.innerText.split(' ')[0]) * eval(price.innerText.split(' ')[2]);
         }
     }
 
@@ -279,11 +293,6 @@ service.addEventListener('change', e => {
                                                 data-service-price="${selectedOption.dataset['servicePrice']}"
                                                 data-total="${selectedOption.dataset['total']}">
 
-                                                <td>
-                                                    <div class="d-flex justify-content-center align-items-center">
-                                                        <button type="button" class="btn-close removeService"></button>
-                                                    </div>
-                                                </td>
                                                 <td>${selectedOption.dataset['serviceName']}</td>
                                                 <td>${selectedOption.dataset['tokens']}</td>
                                                 <td>${selectedOption.dataset['subtext']}</td>
@@ -318,7 +327,16 @@ service.addEventListener('change', e => {
                                                         <input class="form-check-input garanty" type="checkbox" role="switch">
                                                     </div>
                                                 </td>
-                                                <th><span class="Price">${service.selectedOptions[i].dataset['total']}</span></th>
+                                                <th><span class="text-nowrap Price">${service.selectedOptions[i].dataset['serviceCount']} х ${service.selectedOptions[i].dataset['servicePrice']}</span></th>
+                                                <td>
+                                                    <div class="d-flex justify-content-center align-items-center">
+                                                        <button type="button" class="btn btn-danger py-1 px-2 removeService">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
+                                                                <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8 2.146 2.854Z"/>
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+                                                </td>
                                             </tr>`;
                 }
             }
@@ -424,13 +442,18 @@ service.addEventListener('change', e => {
             // Событие на уменьшение количества услуг
             minusCount.onclick = e => {
                 count.innerText = eval(count.innerText) - 1;
-                price.innerText = eval(price.innerText) - eval(serviceRow.dataset['servicePrice']);
+
+                let priceWithCount = price.innerText.split(' ');
+
+                priceWithCount[0] = count.innerText
+
+                price.innerText = priceWithCount.join(' ');
                 serviceRow.dataset['serviceCount'] = count.innerText;
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceCount'] = count.innerText
-                serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = price.innerText
+                serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = eval(serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total']) - eval(serviceRow.dataset['servicePrice'])
 
                 if (eval(serviceRow.dataset['serviceGaranty']) === false) {
-                    serviceRow.dataset['total'] = price.innerText;
+                    serviceRow.dataset['total'] = serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total']
                     total -= eval(serviceRow.dataset['servicePrice']);
                     totalPrice.innerText = total;
                 }
@@ -443,13 +466,18 @@ service.addEventListener('change', e => {
             // Событие на увеличение количества услуг
             plusCount.onclick = e => {
                 count.innerText = eval(count.innerText) + 1;
-                price.innerText = eval(price.innerText) + eval(serviceRow.dataset['servicePrice']);
+
+                let priceWithCount = price.innerText.split(' ');
+
+                priceWithCount[0] = count.innerText
+
+                price.innerText = priceWithCount.join(' ');
                 serviceRow.dataset['serviceCount'] = count.innerText;
                 serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceCount'] = count.innerText
-                serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = price.innerText
+                serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'] = eval(serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total']) + eval(serviceRow.dataset['servicePrice'])
 
                 if (eval(serviceRow.dataset['serviceGaranty']) === false) {
-                    serviceRow.dataset['total'] = price.innerText;
+                    serviceRow.dataset['total'] = serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['total'];
                     total += eval(serviceRow.dataset['servicePrice']);
                     totalPrice.innerText = total;
                 }
@@ -465,7 +493,7 @@ service.addEventListener('change', e => {
             else {
                 garantyBtn.checked = true;
                 price.style.cssText = 'text-decoration: line-through;';
-                total -= eval(price.innerHTML);
+                total -= eval(price.innerText.split(' ')[2]) * eval(price.innerText.split(' ')[0]);
             };
 
             // Событие на чекбокс гарантии
@@ -474,19 +502,19 @@ service.addEventListener('change', e => {
                     garantyBtn.parentElement.parentElement.parentElement.dataset['serviceGaranty'] = 'true';
                     serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'true';
                     price.style.cssText = 'text-decoration: line-through;';
-                    total -= eval(price.innerHTML);
+                    total -= eval(price.innerText.split(' ')[2]) * eval(price.innerText.split(' ')[0]);
                     totalPrice.innerText = total;
                 }
                 else {
                     serviceRow.dataset['serviceGaranty'] = 'false';
                     serviceOptions[eval(serviceRow.dataset['serviceIndex'])].dataset['serviceGaranty'] = 'false';
                     price.style.cssText = 'text-decoration: none;';
-                    total += eval(price.innerHTML);
+                    total += eval(price.innerText.split(' ')[2]) * eval(price.innerText.split(' ')[0]);
                     totalPrice.innerText = total;
                 }
             });
 
-            total += eval(price.innerText);
+            total += eval(price.innerText.split(' ')[0]) * eval(price.innerText.split(' ')[2]);
         }
 
         totalPrice.innerText = total;

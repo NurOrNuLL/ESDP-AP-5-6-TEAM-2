@@ -1,9 +1,11 @@
 import ast
 from typing import List
+
+import jsonschema
 from django.views.generic import TemplateView, View
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-from models.contractor.models import Contractor
+from models.contractor.models import Contractor, MY_JSON_FIELD_SCHEMA
 from services.employee_services import EmployeeServices
 from services.own_services import OwnServices
 from .forms import ContractorForm, ContractorUpdateForm
@@ -44,15 +46,22 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
         self.delete_order_data_from_session(request)
 
         context = self.get_context_data(**kwargs)
+        context['contractor_type'] = 'private'
         context['trust_person'] = dict()
 
         return render(request=request, template_name=self.template_name, context=context)
 
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
         form = self.form_class(data=request.POST)
+        trust_person = dict(name=request.POST['trust_person_name'],
+                            comment=request.POST['trust_person_comment'])
+        try:
+            jsonschema.validate(trust_person, MY_JSON_FIELD_SCHEMA)
+        except jsonschema.exceptions.ValidationError:
+            form.errors['trust_person'] = \
+                'Не более 100 символов для Имени и не более 150 символов для Комментария для доверенного лица'
+
         if form.is_valid():
-            trust_person = dict(name=request.POST['trust_person_name'],
-                                comment=request.POST['trust_person_comment'])
             form.cleaned_data['trust_person'] = trust_person
             contractor = ContractorService.create_contractor(form.cleaned_data)
 
@@ -68,9 +77,10 @@ class ContractorCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
                             contrID=contractor.pk, tpID=self.kwargs['tpID'])
         else:
             context = self.get_context_data(**kwargs)
+            form.contractor_type = request.POST['contractor_type']
+            context['contractor_type'] = form.contractor_type
             context['form'] = form
-            context['trust_person'] = dict(name=request.POST['trust_person_name'],
-                                           comment=request.POST['trust_person_comment'])
+            context['trust_person'] = trust_person
             return render(request, template_name=self.template_name, context=context)
 
 
@@ -199,6 +209,11 @@ class ContractorUpdate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPa
         form = self.form_class(data=request.POST, instance=contractor)
         trust_person = dict(name=request.POST['trust_person_name'],
                             comment=request.POST['trust_person_comment'])
+        try:
+            jsonschema.validate(trust_person, MY_JSON_FIELD_SCHEMA)
+        except jsonschema.exceptions.ValidationError:
+            form.errors['trust_person'] = \
+                'Не более 100 символов для Имени и не более 150 символов для Комментария для доверенного лица'
         if form.is_valid():
             form.cleaned_data['trust_person'] = trust_person
             try:

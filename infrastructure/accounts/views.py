@@ -54,7 +54,6 @@ class RegisterView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             birthdates = ''.join(birthdate)
             births = ''.join(birth)
             if births != birthdates:
-                print('error')
                 employee_form.errors.IIN = 'Введите верную дату рождения или ИИН'
                 context['employee_form'] = employee_form
                 return render(request, self.template_name, context)
