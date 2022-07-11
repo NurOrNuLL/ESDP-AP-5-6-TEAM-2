@@ -52,5 +52,3 @@ class OrderService:
     @staticmethod
     def get_order_by_id(ordID: int) -> Order:
         return Order.objects.get(id=ordID)
-
-

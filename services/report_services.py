@@ -74,5 +74,3 @@ class ReportService:
             data['Гарантия'].append(i['garanty'])
             data['Сумма'].append(i['total'])
         return data
-
-
