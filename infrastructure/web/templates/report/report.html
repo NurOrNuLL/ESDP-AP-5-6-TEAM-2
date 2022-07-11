@@ -17,7 +17,7 @@
     <div class="d-flex">
         <form method="post" id="reportForm" style="display:inline-block;">
             {% csrf_token %}
-            <div class="d-flex mb-3" style="width: 840px">
+            <div class="d-flex mb-3" style="width: 1045px">
                 <div class="me-2">
                     <div class="input-group p-0 border-secondary">
                         <span class="input-group-text border-secondary">От</span>
@@ -44,6 +44,8 @@
                 </div>
                 <input type="number" class="d-none" id="tpID" value="{{ tpID }}">
                 <button type="submit" class="btn btn-primary mx-2">Сформировать</button>
+                <button type="button" class="btn btn-primary mx-2" disabled id="resetReport">Сбросить</button>
+                <button type="button" id="reportSave" disabled class="mx-2 btn btn-primary">Сохранить</button>
             </div>
         </form>
         <form method="post" action="{% url 'report_download' orgID tpID %}" style="display:inline-block;">
@@ -52,24 +54,13 @@
                 <input type="text" class="d-none" id="downloadData" name="data">
                 <div class="input-group">
                     <button type="submit" disabled class="btn btn-primary ms-2" id="downloadReport">Скачать</button>
-                    <select class="selectpicker w-50" data-width="20%" id="file_format" name="format" disabled>
+                    <select class="form-select w-50 border-secondary" data-width="20%" id="file_format" name="format" disabled>
                         <option selected value="xlsx">xlsx</option>
                         <option value="xls">xls</option>
                     </select>
                 </div>
             </div>
         </form>
-        <div class="dropdown ms-3">
-            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton1"
-                    data-bs-toggle="dropdown" aria-expanded="false">
-                Выберите действие
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                <li><button class="dropdown-item" disabled id="resetReport">Сбросить</button></li>
-                <li><button id="reportSave" disabled class="dropdown-item">Сохранить</button></li>
-                <li><a class="dropdown-item" href="{% url 'report_list' orgID=1 tpID=tpID %}">Список</a></li>
-            </ul>
-        </div>
         <div class="ms-2 d-none">
             <input style="width: 25px" id="reportInput" type="text">
         </div>
@@ -95,6 +86,7 @@
 
 {% block js_block %}
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     <script>
         var tpID = {{ tpID }};
     </script>
