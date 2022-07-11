@@ -160,7 +160,7 @@ LOGGING = {
         'file': {
             'level': 'WARNING',
             'class': 'logging.FileHandler',
-            'filename': 'logs/logs.log',
+            'filename': 'logs.log',
             'formatter': 'verbose'
         },
     },
