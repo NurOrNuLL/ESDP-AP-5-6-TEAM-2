@@ -148,7 +148,7 @@ order_urls = [
 ]
 
 order_websocket_urls = [
-    path('/wss/order/status/update/tracking/', OrderStatusUpdateTrackingConsumer.as_asgi())
+    path('wss/order/status/update/tracking/', OrderStatusUpdateTrackingConsumer.as_asgi())
 ]
 
 queue_urls = [
@@ -164,8 +164,8 @@ report_urls = [
 ]
 
 report_websocket_urls = [
-    path('/wss/report/create/', ReportConsumer.as_asgi()),
-    path('/wss/report/list/', ReportListConsumer.as_asgi())
+    path('wss/report/create/', ReportConsumer.as_asgi()),
+    path('wss/report/list/', ReportListConsumer.as_asgi())
 ]
 
 payment_url = [
