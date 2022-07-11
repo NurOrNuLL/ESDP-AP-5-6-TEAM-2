@@ -1,9 +1,21 @@
 import json
 from channels.generic.websocket import WebsocketConsumer
+from .tasks import get_report, get_reports_from_aws
 from datetime import datetime
 from celery.result import AsyncResult
-from .tasks import get_report
-from datetime import datetime
+
+
+class ReportListConsumer(WebsocketConsumer):
+    def connect(self) -> None:
+        self.accept()
+
+    def receive(self, text_data) -> None:
+        tradepoint_id = json.loads(text_data)['tpID']
+
+        task = get_reports_from_aws.delay(tradepoint_id)
+        reports = json.dumps(AsyncResult(task.id).get())
+
+        self.send(reports)
 
 
 class ReportConsumer(WebsocketConsumer):

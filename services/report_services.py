@@ -1,3 +1,5 @@
+import os
+
 import tablib
 from django.http import HttpResponse, HttpResponseRedirect
 from models.nomenclature.models import Nomenclature
@@ -9,6 +11,7 @@ import jsonschema
 import json
 from urllib.parse import quote
 import datetime
+import boto3
 
 File = str
 JSON = dict

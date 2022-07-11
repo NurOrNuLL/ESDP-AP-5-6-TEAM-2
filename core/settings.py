@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'models.payment_method',
     'models.payment',
     'models.order',
+    'models.report',
     'models.queue',
     'rest_framework',
     'corsheaders',

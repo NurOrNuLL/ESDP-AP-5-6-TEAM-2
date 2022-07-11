@@ -43,9 +43,10 @@ from .employee.views import (
 from infrastructure.accounts.views import RegisterView
 from infrastructure.web.report.views import (
     ReportPreviewView, ReportDownloadView,
-    ReportRedisView, ReportListView
+    ReportCreateAwsApiView, ReportListView,
+    ReportDetailView
 )
-from infrastructure.web.report.consumers import ReportConsumer
+from infrastructure.web.report.consumers import ReportConsumer, ReportListConsumer
 from .payment.views import OrderPayment
 from infrastructure.web.order.consumers import OrderStatusUpdateTrackingConsumer
 
@@ -157,12 +158,14 @@ queue_urls = [
 report_urls = [
     path('report/preview/', ReportPreviewView.as_view(), name="report_preview"),
     path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
-    path('report/save/', ReportRedisView.as_view(), name='report_save'),
-    path('report/', ReportListView.as_view(), name='report_list')
+    path('report/save/', ReportCreateAwsApiView.as_view(), name='report_save'),
+    path('report/', ReportListView.as_view(), name='report_list'),
+    path('report/<slug:repUID>/', ReportDetailView.as_view(), name='report_detail')
 ]
 
 report_websocket_urls = [
-    path('report/create/', ReportConsumer.as_asgi())
+    path('report/create/', ReportConsumer.as_asgi()),
+    path('report/list/', ReportListConsumer.as_asgi())
 ]
 
 payment_url = [

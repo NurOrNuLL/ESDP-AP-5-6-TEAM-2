@@ -1,10 +1,50 @@
+import os
+
 from celery import shared_task
 from decimal import Decimal
 from services.order_services import OrderService
 from services.employee_services import EmployeeServices
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, List
 import time
+import json
+import boto3
+from botocore.exceptions import ClientError
+from models.report.models import Report
+
+
+@shared_task
+def get_reports_from_aws(tradepoint_id: int) -> List[Dict[str, Any]]:
+    reports = Report.objects.filter(tradepoint_id=tradepoint_id)
+    reports_from_aws = []
+
+    for report in reports:
+        client = boto3.client(
+            's3',
+            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+        )
+        result = client.get_object(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=f'report {report.report_uuid}')
+        reports_from_aws.append(json.loads(result["Body"].read().decode()))
+
+    return reports_from_aws
+
+
+@shared_task
+def upload_report_to_bucket(report: dict) -> str:
+    try:
+        s3 = boto3.client('s3')
+        s3.put_object(
+            Body=json.dumps(report),
+            Bucket=os.environ.get('AWS_BUCKET_NAME'),
+            Key=f'report {report["uuid"]}'
+        )
+    except ClientError:
+        return False
+    else:
+        Report.objects.create(report_uuid=report['uuid'], tradepoint_id=report['tradepoint_id'])
+
+    return True
 
 
 @shared_task

@@ -1,8 +1,11 @@
 import json
+import os
 import uuid
-from typing import List
+from typing import List, Dict, Any
 from django.http import HttpRequest, HttpResponse
 from django.views.generic import TemplateView
+
+from models.report.models import Report
 from services.report_services import ReportService
 from .forms import ReportDateForm, ReportDownloadForm
 from django.shortcuts import render
@@ -10,55 +13,68 @@ import datetime
 import calendar
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from services.employee_services import EmployeeServices
-
-from django.conf import settings
+from celery.result import AsyncResult
 from rest_framework.generics import GenericAPIView
-import redis
 from rest_framework.response import Response
+from .tasks import upload_report_to_bucket
+import boto3
+
+
+class ReportDetailView(TemplateView):
+    template_name = 'report/report_detail.html'
+
+    def get_report(self, repUID: str) -> Dict[str, Any]:
+        report = Report.objects.get(report_uuid=repUID)
+
+        client = boto3.client(
+            's3',
+            aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+            aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
+        )
+        result = client.get_object(Bucket=os.environ.get('AWS_BUCKET_NAME'), Key=f'report {report.report_uuid}')
+
+        report_from_aws = json.loads(result["Body"].read().decode())
+        report_from_aws['from_date'] = datetime.datetime.strptime(
+            report_from_aws['from_date'], '%Y-%m-%d'
+        ).strftime('%d.%m.%Y')
+        report_from_aws['to_date'] = datetime.datetime.strptime(
+            report_from_aws['to_date'], '%Y-%m-%d'
+        ).strftime('%d.%m.%Y')
+
+        return report_from_aws
+
+    def get_context_data(self, **kwargs: dict) -> Dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['report'] = self.get_report(self.kwargs['repUID'])
+        context['tpID'] = self.kwargs['tpID']
+
+        return context
 
 
 class ReportListView(TemplateView):
     template_name = 'report/report_list.html'
 
 
-class ReportRedisView(GenericAPIView):
-    def get(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
-        redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=1)
-        count = 0
-        items = []
-
-        for key in redis_instance.keys('*'):
-            items.append(json.loads(redis_instance.get(key)))
-            count += 1
-
-        items = sorted(items, key=lambda d: d['created_at'], reverse=True)
-        response = {
-            'msg': f'Найдено элементов: {count}',
-            'items': items,
-        }
-        return Response(response)
-
+class ReportCreateAwsApiView(GenericAPIView):
     def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
         data = request.data
-        redis_instance = redis.StrictRedis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=1)
-
-        report_uuid = str(uuid.uuid4())
 
         report = {
-            'uuid': report_uuid,
+            'uuid': str(uuid.uuid4()),
             'report': json.loads(data['report']),
             'created_at': datetime.datetime.now().strftime('%d.%m.%Y %H:%M'),
             'from_date':  data['from_date'],
             'to_date':  data['from_date'],
+            'tradepoint_id': self.kwargs['tpID']
         }
 
-        redis_instance.set(report_uuid, json.dumps(report), 604800)
+        task = upload_report_to_bucket.delay(report)
+        result = AsyncResult(task.id).get()
 
-        response = {
-            'msg': 'success'
-        }
-
-        return Response(response)
+        if result:
+            return Response({'status': 'success'})
+        else:
+            return Response({'status': 'error'})
 
 
 class ReportPreviewView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):

@@ -705,7 +705,18 @@ reportSave.onclick = e => {
         contentType: 'application/json',
         headers: {'X-CSRFToken': $.cookie('csrftoken')},
         success: (data) => {
-            console.log(data);
+            if (data.status === 'success') {
+                 swal({
+                     title: "Отчет сохранен!",
+                     icon: "success",
+                     timer: 3000,
+                     buttons: ['OK', false],
+                });
+            }
+            else {
+                errorAlert.classList.remove('d-none');
+                error.innerText = 'Не получилось сохранить отчет! Попробуйте снова!'
+            }
         },
         errors: (err) => {
             console.log(err);
