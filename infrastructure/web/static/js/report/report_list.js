@@ -3,10 +3,10 @@ let reportSocket;
 
 
 if (DEBUG === true) {
-    reportSocket = new WebSocket(`ws://${window.location.host}/report/list/`);
+    reportSocket = new WebSocket(`ws://${window.location.host}/wss/report/list/`);
 }
 else {
-    reportSocket = new WebSocket(`wss://${window.location.host}/report/list/`);
+    reportSocket = new WebSocket(`wss://${window.location.host}/wss/report/list/`);
 }
 
 reportSocket.onopen = (e) => {

@@ -380,10 +380,10 @@ window.onload = e => {
     let orderStatusSocket;
 
     if (DEBUG === true) {
-        orderStatusSocket = new WebSocket(`ws://${window.location.host}/order/status/update/tracking/`);
+        orderStatusSocket = new WebSocket(`ws://${window.location.host}/wss/order/status/update/tracking/`);
     }
     else {
-        orderStatusSocket = new WebSocket(`wss://${window.location.host}/order/status/update/tracking/`);
+        orderStatusSocket = new WebSocket(`wss://${window.location.host}/wss/order/status/update/tracking/`);
     }
 
     orderStatusSocket.onmessage = e => {
