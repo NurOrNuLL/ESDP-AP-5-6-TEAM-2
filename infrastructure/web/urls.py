@@ -44,7 +44,7 @@ from infrastructure.accounts.views import RegisterView
 from infrastructure.web.report.views import (
     ReportPreviewView, ReportDownloadView,
     ReportCreateAwsApiView, ReportListView,
-    ReportDetailView
+    ReportDetailView, ReportDeleteView
 )
 from infrastructure.web.report.consumers import ReportConsumer, ReportListConsumer
 from .payment.views import OrderPayment
@@ -160,7 +160,8 @@ report_urls = [
     path('report/preview/download/', ReportDownloadView.as_view(), name="report_download"),
     path('report/save/', ReportCreateAwsApiView.as_view(), name='report_save'),
     path('report/', ReportListView.as_view(), name='report_list'),
-    path('report/<slug:repUID>/', ReportDetailView.as_view(), name='report_detail')
+    path('report/<slug:repUID>/', ReportDetailView.as_view(), name='report_detail'),
+    path('report/<slug:repUID>/delete', ReportDeleteView.as_view(), name='report_delete')
 ]
 
 report_websocket_urls = [

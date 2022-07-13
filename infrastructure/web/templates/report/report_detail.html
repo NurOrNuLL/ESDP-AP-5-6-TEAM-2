@@ -7,8 +7,14 @@
     <h1>Отчет</h1>
     <hr>
     <div class="card border-secondary" style="min-height: 600px;">
+<<<<<<< HEAD
         <div class="card-header bg-transparent">
             <h3 class="my-3">Отчет за период {{ report|get_item:'from_date' }} - {{ report|get_item:'to_date' }}</h3>
+=======
+        <div class="card-header d-flex justify-content-between align-items-center bg-transparent">
+            <h3 class="my-3">Отчет за период {{ report|get_item:'from_date' }} - {{ report|get_item:'to_date' }}</h3>
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteReportModal">Удалить</button>
+>>>>>>> c3f079a7f380a0247643a3fb38c24fe2df52d873
         </div>
         <div class="card-body">
             {% if report|get_item:'report'|get_item:'report_type'|slugify == '1' %}
@@ -285,6 +291,26 @@
                     </table>
                 </div>
             {% endif %}
+        </div>
+    </div>
+    <div class="modal fade" id="deleteReportModal" tabindex="-1" aria-labelledby="deleteReportModal" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Удаление отчета</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="post" action="{% url 'report_delete' orgID=1 tpID=tpID repUID=report|get_item:'uuid' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        Удалить отчет за период {{ report|get_item:'from_date' }} - {{ report|get_item:'to_date' }}?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-danger">Удалить</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

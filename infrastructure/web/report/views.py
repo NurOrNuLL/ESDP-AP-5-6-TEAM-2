@@ -3,12 +3,13 @@ import os
 import uuid
 from typing import List, Dict, Any
 from django.http import HttpRequest, HttpResponse
+from django.views import View
 from django.views.generic import TemplateView
 
 from models.report.models import Report
 from services.report_services import ReportService
 from .forms import ReportDateForm, ReportDownloadForm
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 import datetime
 import calendar
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
@@ -166,3 +167,18 @@ class ReportDownloadView(TemplateView):
             context = self.get_context_data(**kwargs)
             context['form'] = form
             return render(request, template_name=self.template_name, context=context)
+
+
+class ReportDeleteView(View):
+    def post(self, request: HttpRequest, *args: list, **kwargs: dict) -> HttpResponse:
+        report = Report.objects.get(report_uuid=self.kwargs['repUID'])
+
+        client = boto3.client('s3')
+        client.delete_object(
+            Bucket=os.environ.get('AWS_BUCKET_NAME'),
+            Key=f'report {report.report_uuid}'
+        )
+
+        report.delete()
+
+        return redirect('report_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
