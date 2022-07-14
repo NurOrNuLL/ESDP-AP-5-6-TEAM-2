@@ -1,0 +1,58 @@
+WARNING 2022-07-14 18:07:49,462 runserver 41727 140590899000896 [33mHTTP GET /static/js/bootstrap.js 404 [0.01, 127.0.0.1:45236][0m
+WARNING 2022-07-14 21:25:09,468 runserver 11009 140493138425408 [33mHTTP GET /static/js/bootstrap.js 404 [0.00, 127.0.0.1:53116][0m
+WARNING 2022-07-14 21:32:55,785 runserver 11516 140220582327872 [33mHTTP GET /static/js/bootstrap.js 404 [0.00, 127.0.0.1:53132][0m
+WARNING 2022-07-14 21:33:30,703 log 11516 140220460693056 Forbidden (Permission denied): /org/1/tp/1/register/
+Traceback (most recent call last):
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/views/generic/base.py", line 84, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 134, in dispatch
+    return self.handle_no_permission()
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 48, in handle_no_permission
+    raise PermissionDenied(self.get_permission_denied_message())
+django.core.exceptions.PermissionDenied
+WARNING 2022-07-14 21:33:30,704 runserver 11516 140220582327872 [31;1mHTTP GET /org/1/tp/1/register/ 403 [0.01, 127.0.0.1:53132][0m
+WARNING 2022-07-14 21:35:46,786 log 11516 140220460693056 Forbidden (Permission denied): /org/1/tp/1/queue/create/
+Traceback (most recent call last):
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/views/generic/base.py", line 84, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 134, in dispatch
+    return self.handle_no_permission()
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 48, in handle_no_permission
+    raise PermissionDenied(self.get_permission_denied_message())
+django.core.exceptions.PermissionDenied
+WARNING 2022-07-14 21:35:46,787 runserver 11516 140220582327872 [31;1mHTTP GET /org/1/tp/1/queue/create/ 403 [0.01, 127.0.0.1:53138][0m
+WARNING 2022-07-14 21:35:50,424 log 11516 140220460693056 Forbidden (Permission denied): /org/1/tp/1/queue/create/
+Traceback (most recent call last):
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/core/handlers/base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/views/generic/base.py", line 84, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 73, in dispatch
+    return super().dispatch(request, *args, **kwargs)
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 134, in dispatch
+    return self.handle_no_permission()
+  File "/home/aspa/Desktop/24.06.22/ESDP-AP-5-6-TEAM-2/venv/lib/python3.8/site-packages/django/contrib/auth/mixins.py", line 48, in handle_no_permission
+    raise PermissionDenied(self.get_permission_denied_message())
+django.core.exceptions.PermissionDenied
+WARNING 2022-07-14 21:35:50,425 runserver 11516 140220582327872 [31;1mHTTP GET /org/1/tp/1/queue/create/ 403 [0.02, 127.0.0.1:53138][0m
+WARNING 2022-07-14 21:42:39,711 runserver 11876 140409341736512 [33mHTTP GET /static/js/bootstrap.js 404 [0.00, 127.0.0.1:53154][0m
+WARNING 2022-07-14 23:33:59,334 log 11876 140409219839552 Not Found: /favicon.ico
+WARNING 2022-07-14 23:33:59,335 runserver 11876 140409341736512 [33mHTTP GET /favicon.ico 404 [0.01, 127.0.0.1:53194][0m
+WARNING 2022-07-14 23:34:00,932 log 11876 140409219839552 Not Found: /favicon.ico
+WARNING 2022-07-14 23:34:00,933 runserver 11876 140409341736512 [33mHTTP GET /favicon.ico 404 [0.00, 127.0.0.1:53186][0m
+WARNING 2022-07-14 23:36:40,236 log 11876 140409219839552 Not Found: /favicon.ico
+WARNING 2022-07-14 23:36:40,237 runserver 11876 140409341736512 [33mHTTP GET /favicon.ico 404 [0.00, 127.0.0.1:53212][0m
