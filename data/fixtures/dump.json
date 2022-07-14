@@ -93,7 +93,7 @@
   "model": "contractor.contractor",
   "pk": 1,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Ауэзева Молдир",
     "address": "Таугуль 1",
     "IIN_or_BIN": "900410401269",
@@ -112,7 +112,7 @@
   "model": "contractor.contractor",
   "pk": 2,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Мырзабеков Бекайдар",
     "address": "Аль-Фараби 21/5",
     "IIN_or_BIN": "901030300976",
@@ -131,7 +131,7 @@
   "model": "contractor.contractor",
   "pk": 3,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "АО \"Варваринская\"",
     "address": "Костанайская область. Тарановский район. село Варваринка, проспекст Аль-Фараби дом 74 офис 620",
     "IIN_or_BIN": "950840000144",
@@ -150,7 +150,7 @@
   "model": "nomenclature.nomenclature",
   "pk": 1,
   "fields": {
-    "version": 2,
+    "version": 3,
     "name": "СТО",
     "organization": 1,
     "services": [
@@ -665,7 +665,7 @@
   "model": "nomenclature.nomenclature",
   "pk": 2,
   "fields": {
-    "version": 2,
+    "version": 3,
     "name": "СТО 2",
     "organization": 1,
     "services": [
@@ -708,7 +708,7 @@
   "model": "trade_point.tradepoint",
   "pk": 1,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Филиал 1",
     "address": "ул. Досмухамедова 22",
     "organization": 1,
@@ -722,7 +722,7 @@
   "model": "trade_point.tradepoint",
   "pk": 2,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Филиал 2",
     "address": "Желтоксан 152",
     "organization": 1,
@@ -735,7 +735,7 @@
   "model": "employee.employee",
   "pk": "444955f7-780d-4f9b-a03f-8d2871195d47",
   "fields": {
-    "version": 2,
+    "version": 3,
     "name": "Талгат",
     "surname": "Кайрола",
     "role": "Мастер",
@@ -751,7 +751,7 @@
   "model": "employee.employee",
   "pk": "574e36a8-f5f1-4d29-8d93-da594725df4f",
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Мади",
     "surname": "Коржанов",
     "role": "Менеджер",
@@ -767,7 +767,7 @@
   "model": "employee.employee",
   "pk": "7ec55cff-a84b-4b76-9177-e2ab36aa4be3",
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Бибигуль",
     "surname": "Айсанова",
     "role": "Управляющий",
@@ -783,7 +783,7 @@
   "model": "employee.employee",
   "pk": "85f2cee3-9ffe-4e00-b318-12735b0e123c",
   "fields": {
-    "version": 2,
+    "version": 3,
     "name": "Аспарух",
     "surname": "Мейрамбеков",
     "role": "Мастер",
@@ -799,7 +799,7 @@
   "model": "employee.employee",
   "pk": "b42af38e-d670-442a-90dc-fd9be5ed646f",
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Юлия",
     "surname": "Жолыняк",
     "role": "Менеджер",
@@ -815,7 +815,7 @@
   "model": "employee.employee",
   "pk": "c59c4ac0-136e-4a14-9244-b1061866e9cc",
   "fields": {
-    "version": 3,
+    "version": 4,
     "name": "Надежда",
     "surname": "Дроздова",
     "role": "Мастер",
@@ -831,7 +831,7 @@
   "model": "employee.employee",
   "pk": "d1258889-0d5e-4c1f-9196-9a5f16011c3d",
   "fields": {
-    "version": 2,
+    "version": 3,
     "name": "Мафтуна",
     "surname": "Мусаллимова",
     "role": "Мастер",
@@ -847,7 +847,7 @@
   "model": "employee.employee",
   "pk": "f8ab282e-7cc3-40a3-9eb9-f72f5cf5c24a",
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Элер",
     "surname": "Шавкатов",
     "role": "Управляющий",
@@ -863,7 +863,7 @@
   "model": "own.own",
   "pk": 1,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Газель 1",
     "contractor": 3,
     "number": "404AAA02",
@@ -876,7 +876,7 @@
   "model": "own.own",
   "pk": 2,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Газель 2",
     "contractor": 3,
     "number": "001ABC01",
@@ -889,7 +889,7 @@
   "model": "own.own",
   "pk": 3,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Lexus LX570",
     "contractor": 1,
     "number": "007OMG02",
@@ -902,7 +902,7 @@
   "model": "own.own",
   "pk": 4,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Toyota Camry 70",
     "contractor": 2,
     "number": "952ACZ11",
@@ -915,7 +915,7 @@
   "model": "own.own",
   "pk": 5,
   "fields": {
-    "version": 1,
+    "version": 2,
     "name": "Land Cruser Prado",
     "contractor": 2,
     "number": "050ALA11",
@@ -1021,7 +1021,7 @@
   "model": "order.order",
   "pk": 1,
   "fields": {
-    "version": 1,
+    "version": 2,
     "trade_point": 1,
     "contractor": 1,
     "own": 3,
@@ -1130,7 +1130,7 @@
   "model": "order.order",
   "pk": 2,
   "fields": {
-    "version": 2,
+    "version": 3,
     "trade_point": 1,
     "contractor": 2,
     "own": 4,
@@ -1255,7 +1255,7 @@
   "model": "order.order",
   "pk": 3,
   "fields": {
-    "version": 2,
+    "version": 3,
     "trade_point": 1,
     "contractor": 2,
     "own": 5,
@@ -1380,7 +1380,7 @@
   "model": "order.order",
   "pk": 4,
   "fields": {
-    "version": 1,
+    "version": 2,
     "trade_point": 1,
     "contractor": 3,
     "own": 2,
@@ -1537,7 +1537,7 @@
   "model": "order.order",
   "pk": 5,
   "fields": {
-    "version": 1,
+    "version": 2,
     "trade_point": 2,
     "contractor": 1,
     "own": 3,
@@ -1594,7 +1594,7 @@
   "model": "order.order",
   "pk": 6,
   "fields": {
-    "version": 2,
+    "version": 3,
     "trade_point": 2,
     "contractor": 3,
     "own": 1,
@@ -1679,7 +1679,7 @@
   "model": "order.order",
   "pk": 7,
   "fields": {
-    "version": 2,
+    "version": 3,
     "trade_point": 2,
     "contractor": 2,
     "own": 5,
@@ -1778,14 +1778,6 @@
         "Количество услуг": 1
       }
     ]
-  }
-},
-{
-  "model": "report.report",
-  "pk": 1,
-  "fields": {
-    "report_uuid": "8d177514-e637-4924-ad5a-8e01a8a96669",
-    "tradepoint_id": 1
   }
 },
 {
