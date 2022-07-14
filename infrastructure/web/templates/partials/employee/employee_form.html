@@ -21,13 +21,17 @@
     <div class="d-none">
         <label for="employee_role" class="form-label">Роль <span class="text-danger">*</span></label><br>
         <select class="form-select" name="role" id="role">
-            {% for role in roles.items %}
-                <option>{{ role.1 }}</option>
+            {% for role in roles %}
+                {% if role.0 == form.role.value %}
+                    <option selected value="{{ role.0 }}">{{ role.1 }}</option>
+                {% else %}
+                    <option value="{{ role.0 }}">{{ role.1 }}</option>
+                {% endif %}
             {% endfor %}
         </select>
         <div class="form-text c-red">{{ form.errors.role }}</div>
     </div>
-    <div class="row">
+    {% if form.role.value == 'Мастер' %}
         <div>
             <label for="employee_image" class="form-label">Фотография удостоверения <span
                     class="text-danger">*</span></label><br>
@@ -37,6 +41,9 @@
                 <div class="form-text c-red">{{ form.errors.image }}</div>
             </div>
         </div>
+        <br>
+    {% endif %}
+    <div class="row">
         <div class="col">
             <label for="employee_birthdate" class="form-label">Дата рождения <span class="text-danger">*</span></label>
             <input type="date" class="form-control border-secondary" id="employee_birthdate" name="birthdate"
@@ -48,7 +55,7 @@
             <label for="employee_tradepoint" class="form-label">Филиалы <span class="text-danger">*</span></label><br>
             <select class="form-select border-secondary" name="tradepoint" id="employee_tradepoint">
                 {% for tradepoint in tradepoints %}
-                    {% if tradepoint == form.tradepoint.value %}
+                    {% if tradepoint|slugify == form.tradepoint.value|slugify %}
                         <option selected value="{{ tradepoint.pk }}">{{ tradepoint.name }}</option>
                     {% else %}
                         <option value="{{ tradepoint.pk }}">{{ tradepoint.name }}</option>
@@ -58,6 +65,7 @@
             <div class="form-text text-danger">{% for err in form.errors.tradepoints %}{{ err }}{% endfor %}</div>
         </div>
     </div>
+    <br>
     <div class="col">
         <label for="employee_address" class="form-label">Адрес <span class="text-danger">*</span></label>
         <input type="text" class="form-control border-secondary" id="employee_address" name="address"
