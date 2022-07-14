@@ -189,7 +189,7 @@ function update() {
 }
 
 $.ajax({
-    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=&is_part=${isPart.value}`,
+    url: `${locationHost}/org/1/tp/${tpID}/own/list/filter/?search=&is_part=${isPart.value}`,
     method: 'GET',
     success: (data) => {
         if (data.next && data.previous === null) {
@@ -243,7 +243,7 @@ $.ajax({
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
   $.ajax({
-    url: `http://127.0.0.1:8000/org/1/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
+    url: `${locationHost}/org/1/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
     method: 'GET',
     success: (data) => {
         body.innerText = ""
@@ -299,7 +299,7 @@ back.addEventListener('click', (e) => {
 next.addEventListener('click', (e) => {
     page.value = parseInt(page.value) + 1
   $.ajax({
-    url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
+    url: `${locationHost}/org/1/tp/${tpID}/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
     method: 'GET',
     success: (data) => {
         body.innerText = ""
@@ -354,7 +354,7 @@ next.addEventListener('click', (e) => {
 
 search.addEventListener('input', (e) => {
       $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=${search.value}&is_part=${isPart.value}`,
+        url: `${locationHost}/org/1/tp/${tpID}/own/list/filter/?search=${search.value}&is_part=${isPart.value}`,
         method: 'GET',
         success: (data) => {
             body.innerHTML = '';
@@ -417,7 +417,7 @@ search.addEventListener('input', (e) => {
 
 isPart.addEventListener('change', () => {
     $.ajax({
-        url: `http://127.0.0.1:8000/org/1/tp/${tpID}/own/list/filter/?search=${search.value}&is_part=${isPart.value}`,
+        url: `${locationHost}/org/1/tp/${tpID}/own/list/filter/?search=${search.value}&is_part=${isPart.value}`,
         method: 'GET',
         success: (data) => {
             body.innerHTML = '';
