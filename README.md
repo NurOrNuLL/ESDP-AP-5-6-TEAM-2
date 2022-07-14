@@ -3,7 +3,8 @@
 ## Приложение для автоматизации работы управляющего СТО
 Наше приложение предоставляет простой интерфейс для ведения отчетности по ремонтным работам авто и сотрудникам СТО
 
-[Подробнее о проекте](https://github.com/NurOrNuLL/ESDP-AP-5-6-TEAM-2/wiki)
-[Cсылка на сайт](https://gservicegroup.top/org/1/tp/1/)
+Подробнее о проекте:  [Home](https://github.com/NurOrNuLL/ESDP-AP-5-6-TEAM-2/wiki)
 
-Чтобы получить доступ к полному функционалу свяжитесь с командой: [О нас](https://github.com/NurOrNuLL/ESDP-AP-5-6-TEAM-2/wiki/%D0%9E-%D0%BD%D0%B0%D1%81)
+Ссылка на сайт  [GServiceGroup.com](https://gservicegroup.top/org/1/tp/1/)
+
+Чтобы получить доступ к полному функционалу свяжитесь с командой:  [О нас](https://github.com/NurOrNuLL/ESDP-AP-5-6-TEAM-2/wiki/%D0%9E-%D0%BD%D0%B0%D1%81)
