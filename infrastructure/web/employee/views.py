@@ -177,7 +177,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
         context['tradepoints'] = EmployeeServices.get_tradepoint()
-        context['roles'] = {'role': 'Мастер'}
+        context['roles'] = Employee.ROLE
         return context
 
     def get_file_form(self):
@@ -196,6 +196,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'image': employee.image,
             'phone': employee.phone,
             'birthdate': employee.birthdate,
+            'role': employee.role,
             'tradepoint': employee.tradepoint,
             'version': employee.version
         }
