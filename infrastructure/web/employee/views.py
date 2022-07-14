@@ -39,7 +39,7 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
     def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         context['tpID'] = self.kwargs['tpID']
-        context['roles'] = self.initial_data
+        context['roles'] = Employee.ROLE
         return context
 
     def get(
@@ -92,7 +92,7 @@ class EmployeeCreate(ResetOrderCreateFormDataMixin, LoginRequiredMixin, UserPass
         else:
             context = self.get_context_data(**kwargs)
             context['form'] = form
-            context['roles'] = self.initial_data
+            context['roles'] = Employee.ROLE
             context['tradepoints'] = EmployeeServices.get_tradepoint()
             return render(request, self.template_name, context)
 
@@ -177,7 +177,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
         context['tpID'] = self.kwargs['tpID']
         context['orgID'] = self.kwargs['orgID']
         context['tradepoints'] = EmployeeServices.get_tradepoint()
-        context['roles'] = {'role': 'Мастер'}
+        context['roles'] = Employee.ROLE
         return context
 
     def get_file_form(self):
@@ -196,6 +196,7 @@ class EmployeeUpdate(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
             'image': employee.image,
             'phone': employee.phone,
             'birthdate': employee.birthdate,
+            'role': employee.role,
             'tradepoint': employee.tradepoint,
             'version': employee.version
         }

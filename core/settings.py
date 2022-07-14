@@ -192,12 +192,27 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 12,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'infrastructure.accounts.validators.NumberValidator'
+    },
+    {
+        'NAME': 'infrastructure.accounts.validators.UppercaseValidator'
+    },
+    {
+        'NAME': 'infrastructure.accounts.validators.CyrillicValidator'
+    },
+    {
+        'NAME': 'infrastructure.accounts.validators.SymbolValidator'
     },
 ]
 
