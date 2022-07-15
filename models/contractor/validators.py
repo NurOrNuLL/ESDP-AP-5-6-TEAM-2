@@ -32,7 +32,6 @@ def validate_iin(iin: str) -> bool:
     w1 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     w2 = [3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 2]
     check_sum = multiply(iin, w1) % 11
-    print(multiply(iin, w1) % 11)
     if check_sum == 10:
         check_sum = multiply(iin, w2) % 11
     if check_sum != int(iin[-1]):

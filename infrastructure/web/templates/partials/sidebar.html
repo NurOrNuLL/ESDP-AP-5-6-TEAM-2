@@ -46,19 +46,6 @@
         </li>
         <li class="mb-1">
             <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
-                    data-bs-target="#queue-collapse" aria-expanded="false">
-                Очередь
-            </button>
-            <div class="collapse sidebar-ul" id="queue-collapse">
-                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                    <li><a href="#" class="link-dark sidebar-link rounded">Список</a></li>
-                    <li><a href="{% url 'queue_create' orgID=1 tpID=tpID %}"
-                           class="link-dark sidebar-link rounded">Поставить в очередь</a></li>
-                </ul>
-            </div>
-        </li>
-        <li class="mb-1">
-            <button class="btn btn-toggle align-items-center rounded collapsed sidebar-btn" data-bs-toggle="collapse"
                     data-bs-target="#contragent-collapse" aria-expanded="false">
                 Контрагенты
             </button>
