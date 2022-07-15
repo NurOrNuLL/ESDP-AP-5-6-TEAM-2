@@ -13,7 +13,6 @@ function update() {
         function (e) {
             e.preventDefault()
             var is_part = $(this).attr('data-ownpart');
-            console.log(is_part)
             if (is_part === 'true'){
                 let numbers = document.getElementById('own_number_label')
                 let numbersin = document.getElementById('number')
@@ -243,7 +242,7 @@ $.ajax({
 back.addEventListener('click', (e) => {
     page.value = parseInt(page.value) - 1
   $.ajax({
-    url: `${locationHost}/org/1/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
+    url: `${locationHost}/org/1/tp/${tpID}/own/list/filter/?page=${page.value}&search=${search.value}&is_part=${isPart.value}`,
     method: 'GET',
     success: (data) => {
         body.innerText = ""
