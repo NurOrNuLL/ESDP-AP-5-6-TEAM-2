@@ -179,7 +179,7 @@ class OwnUpdateApiView(GenericAPIView):
                 })
             else:
                 own.name = serializer.data['name']
-                own.number = serializer.data['number']
+                own.number = serializer.data['number'].upper()
                 own.comment = serializer.data['comment']
                 own.save()
 
@@ -192,10 +192,9 @@ class OwnConcurrencyUpdateApiView(GenericAPIView):
 
     def patch(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
         own = OwnServices.get_own_by_id(self.kwargs.get('ownID'))
-        print(request)
         with disable_concurrency(own):
             own.name = request.data['name']
-            own.number = request.data['number']
+            own.number = request.data['number'].upper()
             own.comment = request.data['comment']
             own.save()
 
