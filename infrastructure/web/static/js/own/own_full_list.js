@@ -27,7 +27,6 @@ function update() {
                 comment.value = decodeURIComponent($(this).attr('data-owncomment'));
                 version.value = $(this).attr('data-ownversion')
             }else if(is_part === 'false'){
-                console.log('sdssdsdsds')
                 let id = document.getElementById('id')
                 let name = document.getElementById('name')
                 let numbers = document.getElementById('own_number_label')
@@ -223,6 +222,7 @@ $.ajax({
                                         <td>${item.comment}</td>
                                         <td><button id="editOwns" type="button" class="btn btn-primary button_own" 
                                         data-ownid="${item.id}"
+                                        data-ownpart="${item.is_part}"
                                         data-ownname="${encodeURIComponent(item.name)}"
                                         data-ownnumber="${item.number}"
                                         data-owncomment="${encodeURIComponent(item.comment)}"
@@ -279,6 +279,7 @@ back.addEventListener('click', (e) => {
                                         <td>${item.comment}</td>
                                         <td><button id="editOwns" type="button" class="btn btn-primary button_own"
                                         data-ownid="${item.id}"
+                                        data-ownpart="${item.is_part}"
                                         data-ownname="${encodeURIComponent(item.name)}"
                                         data-ownnumber="${item.number}"
                                         data-owncomment="${encodeURIComponent(item.comment)}"
@@ -335,6 +336,7 @@ next.addEventListener('click', (e) => {
                                         <td>${item.comment}</td>
                                         <td><button id="editOwns" type="button" class="btn btn-primary button_own"
                                         data-ownid="${item.id}"
+                                        data-ownpart="${item.is_part}"
                                         data-ownname="${encodeURIComponent(item.name)}"
                                         data-ownnumber="${item.number}"
                                         data-owncomment="${encodeURIComponent(item.comment)}"
@@ -392,6 +394,7 @@ search.addEventListener('input', (e) => {
                                         <td>${item.comment}</td>
                                         <td><button id="editOwns" type="button" class="btn btn-primary button_own"
                                         data-ownid="${item.id}"
+                                        data-ownpart="${item.is_part}"
                                         data-ownname="${encodeURIComponent(item.name)}"
                                         data-ownnumber="${item.number}"
                                         data-owncomment="${encodeURIComponent(item.comment)}"
