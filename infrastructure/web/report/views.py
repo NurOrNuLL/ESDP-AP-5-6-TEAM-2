@@ -155,9 +155,7 @@ class ReportDownloadView(TemplateView):
             if request.POST['data']:
                 main_data = json.loads(request.POST['data'])
                 self.reports_file = ReportService.download_a_exel_file_to_user(
-                    file_data=main_data,
-                    file_extension=extension
-                )
+                    file_data=main_data, file_extension=extension)
                 return self.reports_file
             else:
                 context = self.get_context_data(**kwargs)
