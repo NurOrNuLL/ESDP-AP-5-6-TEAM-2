@@ -82,7 +82,7 @@ class OwnUpdateViewTest(SimpleTestCase):
         data_PATCH = {
             'version': self.own.version,
             'name': 'Новое название',
-            'number': 'Новый номер',
+            'number': 'НОВЫЙ НОМЕР',
             'comment': 'Новый коментарий'
         }
 
