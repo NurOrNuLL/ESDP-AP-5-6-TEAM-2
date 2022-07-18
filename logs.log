@@ -65,3 +65,9 @@ WARNING 2022-07-15 13:27:07,991 runserver 41978 140100264879872 [33mHTTP GET /s
 WARNING 2022-07-15 13:27:52,603 runserver 41978 140100264879872 [33mHTTP GET /static/css/bootstrap.css.map 404 [0.01, 127.0.0.1:53010][0m
 WARNING 2022-07-15 13:27:52,717 runserver 41978 140100264879872 [33mHTTP GET /static/js/bootstrap.bundle.min.js.map 404 [0.01, 127.0.0.1:53000][0m
 WARNING 2022-07-15 13:27:52,771 runserver 41978 140100264879872 [33mHTTP GET /static/js/bootstrap-select.min.js.map 404 [0.01, 127.0.0.1:53000][0m
+WARNING 2022-07-18 14:44:41,548 runserver 36459 140218882070272 [33mHTTP GET /static/js/bootstrap.bundle.min.js.map 404 [0.01, 127.0.0.1:42410][0m
+WARNING 2022-07-18 14:44:41,553 runserver 36459 140218882070272 [33mHTTP GET /static/js/bootstrap-select.min.js.map 404 [0.02, 127.0.0.1:42412][0m
+WARNING 2022-07-18 14:44:41,560 runserver 36459 140218882070272 [33mHTTP GET /static/css/bootstrap.css.map 404 [0.02, 127.0.0.1:42416][0m
+WARNING 2022-07-18 14:52:03,022 runserver 37123 140553103914752 [33mHTTP GET /static/js/bootstrap.bundle.min.js.map 404 [0.01, 127.0.0.1:42430][0m
+WARNING 2022-07-18 14:52:03,026 runserver 37123 140553103914752 [33mHTTP GET /static/js/bootstrap-select.min.js.map 404 [0.01, 127.0.0.1:42432][0m
+WARNING 2022-07-18 14:52:03,030 runserver 37123 140553103914752 [33mHTTP GET /static/css/bootstrap.css.map 404 [0.01, 127.0.0.1:42436][0m
