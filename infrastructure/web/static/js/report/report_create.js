@@ -10,6 +10,7 @@ let reportInput = document.getElementById('reportInput');
 let reportSave = document.getElementById('reportSave');
 let fromDate = document.getElementById('from_date');
 let toDate = document.getElementById('to_date');
+let report = document.getElementById('report');
 
 
 function renderReportType1(paidOrders, unpaidOrders, report) {
@@ -578,6 +579,78 @@ function renderReportType3(report) {
                                             <td>${employeeSalary['Телефон']}</td>
                                             <th>${employeeSalary['Зарплата']}</th>
                                         </tr>`
+    }
+}
+
+
+if (report.value.length != 0) {
+    let decoded_report = JSON.parse(report.value);
+
+    if (decoded_report['error'] === undefined) {
+        if (!(errorAlert.classList.contains('d-none'))) {
+            errorAlert.classList.add('d-none')
+        }
+
+        reportInput.value = JSON.stringify(decoded_report);
+
+        downloadData.value = JSON.stringify(decoded_report);
+        downloadData.innerText = JSON.stringify(decoded_report);
+
+        reportSave.disabled = false;
+        resetReport.disabled = false;
+        downloadReport.disabled = false;
+        reportFormat.disabled = false;
+
+        if (decoded_report['report_type'] === 1) {
+            if (decoded_report['paidOrders'].length !== 0) {
+                if (decoded_report['unpaidOrders'].length !== 0) {
+                    renderReportType1(true, true, decoded_report)
+                }
+                else {
+                    renderReportType1(true, false, decoded_report)
+                }
+            }
+            else {
+                if (decoded_report['unpaidOrders'].length !== 0) {
+                    renderReportType1(false, true, decoded_report)
+                }
+                else {
+                    renderReportType1(false, false, decoded_report)
+                }
+            }
+        }
+        else if (decoded_report['report_type'] === 2) {
+            if (decoded_report['paidOrders'].length !== 0) {
+                if (decoded_report['unpaidOrders'].length !== 0) {
+                    renderReportType2(true, true, decoded_report)
+                }
+                else {
+                    renderReportType2(true, false, decoded_report);
+                }
+            }
+            else {
+                if (decoded_report['unpaidOrders'].length !== 0) {
+                    renderReportType2(false, true, decoded_report);
+                }
+                else {
+                    renderReportType2(false, false, decoded_report);
+                }
+            }
+        }
+        else if (decoded_report['report_type'] === 3) {
+            renderReportType3(decoded_report);
+        }
+    }
+    else {
+        errorAlert.classList.remove('d-none');
+        error.innerText = decoded_report.error;
+
+        bodyBlock.innerHTML = '<h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>'
+
+        reportSave.disabled = true;
+        resetReport.disabled = true;
+        downloadReport.disabled = true;
+        reportFormat.disabled = true;
     }
 }
 

@@ -3,6 +3,7 @@ from channels.generic.websocket import WebsocketConsumer
 from .tasks import get_report, get_reports_from_aws
 from datetime import datetime
 from celery.result import AsyncResult
+from django.core.cache import cache
 
 
 class ReportListConsumer(WebsocketConsumer):
@@ -37,6 +38,8 @@ class ReportConsumer(WebsocketConsumer):
         if self.dates_is_valid(from_date, to_date):
             task = get_report.delay(from_date, to_date, int(data['report_type']), data['tpID'])
             report = AsyncResult(task.id).get()
+
+            cache.set('report', report, 86400)
 
             self.send(json.dumps(report))
         else:
