@@ -67,16 +67,9 @@
     </div>
     <div class="card border-secondary" style="min-height: 600px;">
         {% if report %}
-<<<<<<< HEAD
-            <div class="card-header bg-transparent">
-                <h3 class="my-3">Отчет за период {{ from_date|date:'d.m.Y' }} - {{ to_date|date:'d.m.Y' }}</h3>
-            </div>
-            <div class="card-body"></div>
-=======
             <div class="card-body">
                 <div id="bodyBlock"></div>
             </div>
->>>>>>> 7d73d201199e09d9899a8b0dfc1ae04941a988d2
         {% else %}
             <div class="card-body">
                 <div id="bodyBlock">
@@ -86,10 +79,7 @@
             </div>
         {% endif %}
     </div>
-<<<<<<< HEAD
-=======
     <input type="text" id="report" class="d-none" value="{{ report }}">
->>>>>>> 7d73d201199e09d9899a8b0dfc1ae04941a988d2
 
 {% endblock content %}
 
