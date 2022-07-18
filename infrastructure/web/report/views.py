@@ -5,7 +5,7 @@ from typing import List, Dict, Any
 from django.http import HttpRequest, HttpResponse
 from django.views import View
 from django.views.generic import TemplateView
-
+from django.core.cache import cache
 from models.report.models import Report
 from services.report_services import ReportService
 from .forms import ReportDateForm, ReportDownloadForm
@@ -115,6 +115,11 @@ class ReportPreviewView(LoginRequiredMixin, UserPassesTestMixin, TemplateView):
 
         context = self.get_context_data(**kwargs)
         context['form'] = form
+
+        report = cache.get('report')
+
+        if report:
+            context['report'] = json.dumps(report)
 
         return render(request, self.template_name, context)
 
