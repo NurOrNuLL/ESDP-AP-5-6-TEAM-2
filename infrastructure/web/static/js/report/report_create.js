@@ -659,6 +659,18 @@ resetReport.onclick = e => {
     bodyBlock.innerHTML = '<h4 class="text-center" style="position: absolute; bottom: 50%; left: 40%;">Отчет еще не сформирован!</h4>'
     reportInput.value = '';
 
+    $.ajax({
+        type: "delete",
+        url: `${locationHost}/org/1/tp/${tpID}/report/cache/delete/`,
+        headers: {'X-CSRFToken': $.cookie('csrftoken')},
+        success: function (data) {
+            console.log(data);
+        },
+        error: function (err) {
+            console.log(err);
+        }
+    });
+
     reportSave.disabled = true;
     resetReport.disabled = true;
     downloadReport.disabled = true;
