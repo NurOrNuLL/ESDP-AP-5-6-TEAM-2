@@ -185,3 +185,13 @@ class ReportDeleteView(View):
         report.delete()
 
         return redirect('report_list', orgID=self.kwargs['orgID'], tpID=self.kwargs['tpID'])
+
+
+class ReportRemoveCacheAPIView(GenericAPIView):
+    def delete(self, request: HttpRequest, *args: list, **kwargs: dict) -> Response:
+        if cache.get('report'):
+            cache.delete('report')
+
+            return Response({'status': 'success'})
+
+        return Response({'status': 'failure'})
